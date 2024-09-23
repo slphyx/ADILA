@@ -171,4 +171,52 @@ vector_to_table <- function(named_vector) {
   )
 }
 
+# Function to convert multiple named vectors into a data frame
+# # all vectors must have the same names
+# vector_to_table_multi <- function(...) {
+#   vectors <- list(...)  # Capture all input vectors as a list
+#   vector_names <- names(vectors[[1]])  # Get the names from the first vector
+#   
+#   # Check if all vectors have the same names
+#   if (!all(sapply(vectors, function(v) identical(names(v), vector_names)))) {
+#     stop("All vectors must have the same names")
+#   }
+#   
+#   # Create a data frame with the names as the first column
+#   result <- data.frame(Name = vector_names)
+#   
+#   # Add each vector's values as a new column
+#   for (i in seq_along(vectors)) {
+#     result[[paste0("Value", i)]] <- vectors[[i]]
+#   }
+#   
+#   return(result)
+# }
+# 
+
+# Function to convert a list of named vectors into a data frame
+vector_to_table_multi <- function(vectors) {
+  # Ensure the input is a list of vectors
+  if (!is.list(vectors)) {
+    stop("Input must be a list of named vectors.")
+  }
+  
+  # Get the names from the first vector in the list
+  vector_names <- names(vectors[[1]])
+  
+  # Check if all vectors have the same names
+  if (!all(sapply(vectors, function(v) identical(names(v), vector_names)))) {
+    stop("All vectors must have the same names.")
+  }
+  
+  # Create a data frame with the names as the first column
+  result <- data.frame(Name = vector_names)
+  
+  # Add each vector's values as a new column
+  for (i in seq_along(vectors)) {
+    result[[paste0("Value", i)]] <- vectors[[i]]
+  }
+  
+  return(result)
+}
 
