@@ -29,7 +29,7 @@ app_server <- function(input, output, session) {
   # Save the current input parameters to a file (JSON format)
   output$save_params <- downloadHandler(
     filename = function() {
-      paste("input_parameters_", Sys.Date(), ".json", sep = "")
+      paste("AWaRe_input_parameters_", Sys.Date(), ".json", sep = "")
     },
     content = function(file) {
       params <- list()
