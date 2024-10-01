@@ -1,41 +1,11 @@
 # SLPHYX@SHIFT-ENTER
 
-# Define the server logic
-# app_server <- function(input, output) {
-#   
-#   # Reactive expression to create the input data based on the user input
-#   inputData <- reactive({
-#     pt.atb <- input$pt_bmen + input$pt_uuti
-#     
-#     data.frame(
-#       pt.admt = input$pt_admt,
-#       pt.atb  = pt.atb,
-#       p.first = input$p_first,
-#       p.bmen  = input$pt_bmen / pt.atb,
-#       p.uuti  = input$pt_uuti / pt.atb,
-#       p.sev.uti = input$p_sev_uti,
-#       p.esbl = input$p_esbl
-#     )
-#   })
-#   
-#   # Observe the submit button and update the model output
-#   observeEvent(input$submit, {
-#     output$model_output <- renderTable({
-#       # run the tree_adult function
-#       vector_to_table(tree_adult(inputData()))
-#       
-#     })
-#   })
-# }
-
-
 app_server <- function(input, output, session) {
   
-  # Dynamically generate tabs for input fields based on the number of drugs
+  # Generate 10 fixed tabs for input fields
   output$drug_tabs <- renderUI({
-    num_drugs <- input$num_drugs
     
-    tab_list <- lapply(1:num_drugs, function(i) {
+    tab_list <- lapply(1:10, function(i) {
       tabPanel(
         paste("Drug", i),  # Create a tab for each drug
         numericInput(paste0("p_first_", i), "Probability of First Choice Antibiotic (p.first)", value = 0.90, min = 0, max = 1, step = 0.01),
@@ -53,11 +23,10 @@ app_server <- function(input, output, session) {
   # When submit is clicked, calculate the model output
   observeEvent(input$submit, {
     
-    num_drugs <- input$num_drugs
     vectors <- list()
     
-    # Loop through each drug and calculate the result using tree_adult()
-    for (i in 1:num_drugs) {
+    # Loop through each drug (fixed at 10) and calculate the result using tree_adult()
+    for (i in 1:10) {
       # Gather the inputs for each drug
       pt_admt <- input[[paste0("pt_admt_", i)]]
       pt_bmen <- input[[paste0("pt_bmen_", i)]]
