@@ -1,48 +1,57 @@
 # SLPHYX@SHIFT-ENTER
 
+# R/ui/app_ui.R
+
 app_ui <- navbarPage(
   title = "Estimating expected antibiotics usage in hospitals according to the WHO AWaRe book guideline",
   
-  # First tab: About the app (empty for now)
+  # First tab: About the App
   tabPanel("About the App",
            fluidPage(
              h3("About the App"),
              p("This page will contain information about the app.")
            )),
   
-  # Second tab: Run the simulation (show/hide input menu and full results page)
+  # Second tab: Run the Simulation
   tabPanel("Run the Simulation",
            fluidPage(
-             titlePanel("Multi-Drug Antibiotic Choice Model with 10 Fixed Tabs"),
+             titlePanel("Multi-Drug Antibiotic Choice Model"),
              
-             # Toggle button to show/hide the input panel
-             actionButton("toggleInputs", "Show/Hide Inputs"),
-             
-             # Create an area for input parameters that can be hidden
-             conditionalPanel(
-               condition = "input.toggleInputs % 2 == 0",  # Show when toggle is even
-               fluidRow(
-                 column(3, wellPanel(  # Input panel placed on the left
-                   h4("Input Parameters"),
-                   # 10 tabs for drug inputs
-                   uiOutput("drug_tabs"),
-                   br(),
-                   # Submit button inside the input panel
-                   actionButton("submit", "Run Simulation")
-                 ))
+             # Upper part: Input Parameters
+             fluidRow(
+               column(12,  # Full-width container
+                      h3("Parameter Inputs"),  # Title for parameter inputs
+                      
+                      # Buttons for saving and loading inputs
+                      fluidRow(
+                        column(3, actionButton("toggleInputs", "Show/Hide Inputs")),
+                        column(3, downloadButton("save_params", "Save Inputs")),
+                        column(3, fileInput("load_params", "Load Inputs", accept = c(".json")))
+                      ),
+                      
+                      # Input panel can be hidden and will use full width of the page
+                      conditionalPanel(
+                        condition = "input.toggleInputs % 2 == 0",
+                        wellPanel(
+                          h4("Input Parameters"),
+                          uiOutput("drug_tabs"),  # Dynamic UI output for tabs
+                          br(),
+                          actionButton("submit", "Run Simulation")  # Submit button
+                        )
+                      )
                )
              ),
              
-             # Main panel for showing the results
+             # Lower part: Simulation Results
              fluidRow(
                column(12, 
-                      h4("Simulation Results"),
-                      tableOutput("model_output")  # Table to display the combined results
+                      h3("Simulation Results"),  # Title for results
+                      tableOutput("model_output")  # Display results
                )
              )
            )),
   
-  # Third tab: Details about the terminology (empty for now)
+  # Third tab: Terminology Details
   tabPanel("Details about the Terminology",
            fluidPage(
              h3("Details about the Terminology"),

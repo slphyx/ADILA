@@ -1,4 +1,4 @@
 # AWaRe
 
 
-![AWaRe](www/img/aware.gif)
+![AWaRe](www/img/aware02.gif)
