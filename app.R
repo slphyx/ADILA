@@ -2,6 +2,12 @@
 
 #app.R
 library(shiny)
+library(dplyr)
+library(tidyr)
+library(gtsummary)
+library(gtools)
+library(shinyjs) 
+library(shinycssloaders)
 
 source("R/global.R")
 
