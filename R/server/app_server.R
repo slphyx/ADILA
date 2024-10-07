@@ -210,7 +210,7 @@ app_server <- function(input, output) {
 
   # Run the model when the button is clicked
   observeEvent(input$run_model, {
-
+    withProgress(message = 'Making table', value = 0, {
     shinyjs::disable("run_model")
 
     # Create an empty dataframe to store model's output
@@ -222,6 +222,7 @@ app_server <- function(input, output) {
     # Run the model 1000 times
     for (i in 1:1000) {
       set.seed(1000 + i)
+      incProgress(1/1000)
       # set.seed(Sys.time())
       # SS
       model_input <- generate_input_dataframe(input_big()$adult_cases,
@@ -255,7 +256,7 @@ app_server <- function(input, output) {
     output$summary_table <- render_gt({
       summary_table
     })
-
+    })
   })
 
   # Display the summary of inputs in a table in the "Summary Inputs" tab
