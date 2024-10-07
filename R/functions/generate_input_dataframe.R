@@ -1,10 +1,15 @@
 
 library(gtools)
 
-# Helper function to calculate binomial parameters
-binomi.para <- function(est, std_err) {
-  alpha <- est * ((1 - est) / (std_err^2) - 1)
-  beta <- (1 - est) * ((1 - est) / (std_err^2) - 1)
+# Function to estimate "alpha" and "beta" value from the "point estimate" and "standard error"
+binomi.para <- function(point_est, std_err){
+  # Estimating alpha value 
+  alpha <- point_est * (((point_est * (1 - point_est)) / std_err^2) - 1)
+  
+  # Estimating beta value 
+  beta <- alpha * ((1 - point_est) / point_est)
+  
+  # Returning both alpha and beta in a list
   return(list(alpha = alpha, beta = beta))
 }
 
@@ -77,7 +82,7 @@ generate_input_dataframe <- function(adult_cases, para.data, std_err) {
   p.sev.uti <- rbeta(1, p.sev.uti.para$alpha, p.sev.uti.para$beta)
   
   # Probability of C. difficile with severe cases
-  p.sev.cdf.est <- para.data$value[para.data$parameter=="proportion of sever cases in patients with C. difficle infection"]
+  p.sev.cdf.est <- para.data$value[para.data$parameter=="proportion of sever cases in patients with C. difficile infection"]
   p.sev.cdf.para <- binomi.para(p.sev.cdf.est, std_err)
   p.sev.cdf <- rbeta(1, p.sev.cdf.para$alpha, p.sev.cdf.para$beta)
   
