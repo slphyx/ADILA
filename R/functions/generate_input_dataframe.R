@@ -169,5 +169,20 @@ generate_input_dataframe <- function(adult_cases, para.data, std_err) {
     p.contsg <- type.surg[4]
   )
   
+  names(input.adult) <- c(
+    "pt.atb","pt.admt","p.first.cap","p.first.bm",
+    "p.first.abd","p.first.bj","p.cap","p.hap",
+    "p.bmen","p.abd","p.uuti","p.sst",
+    "p.bj","p.clodiff","p.fneut","p.sep",
+    "p.sug","p.sev.cap","p.curb.high","p.highrisk.hap",
+    "p.sev.abd","p.sev.uti","p.sev.cdf","p.nf",
+    "p.pyomy","p.esbl.abd","p.esbl.uti","p.esbl.fn",
+    "p.g.neg.fn","p.mrsa.sst","p.mrsa.bj","p.mrsa.fn",
+    "p.Strep.pyogene","p.snf","p.unk","p.men",
+    "p.lrti","p.ent","p.abd.s","p.sst.s",
+    "p.uti.s","p.bowsg","p.clean","p.urosg",
+    "p.contsg"
+  )
+  
   return(input.adult)
 }

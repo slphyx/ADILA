@@ -219,8 +219,8 @@ app_server <- function(input, output) {
     
     # Run the model 1000 times
     for (i in 1:1000) {
-      # set.seed(1000 + i)
-      set.seed(Sys.time())
+      set.seed(1000 + i)
+      # set.seed(Sys.time())
       # SS
       model_input <- generate_input_dataframe(input_big()$adult_cases, 
                                               input_big()$para_data, input_big()$std_err)
