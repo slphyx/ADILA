@@ -1,4 +1,3 @@
-# R/functions.R
 
 library(gtools)
 
