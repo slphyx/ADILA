@@ -1,4 +1,4 @@
-
+library(gtools)
 
 # Decision tree for hospitalized adults (> 12 years)
 # Management guideline based on WHO's AWaRe book 

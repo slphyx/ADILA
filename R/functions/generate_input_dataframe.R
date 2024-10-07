@@ -1,17 +1,17 @@
 
 library(gtools)
 
-# Function to estimate "alpha" and "beta" value from the "point estimate" and "standard error"
-binomi.para <- function(point_est, std_err){
-  # Estimating alpha value 
-  alpha <- point_est * (((point_est * (1 - point_est)) / std_err^2) - 1)
-  
-  # Estimating beta value 
-  beta <- alpha * ((1 - point_est) / point_est)
-  
-  # Returning both alpha and beta in a list
-  return(list(alpha = alpha, beta = beta))
-}
+# # Function to estimate "alpha" and "beta" value from the "point estimate" and "standard error"
+# binomi.para <- function(point_est, std_err){
+#   # Estimating alpha value 
+#   alpha <- point_est * (((point_est * (1 - point_est)) / std_err^2) - 1)
+#   
+#   # Estimating beta value 
+#   beta <- alpha * ((1 - point_est) / point_est)
+#   
+#   # Returning both alpha and beta in a list
+#   return(list(alpha = alpha, beta = beta))
+# }
 
 
 # Function to generate the input dataframe
@@ -183,6 +183,6 @@ generate_input_dataframe <- function(adult_cases, para.data, std_err) {
     "p.uti.s","p.bowsg","p.clean","p.urosg",
     "p.contsg"
   )
-  
+
   return(input.adult)
 }
