@@ -110,7 +110,7 @@ app_ui <- fluidPage(
                # Bottom section: Simulation output
                column(12,
                       h3("Summary Table of Expected Antibiotic Usage"),
-                      withSpinner(gt_output(outputId = "summary_table"))
+                      gt_output(outputId = "summary_table")%>%withSpinner()
                )
              )
     ),
