@@ -6,8 +6,7 @@ library(shinyjs)
 library(shinydashboard)
 
 app_ui <- dashboardPage(
-  skin = "black",
-  title = "Antibiotic Usage Model",
+
   
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
@@ -24,19 +23,24 @@ app_ui <- dashboardPage(
       # Sidebar item for "Type of Patients"
       menuItem("Type of patients", tabName = "type_patients", icon = icon("user"),
                div(id = "type_patients_inputs",
-                   numericInput("cap_cases", "CAP Cases", min = 0, max = NA, value = 50),
-                   numericInput("hap_cases", "HAP Cases", min = 0, max = NA, value = 10),
-                   numericInput("cns_cases", "CNS Cases", min = 0, max = NA, value = 15),
-                   numericInput("ia_cases", "Intra-abdominal Infection Cases", min = 0, max = NA, value = 35),
-                   numericInput("pye_cases", "Pyelonephritis Cases", min = 0, max = NA, value = 35),
-                   numericInput("sst_cases", "Skin and Soft Tissue Infection Cases", min = 0, max = NA, value = 30),
-                   numericInput("bj_cases", "Bone and Joint Infection Cases", min = 0, max = NA, value = 30),
-                   numericInput("cdif_cases", "C. difficile Infection Cases", min = 0, max = NA, value = 30),
-                   numericInput("fn_cases", "Febrile Neutropenia Cases", min = 0, max = NA, value = 10),
-                   numericInput("sepsis_cases", "Sepsis Cases", min = 0, max = NA, value = 30),
-                   numericInput("sp_cases", "Surgical Prophylaxis Cases", min = 0, max = NA, value = 60)
+                   fluidRow(
+                   column(6,
+                   numericInput("cap_cases", "CAP Cases", min = 0, max = NA, value = 50,width ="75%"),
+                   numericInput("hap_cases", "HAP Cases", min = 0, max = NA, value = 10,width ="75%"),
+                   numericInput("cns_cases", "CNS Cases", min = 0, max = NA, value = 15,width ="75%"),
+                   numericInput("ia_cases", "Intra-abdominal Infection Cases", min = 0, max = NA, value = 35,width ="75%"),
+                   numericInput("pye_cases", "Pyelonephritis Cases", min = 0, max = NA, value = 35,width ="75%"),
+                   numericInput("sst_cases", "Skin and Soft Tissue Infection Cases", min = 0, max = NA, value = 30,width ="75%"),
+                   ),
+                   column(6,
+                   numericInput("bj_cases", "Bone and Joint Infection Cases", min = 0, max = NA, value = 30,width ="75%"),
+                   numericInput("cdif_cases", "C. difficile Infection Cases", min = 0, max = NA, value = 30,width ="75%"),
+                   numericInput("fn_cases", "Febrile Neutropenia Cases", min = 0, max = NA, value = 10,width ="75%"),
+                   numericInput("sepsis_cases", "Sepsis Cases", min = 0, max = NA, value = 30,width ="75%"),
+                   numericInput("sp_cases", "Surgical Prophylaxis Cases", min = 0, max = NA, value = 60,width ="75%")
+                   ),
                )
-            
+               )
       ),
       
       # Sidebar item for "Severity of Cases"
@@ -71,7 +75,7 @@ app_ui <- dashboardPage(
       # Sidebar item for "Total Admitted Patients"
       menuItem("Total admitted patients", tabName = "total_patients", icon = icon("hospital"),
       div(id = "total_patients_inputs",
-          numericInput("admitted_patients", "Total admitted patients", min = 0, max = NA, value = 600)
+          numericInput("admitted_patients", "Total admitted patients", min = 0, max = NA, value = 600,width ="30%")
       )
     )
     )
@@ -79,9 +83,21 @@ app_ui <- dashboardPage(
   
   # BODY --------------------------------------------------------------------
   dashboardBody(
-    fluidRow(
-      column(12, h3("Select inputs from the sidebar to configure the model"))
-    )
-  )
+    bsButton("Summary_input", 
+             label = "Summary of input data", 
+             icon = icon("table"), 
+             style = "success"),
+    bsButton("Summary_model", 
+             label = "Summary of expected antibiotic usage (model’s output)", 
+             icon = icon("spinner", class = "spinner-box"), 
+             style = "success"),
+    bsButton("Visualization", 
+             label = "Visualization", 
+             icon = icon("flask", class = "flask-box"), 
+             style = "success"),
+
+  ),
+  skin = "black",
+  title = "Antibiotic Usage Model"
 )
 

@@ -7,6 +7,7 @@ library(tidyr)
 library(gtsummary)
 library(shinyjs)
 library(shinycssloaders)
+library(shinyBS)
 
 source("R/global.R")
 
