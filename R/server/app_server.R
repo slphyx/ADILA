@@ -24,7 +24,17 @@ app_server <- function(input, output) {
     std_err <- input$std_err / 100 # Convert percentage to decimal
 
     adult_cases <- data.frame(
-      syndrome = c("CAP", "HAP", "CNS", "IA", "PYE", "SST", "BJ", "CDIF", "FN", "SEPSIS", "SP"),
+      syndrome = c("Patients with community acquired pneumonia (CAP)",
+                   "Patients with hospital acquired pneumonia (HAP) non-VAP", 
+                   "Patients with bacterial meningitis", 
+                   "Patients with intra-abdominal infections", 
+                   "Patients with upper urinary tract infection", 
+                   "Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)", 
+                   "Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)", 
+                   "Patients with febrile neutropenic", 
+                   "Patients with sepsis & septic shock", 
+                   "Patients with Clostridioides difficile infection", 
+                   "Patients on surgical prophylaxis"),
       cases = c(input$cap_cases, input$hap_cases, input$cns_cases, input$ia_cases, input$pye_cases,
                 input$sst_cases, input$bj_cases, input$cdif_cases, input$fn_cases, input$sepsis_cases, input$sp_cases)
     )
@@ -264,5 +274,8 @@ app_server <- function(input, output) {
     input_big()$para_data
   })
 
+  output$summary_inputs2 <- renderTable({
+    input_big()$adult_cases
+  })
 
 }

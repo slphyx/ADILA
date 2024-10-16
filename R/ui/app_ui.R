@@ -10,7 +10,7 @@ app_ui <- dashboardPage(
   
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
-    title = span(img(src = "logo.svg", height = 35), "Antibiotic Usage Model"),
+    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Usage Model"),
     titleWidth = 300
   ),
   
@@ -24,20 +24,20 @@ app_ui <- dashboardPage(
       menuItem("Type of patients", tabName = "type_patients", icon = icon("user"),
                div(id = "type_patients_inputs",
                    fluidRow(
-                   column(6,
-                   numericInput("cap_cases", "CAP Cases", min = 0, max = NA, value = 50,width ="75%"),
-                   numericInput("hap_cases", "HAP Cases", min = 0, max = NA, value = 10,width ="75%"),
-                   numericInput("cns_cases", "CNS Cases", min = 0, max = NA, value = 15,width ="75%"),
-                   numericInput("ia_cases", "Intra-abdominal Infection Cases", min = 0, max = NA, value = 35,width ="75%"),
-                   numericInput("pye_cases", "Pyelonephritis Cases", min = 0, max = NA, value = 35,width ="75%"),
-                   numericInput("sst_cases", "Skin and Soft Tissue Infection Cases", min = 0, max = NA, value = 30,width ="75%"),
+                  column(6,
+                   numericInput("cap_cases", tags$h6("Patients with community acquired pneumonia (CAP)"), min = 0, max = 10000, value = 50,width ="100%"),
+                   numericInput("cns_cases", tags$h6("Patients with bacterial meningitis"), min = 0, max = 10000, value = 15,width ="100%"),
+                   numericInput("sst_cases", tags$h6("Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("pye_cases",tags$h6("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
+                   numericInput("fn_cases", tags$h6("Patients with sepsis & septic shock"), min = 0, max = 10000, value = 10,width ="100%"),
+                   numericInput("sepsis_cases", tags$h6("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
                    ),
                    column(6,
-                   numericInput("bj_cases", "Bone and Joint Infection Cases", min = 0, max = NA, value = 30,width ="75%"),
-                   numericInput("cdif_cases", "C. difficile Infection Cases", min = 0, max = NA, value = 30,width ="75%"),
-                   numericInput("fn_cases", "Febrile Neutropenia Cases", min = 0, max = NA, value = 10,width ="75%"),
-                   numericInput("sepsis_cases", "Sepsis Cases", min = 0, max = NA, value = 30,width ="75%"),
-                   numericInput("sp_cases", "Surgical Prophylaxis Cases", min = 0, max = NA, value = 60,width ="75%")
+                   numericInput("hap_cases", tags$h6("Patients with hospital acquired pneumonia (HAP) non-VAP"), min = 0, max = 10000, value = 10,width ="100%"),
+                   numericInput("ia_cases", tags$h6("Patients with intra-abdominal infections"), min = 0, max = 10000, value = 35,width ="100%"),
+                   numericInput("bj_cases", tags$h6("Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("cdif_cases", tags$h6("Patients with febrile neutropenic"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("sp_cases", tags$h6("Patients on surgical prophylaxis"), min = 0, max = 10000, value = 60,width ="100%")
                    ),
                )
                )
@@ -67,7 +67,7 @@ app_ui <- dashboardPage(
                div(id = "prevalence_amr_inputs",
                    sliderInput("esbl_prevalence", "Prevalence of ESBL", min = 0, max = 1, value = 0.4, step = 0.01),
                    sliderInput("mrsa_prevalence", "Prevalence of MRSA", min = 0, max = 1, value = 0.3, step = 0.01),
-                   sliderInput("multidrug_resistance", "Prevalence of multi-drug resistance gram-negative infection in patients with hospital acquired pneumonia", min = 0, max = 1, value = 0.1, step = 0.01),
+                   sliderInput("hap_mdr", "Prevalence of multi-drug resistance gram-negative infection in patients with hospital acquired pneumonia", min = 0, max = 1, value = 0.1, step = 0.01),
                    sliderInput("strep_pyogenes", "Prevalence of Strep pyogenes infection in necrotizing fasciitis", min = 0, max = 1, value = 0.1, step = 0.01)
                )         
       ),
@@ -75,7 +75,7 @@ app_ui <- dashboardPage(
       # Sidebar item for "Total Admitted Patients"
       menuItem("Total admitted patients", tabName = "total_patients", icon = icon("hospital"),
       div(id = "total_patients_inputs",
-          numericInput("admitted_patients", "Total admitted patients", min = 0, max = NA, value = 600,width ="30%")
+          numericInput("admitted_patients", "Total admitted patients", min = 0, max = 10000, value = 600,width ="30%")
       )
     )
     )
@@ -95,6 +95,8 @@ app_ui <- dashboardPage(
              label = "Visualization", 
              icon = icon("flask", class = "flask-box"), 
              style = "success"),
+    tableOutput("summary_inputs"),
+    tableOutput("summary_inputs2")
 
   ),
   skin = "black",
