@@ -14,3 +14,17 @@ library(gtools)
 source("R/functions/model.adult.shiny.R")
 source("R/functions/data.adult.shiny.R")
 source("R/functions/generate_input_dataframe.R")
+
+fluid_design <- function(id, w, x, y, z) {
+  fluidRow(
+    div(
+      id = id,
+        uiOutput(w),
+        uiOutput(x),
+        uiOutput(y),
+        uiOutput(z)
+      
+    )
+  )
+}
+

@@ -8,6 +8,7 @@ library(gtsummary)
 library(shinyjs)
 library(shinycssloaders)
 library(shinyBS)
+library(ggplot2)
 
 source("R/global.R")
 

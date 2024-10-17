@@ -10,7 +10,8 @@ app_server <- function(input, output) {
 
   # Load shinyjs to enable showing/hiding
   useShinyjs()
-  hide("table1")
+  hide("Summary_model")
+  hide("Visualization")
   # Toggle input parameters panel visibility when the button is clicked
   observeEvent(input$toggle_input, {
     shinyjs::toggle(id = "input_parameters")
@@ -245,40 +246,297 @@ app_server <- function(input, output) {
     # Convert all columns to numeric
     df_numeric <- result_adult %>%
       mutate_all(~ as.numeric(as.character(.)))
-
     # Create summary table
-    summary_table <- df_numeric %>%
+    # summary_table <- df_numeric %>%
+    #   tbl_summary(
+    #     by = NULL,
+    #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    #     missing = "no"
+    #   ) %>%
+    #   modify_header(label = "**Description**", stat_0 = "**Expected usage**") %>%
+    #   modify_footnote(all_stat_cols() ~ "Median (IQR), 1000 iterations") %>%
+    #   modify_caption("**Table: Expected antibiotic usage in hospital if the empirical prescription follows the WHO guidelines**") %>%
+    #   # CONVERT TO A {gt} TABLE! VERY IMPORTANT STEP!
+    #   as_gt()
+
+    summary_table_overall <- df_numeric[,1:9] %>%
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
         missing = "no"
       ) %>%
-      modify_header(label = "**Description**", stat_0 = "**Expected usage**") %>%
-      modify_footnote(all_stat_cols() ~ "Median (IQR), 1000 iterations") %>%
-      modify_caption("**Table: Expected antibiotic usage in hospital if the empirical prescription follows the WHO guidelines**") %>%
+      modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
+      modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
+      modify_caption("**Table 1: Overall Expected antibiotic usage in hospital**") %>%
       # CONVERT TO A {gt} TABLE! VERY IMPORTANT STEP!
       as_gt()
-
+    
+    # Table 2
+    summary_table_syndrome <- df_numeric[,10:(10+21)] %>%
+      tbl_summary(
+        by = NULL,
+        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        missing = "no"
+      ) %>%
+      modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
+      modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose, CAP=community acquired pneumonia,
+                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
+      modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
+    # CONVERT TO A {gt} TABLE! VERY IMPORTANT STEP!
+    as_gt()
+    
+    summary_table_syndrome
+    
+    # Table 3
+    summary_table_class <- df_numeric[, 32:ncol(df_numeric)] %>%
+      tbl_summary(
+        by = NULL,
+        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        missing = "no"
+      ) %>%
+      modify_header(label="**Description**", stat_0 = "**Expected usage (DDD)**") %>%
+      modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
+      modify_caption("**Table 3: Expected antibiotic usage by antibiotic class**") %>%
+    # CONVERT TO A {gt} TABLE! VERY IMPORTANT STEP!
+    as_gt()
+    
+    #Plotting---
+    # Change the dataformat for the plot
+    df_plot <- df_numeric %>%
+      gather(key = "text", value= "value") %>%
+      mutate(value = round(as.numeric(value),1))
+    
+    # Distribution of "Access" and "Watch" antibiotic usage out of total
+    
+    # Plot 1
+    # Access antibiotic
+    plot_access <- df_plot %>%
+      filter(text %in% c("Percentage of Access antibiotic usage")) %>%
+      ggplot( aes(x=value, fill=text)) +
+      geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', binwidth = 1) +
+      scale_fill_manual(values = c("#009E73")) +
+      theme_ipsum() +
+      labs(title = "Distribution of Expected Access Antibiotic Usage",
+           x = "Percentage of Overall Usage", 
+           y = "Frequency") +
+      scale_x_continuous(labels = scales::percent_format(scale = 1)) +
+      theme(legend.position = "none",
+            axis.text   = element_text(size = 8),
+            axis.title  = element_text(size = 8),
+            title  = element_text(size = 10))
+    
+    plot_access
+    
+    # Plot 2
+    # Watch antibiotic 
+    plot_watch <- df_plot %>%
+      filter(text %in% c("Percentage of Access antibiotic usage")) %>%
+      ggplot( aes(x=value, fill=text)) +
+      geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', binwidth = 1) +
+      scale_fill_manual(values = c("#F0E442")) +
+      theme_ipsum() +
+      labs(title = "Distribution of Expected Watch Antibiotic Usage",
+           x = "Percentage of Overall Usage", 
+           y = "Frequency") +
+      scale_x_continuous(labels = scales::percent_format(scale = 1)) +
+      theme(legend.position = "none",
+            axis.text   = element_text(size = 8),
+            axis.title  = element_text(size = 8),
+            title  = element_text(size = 10))
+    
+    plot_watch
+    
+    
+    # AWaRe group by antibiotic class
+    
+    df_aware <- data.frame(
+      text = c("Penicillins (DDD)", "Beta-lactam antibiotics plus enzyme inhibitor (DDD)",
+               "First generation cephlosporins (DDD)", "Aminoglycosides (DDD)",
+               "Nitroimidazoles (DDD)", "Tetracyclines (DDD)",
+               "Amphenicols (DDD)", "Lincosamides (DDD)",
+               "Second/ Third generation cephalosporins (DDD)", "Macrolides (DDD)",
+               "Beta-lactam antibiotics plus enzyme inhibitor: Anti-pseudomonal (DDD)", "Fluroquinolones (DDD)",
+               "Carbapenems (DDD)", "Glycopeptides (DDD)"),
+      aware = c(rep("Access", time = 8), rep("Watch", time = 6))
+    )
+    
+    
+    # Antibiotic class
+    df_class <- df_numeric %>%
+      select(`Penicillins (DDD)`:last_col()) %>%
+      gather(key = "text", value= "value") %>%
+      mutate(value = round(as.numeric(value),1)) %>%
+      left_join(df_aware, by = "text")
+    
+    # Plot 3
+    # Access antibiotic by antibiotic class
+    plot_access_class <- df_class %>%
+      filter(aware == "Access") %>%
+      filter(!(text %in% c("Amphenicols (DDD)","Tetracyclines (DDD)", "Lincosamides (DDD)"))) %>%
+      ggplot( aes(x=value, fill=text)) +
+      geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
+      scale_fill_viridis(discrete=TRUE) +
+      theme_ipsum() +
+      labs(title = "Distribution of Expected Access Antibiotic Usage",
+           x = "Expected usage (DDD)", 
+           y = "Frequency",
+           fill = "Antibiotic class") +
+      theme(legend.text = element_text(size = 8),
+            axis.text   = element_text(size = 8),
+            axis.title  = element_text(size = 8),
+            title  = element_text(size = 10))
+    
+    plot_access_class
+    
+    # Plot 4
+    # Watch antibiotic by antibiotic class
+    plot_watch_class <- df_class %>%
+      filter(aware == "Watch") %>%
+      ggplot( aes(x=value, fill=text)) +
+      geom_histogram(color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
+      scale_fill_viridis(discrete=TRUE) +
+      theme_ipsum() +
+      labs(title = "Distribution of Expected Watch Antibiotic Usage",
+           x = "Expected usage (DDD)", 
+           y = "Frequency",
+           fill = "Antibiotic class") +
+      theme(legend.text = element_text(size = 8),
+            axis.text   = element_text(size = 8),
+            axis.title  = element_text(size = 8),
+            title  = element_text(size = 10))
+    
+    plot_watch_class
 
     shinyjs::enable("run_model")
 
     # Render the summary table to UI
-    output$summary_table <- render_gt({
-      summary_table
+    output$summary_table_overall <- render_gt({
+      summary_table_overall
     })
-    show("table1")
-    hide("summary_input_table1")
-    hide("summary_input_table2")
+    output$summary_table_syndrome <- render_gt({
+      summary_table_syndrome
+    })
+    output$summary_table_class <- render_gt({
+      summary_table_class
+    })
+    
+    output$plot_access <- renderPlot({
+      plot_access
+    })
+    
+    output$plot_watch <- renderPlot({
+      plot_watch
+    })
+    
+    output$plot_access_class <- renderPlot({
+      plot_access_class
+    })
+    
+    output$plot_watch_class <- renderPlot({
+      plot_watch_class
+    })
+    show("Summary_model")
+    show("Visualization")
+    
+    
     })
   })
 
   # Display the summary of inputs in a table in the "Summary Inputs" tab
-  output$summary_inputs <- renderTable({
-    input_big()$para_data
-  })
 
-  output$summary_inputs2 <- renderTable({
+  output$summary_inputs <- renderTable({
     input_big()$adult_cases
   })
+  output$summary_inputs2 <- renderTable({
+    input_big()$para_data
+  })
+  
+  # DYNAMIC RENDER RULES ----------------------------------------------------
+  
+  observeEvent("", {
+    show("Summary_input_table")
+    hide("Summary_model_table")
+    hide("Visualization_plot")
+  }, once = TRUE)
+  
+  observeEvent(input$Summary_input, {
+    show("Summary_input_table")
+    hide("Summary_model_table")
+    hide("Visualization_plot")
+  })
+  observeEvent(input$Summary_model, {
+    show("Summary_model_table")
+    hide("Summary_input_table")
+    hide("Visualization_plot")
+  })
+  observeEvent(input$Visualization, {
+    show("Visualization_plot")
+    hide("Summary_model_table")
+    hide("Summary_input_table")
+  })
+  
+  # UI - OUTCOME  -----------------------------------------------------
+  output$summary_output1 <- renderUI({
+    tabBox(
+      title = "",
+      tabPanel(title = "Expected (overall) antibiotic usage",
+               tableOutput("summary_table_overall")
+      )
+    )
+  })
+  
+  output$summary_output2 <- renderUI({
+    tabBox(
+      title = "",
+      tabPanel(title = "Expected usage by syndrome",
+               tableOutput("summary_table_syndrome")
+      )
+    )
+  })
+  
+  output$summary_output3 <- renderUI({
+    tabBox(
+      title = "",
+      tabPanel(title = "Expected usage by antibiotic classes",
+               tableOutput("summary_table_class")
+      )
+    )
+  })
+  
+  output$Visualization_output1 <- renderUI({
+    tabBox(
+      title = "",
+      tabPanel(title = "Expected usage by antibiotic classes",
+               plotOutput("plot_access")
+      )
+    )
+  })
+  output$Visualization_output2 <- renderUI({
+    tabBox(
+      title = "",
+      tabPanel(title = "Expected usage by antibiotic classes",
+               plotOutput("plot_watch")
+      )
+    )
+  })
+  output$Visualization_output3 <- renderUI({
+    tabBox(width = 12,
+      title = "",
+      tabPanel(title = "Access",
+               plotOutput("plot_access_class")
+      ),
+      tabPanel(title = "Watch",
+               plotOutput("plot_watch_class")
+      )
+    )
+  })
+  # output$Visualization_output4 <- renderUI({
+  #   tabBox(
+  #     title = "",
+  #     tabPanel(title = "Expected usage by antibiotic classes",
+  #              plotOutput("plot_watch_class")
+  #     )
+  #   )
+  # })
 
 }

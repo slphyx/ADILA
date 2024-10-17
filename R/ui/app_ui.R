@@ -92,6 +92,12 @@ app_ui <- dashboardPage(
   
   # BODY --------------------------------------------------------------------
   dashboardBody(
+    tags$head(
+      tags$link(
+        rel = "stylesheet", 
+        type = "text/css", 
+        href = "style.css")
+    ),
     bsButton("Summary_input", 
              label = "Summary of input data", 
              icon = icon("table"), 
@@ -104,18 +110,28 @@ app_ui <- dashboardPage(
              label = "Visualization", 
              icon = icon("flask", class = "flask-box"), 
              style = "success"),
-    box(
-      id="summary_input_table1",
-    tableOutput("summary_inputs")
-    ),
-    box(
-    id="summary_input_table2",
-    tableOutput("summary_inputs2")
-    ),
-    box(
-      id="table1",
-      tableOutput("summary_table")
-    ),
+    
+    fluid_design("Summary_model_table", "summary_output1", "summary_output2", "summary_output3", NULL),
+    fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2", "Visualization_output3",NULL),
+    
+    fluidRow(
+      div(
+        id = "Summary_input_table",
+          tabBox(
+            title = "",
+            tabPanel(title = "Patients with different infection syndromes",
+              tableOutput("summary_inputs")
+            )
+          ),
+          tabBox(
+            title = "",
+            tabPanel(title = "Proportion/ prevalence parameters",
+              tableOutput("summary_inputs2")
+            )
+          )
+      )
+    )
+    
   ),
   skin = "black",
   title = "Antibiotic Usage Model"
