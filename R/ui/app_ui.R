@@ -4,6 +4,7 @@ library(gt)
 library(gtools) # For the rdirichlet function
 library(shinyjs)
 library(shinydashboard)
+library(rintrojs)
 
 app_ui <- dashboardPage(
 
@@ -19,7 +20,14 @@ app_ui <- dashboardPage(
     width = 350,
     useShinyjs(),
     sidebarMenu(
-      
+      introBox(data.step = 1, data.intro = "test", # intro tour
+               div(id = "sidebar_button",
+                   bsButton(inputId = "run_model", 
+                            label = "Run Model", 
+                            icon = icon("play-circle"), 
+                            style = "danger")
+               )
+      ),
       # Sidebar item for "Type of Patients"
       menuItem("Type of patients", tabName = "type_patients", icon = icon("user"),
                div(id = "type_patients_inputs",
@@ -75,7 +83,8 @@ app_ui <- dashboardPage(
       # Sidebar item for "Total Admitted Patients"
       menuItem("Total admitted patients", tabName = "total_patients", icon = icon("hospital"),
       div(id = "total_patients_inputs",
-          numericInput("admitted_patients", "Total admitted patients", min = 0, max = 10000, value = 600,width ="30%")
+          numericInput("admitted_patients", "Total admitted patients", min = 0, max = 10000, value = 600,width ="30%"),
+          numericInput("std_err", "std_err", min = 0, max = 1, value = 0.2,width ="30%")
       )
     )
     )
@@ -95,9 +104,18 @@ app_ui <- dashboardPage(
              label = "Visualization", 
              icon = icon("flask", class = "flask-box"), 
              style = "success"),
-    tableOutput("summary_inputs"),
+    box(
+      id="summary_input_table1",
+    tableOutput("summary_inputs")
+    ),
+    box(
+    id="summary_input_table2",
     tableOutput("summary_inputs2")
-
+    ),
+    box(
+      id="table1",
+      tableOutput("summary_table")
+    ),
   ),
   skin = "black",
   title = "Antibiotic Usage Model"

@@ -10,7 +10,7 @@ app_server <- function(input, output) {
 
   # Load shinyjs to enable showing/hiding
   useShinyjs()
-
+  hide("table1")
   # Toggle input parameters panel visibility when the button is clicked
   observeEvent(input$toggle_input, {
     shinyjs::toggle(id = "input_parameters")
@@ -266,6 +266,9 @@ app_server <- function(input, output) {
     output$summary_table <- render_gt({
       summary_table
     })
+    show("table1")
+    hide("summary_input_table1")
+    hide("summary_input_table2")
     })
   })
 
