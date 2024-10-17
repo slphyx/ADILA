@@ -11,7 +11,7 @@ app_ui <- dashboardPage(
   
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
-    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Usage Model"),
+    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Data to Inform Local Action (ADILA)"),
     titleWidth = 300
   ),
   
@@ -98,6 +98,13 @@ app_ui <- dashboardPage(
         type = "text/css", 
         href = "style.css")
     ),
+    # Preconnect to Google Fonts and font assets
+    tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
+    tags$link(rel = "preconnect", href = "https://fonts.gstatic.com", crossorigin = "anonymous"),
+    
+    # Link to the Google Font Montserrat with various weights and styles
+    tags$link(rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"),
+    
     bsButton("Summary_input", 
              label = "Summary of input data", 
              icon = icon("table"), 
@@ -115,6 +122,14 @@ app_ui <- dashboardPage(
     fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2", "Visualization_output3",NULL),
     
     fluidRow(
+      bsButton("save_input", 
+               label = "Save input", 
+               icon = icon("table"), 
+               style = "warning"),
+      bsButton("load_input", 
+               label = "Load input", 
+               icon = icon("table"), 
+               style = "warning"),
       div(
         id = "Summary_input_table",
           tabBox(
