@@ -9,6 +9,8 @@ library(shinyjs)
 library(shinycssloaders)
 library(shinyBS)
 library(ggplot2)
+library(hrbrthemes)
+library(viridis)
 
 source("R/global.R")
 
