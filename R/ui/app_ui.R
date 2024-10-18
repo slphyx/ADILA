@@ -83,8 +83,12 @@ app_ui <- dashboardPage(
       # Sidebar item for "Total Admitted Patients"
       menuItem("Total admitted patients", tabName = "total_patients", icon = icon("hospital"),
       div(id = "total_patients_inputs",
-          numericInput("admitted_patients", "Total admitted patients", min = 0, max = 10000, value = 600,width ="30%"),
-          numericInput("std_err", "std_err", min = 0, max = 1, value = 0.2,width ="30%")
+          column(width=6,
+          numericInput("admitted_patients", "Total admitted patients", min = 0, max = 10000, value = 600,width ="100%"),
+          ),
+          column(width=6,
+          numericInput("std_err", "Standard error of the parameters", min = 0, max = 100, value = 20,width ="100%")
+          ),
       )
     )
     )
@@ -130,7 +134,8 @@ app_ui <- dashboardPage(
                  "downloadInput",
                  label = "Download",
                  icon = shiny::icon("download")
-               )
+               ),
+        fileInput("load_params", "Load Inputs", accept = c(".csv"))
         ),
           tabBox(
             title = "",
@@ -145,8 +150,8 @@ app_ui <- dashboardPage(
             )
           )
       )
-    )
-    
+    ),
+    tags$div(id = "goTopButton", "Go to Top"),
   ),
   skin = "black",
   title = "Antibiotic Usage Model"

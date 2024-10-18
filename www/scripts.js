@@ -4,7 +4,7 @@ $(document).ready(function() {
 
   // Show the button when the user scrolls past 500px
   $(window).scroll(function() {
-    if ($(this).scrollTop() > 500) {
+    if ($(this).scrollTop() > 400) {
       $('#goTopButton').fadeIn();
     } else {
       $('#goTopButton').fadeOut();

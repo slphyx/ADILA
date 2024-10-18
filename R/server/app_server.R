@@ -6,7 +6,7 @@ library(gtools)
 
 
 # Define server logic
-app_server <- function(input, output) {
+app_server <- function(session,input, output) {
 
   # Load shinyjs to enable showing/hiding
   useShinyjs()
@@ -39,7 +39,7 @@ app_server <- function(input, output) {
     content = function(file) {
       # Write the dataset to the `file` that will be downloaded
       write.csv(data.frame(name_parameter = c(input_big()$adult_cases[,1],input_big()$para_data[,1],"std_err"),
-                           value = c(input_big()$adult_cases[,2],input_big()$para_data[,2],input_big()$std_err)) , file,
+                           value = c(input_big()$adult_cases[,2],input_big()$para_data[,2],input_big()$std_err*100)) , file,
                 row.names=F)
     }
   )
@@ -69,13 +69,28 @@ app_server <- function(input, output) {
     )
 
     para.data <- data.frame(
-      parameter = c("probability of first-choice antibiotics", "proportion of severe cases in CAP patients", "probability(risk) of multi-drug resistant infection in HAP patients",
-                    "proportion of severe cases in patients with intra-abdominal infection", "proportion of severe cases in patients with acute pyelonephritis (upper UTI)",
-                    "proportion of severe cases in patients with C. difficile infection", "proportion of necrotizing fasciitis cases in patient with SST",
-                    "prevalence of ESBL", "prevalence of MRSA", "prevalence of Strep pyogenes infection in necrotizing fasciitis", "total admitted patients"),
-      value = c(input$p_first, input$cap_severe, input$hap_mdr, input$abd_severe,
-                input$uti_severe, input$cdf_severe, input$sst_nf, input$esbl_prevalence,
-                input$mrsa_prevalence, input$strep_pyogenes, input$admitted_patients)
+      parameter = c("probability of first-choice antibiotics",
+                    "proportion of severe cases in CAP patients",
+                    "probability(risk) of multi-drug resistant infection in HAP patients",
+                    "proportion of severe cases in patients with intra-abdominal infection", 
+                    "proportion of severe cases in patients with acute pyelonephritis (upper UTI)",
+                    "proportion of severe cases in patients with C. difficile infection", 
+                    "proportion of necrotizing fasciitis cases in patient with SST",
+                    "prevalence of ESBL", 
+                    "prevalence of MRSA", 
+                    "prevalence of Strep pyogenes infection in necrotizing fasciitis", 
+                    "total admitted patients"),
+      value = c(input$p_first, 
+                input$cap_severe, 
+                input$hap_mdr, 
+                input$abd_severe,
+                input$uti_severe, 
+                input$cdf_severe, 
+                input$sst_nf, 
+                input$esbl_prevalence,
+                input$mrsa_prevalence, 
+                input$strep_pyogenes, 
+                input$admitted_patients)
     )
 
     # Probability of each infection syndromes from the "adult_cases" data
@@ -504,6 +519,17 @@ app_server <- function(input, output) {
     show("Visualization_plot")
     hide("Summary_model_table")
     hide("Summary_input_table")
+  })
+  
+  observeEvent(input$load_params, {
+    req(input$load_params)
+    # print(input$load_params)
+    params <- read.csv(input$load_params$datapath)
+    params_vec <- c(params[,2])
+    names(params_vec) <- params[,1]
+
+    # Load parameters into the input fields
+    load_disease_inputs(params_vec, session)  # Load inputs function
   })
   
   # UI - OUTCOME  -----------------------------------------------------
