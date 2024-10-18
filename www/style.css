@@ -78,3 +78,24 @@ body{
     position: relative;
     font-size: 18px;
 }
+.btn-danger {
+    background-color: #d1351b;
+    border-color: #d1351b;
+    height: 55px;
+    width: 300px;
+    border-radius: 0;
+    position: relative;
+    font-size: 18px;
+}
+#goTopButton {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 9999;
+}

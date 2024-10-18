@@ -96,7 +96,8 @@ app_ui <- dashboardPage(
       tags$link(
         rel = "stylesheet", 
         type = "text/css", 
-        href = "style.css")
+        href = "style.css"),
+      tags$script(src = "scripts.js")
     ),
     # Preconnect to Google Fonts and font assets
     tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
@@ -118,20 +119,19 @@ app_ui <- dashboardPage(
              icon = icon("flask", class = "flask-box"), 
              style = "success"),
     
-    fluid_design("Summary_model_table", "summary_output1", "summary_output2", "summary_output3", NULL),
+    fluid_design("Summary_model_table", "summary_output", NULL, NULL, NULL),
     fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2", "Visualization_output3",NULL),
     
     fluidRow(
-      bsButton("save_input", 
-               label = "Save input", 
-               icon = icon("table"), 
-               style = "warning"),
-      bsButton("load_input", 
-               label = "Load input", 
-               icon = icon("table"), 
-               style = "warning"),
       div(
         id = "Summary_input_table",
+        column(width = 12,
+               downloadButton(
+                 "downloadInput",
+                 label = "Download",
+                 icon = shiny::icon("download")
+               )
+        ),
           tabBox(
             title = "",
             tabPanel(title = "Patients with different infection syndromes",

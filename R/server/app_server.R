@@ -16,10 +16,38 @@ app_server <- function(input, output) {
   observeEvent(input$toggle_input, {
     shinyjs::toggle(id = "input_parameters")
   })
+  
+  observeEvent(input$save_input, {
+    input_data <-data.frame(name_parameter = c(adult_cases[,1],para.data[,1],"std_err"),
+                     value = c(adult_cases[,2],para.data[,2],std_err)) 
+    
+    downloadHandler(
+      filename = function() {
+        paste0("input_data.csv")
+      },
+      content = function(file) {
+        write.csv(input_data, file)
+      }
+    )
+  })
+  
+  output$downloadInput <- downloadHandler(
+    filename = function() {
+      # Use the selected dataset as the suggested file name
+      paste0("input_data.csv")
+    },
+    content = function(file) {
+      # Write the dataset to the `file` that will be downloaded
+      write.csv(data.frame(name_parameter = c(input_big()$adult_cases[,1],input_big()$para_data[,1],"std_err"),
+                           value = c(input_big()$adult_cases[,2],input_big()$para_data[,2],input_big()$std_err)) , file,
+                row.names=F)
+    }
+  )
 
 
   # Reactive block to compute input.adult
   input_big <- reactive({
+    # write.csv
 
     # Inputs
     std_err <- input$std_err / 100 # Convert percentage to decimal
@@ -210,7 +238,10 @@ app_server <- function(input, output) {
         para_data = para.data,
         input.adult = input.adult
       )
+
     return(outlist)
+    
+
   })
 
   # Output the 'input.adult' data frame as a table
@@ -232,7 +263,7 @@ app_server <- function(input, output) {
 
     # Run the model 1000 times
     for (i in 1:1000) {
-      set.seed(1000 + i)
+      set.seed(Sys.time() + i)
       incProgress(1/1000)
       # set.seed(Sys.time())
       # SS
@@ -476,33 +507,19 @@ app_server <- function(input, output) {
   })
   
   # UI - OUTCOME  -----------------------------------------------------
-  output$summary_output1 <- renderUI({
-    tabBox(
+  
+  output$summary_output <- renderUI({
+    tabBox(width =12,
       title = "",
-      tabPanel(title = "Expected (overall) antibiotic usage",
-               tableOutput("summary_table_overall")
-      )
+              tabPanel(title = "Expected (overall) antibiotic usage",
+              tableOutput("summary_table_overall"),),
+              tabPanel(title = "Expected usage by syndrome",
+              tableOutput("summary_table_syndrome")),
+              tabPanel(title = "Expected usage by antibiotic classes",
+              tableOutput("summary_table_class")),
     )
   })
-  
-  output$summary_output2 <- renderUI({
-    tabBox(
-      title = "",
-      tabPanel(title = "Expected usage by syndrome",
-               tableOutput("summary_table_syndrome")
-      )
-    )
-  })
-  
-  output$summary_output3 <- renderUI({
-    tabBox(
-      title = "",
-      tabPanel(title = "Expected usage by antibiotic classes",
-               tableOutput("summary_table_class")
-      )
-    )
-  })
-  
+
   output$Visualization_output1 <- renderUI({
     tabBox(
       title = "",
