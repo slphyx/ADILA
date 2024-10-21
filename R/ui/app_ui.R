@@ -34,17 +34,17 @@ app_ui <- dashboardPage(
                    fluidRow(
                   column(6,
                    numericInput("cap_cases", tags$h6("Patients with community acquired pneumonia (CAP)"), min = 0, max = 10000, value = 50,width ="100%"),
-                   numericInput("cns_cases", tags$h6("Patients with bacterial meningitis"), min = 0, max = 10000, value = 15,width ="100%"),
-                   numericInput("sst_cases", tags$h6("Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)"), min = 0, max = 10000, value = 30,width ="100%"),
-                   numericInput("pye_cases",tags$h6("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
-                   numericInput("fn_cases", tags$h6("Patients with sepsis & septic shock"), min = 0, max = 10000, value = 10,width ="100%"),
-                   numericInput("sepsis_cases", tags$h6("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("bm_cases", tags$h6("Patients with bacterial meningitis"), min = 0, max = 10000, value = 15,width ="100%"),
+                   numericInput("bji_cases", tags$h6("Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("uut_cases",tags$h6("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
+                   numericInput("sepsis_cases", tags$h6("Patients with sepsis & septic shock"), min = 0, max = 10000, value = 10,width ="100%"),
+                   numericInput("cdif_cases", tags$h6("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
                    ),
                    column(6,
                    numericInput("hap_cases", tags$h6("Patients with hospital acquired pneumonia (HAP) non-VAP"), min = 0, max = 10000, value = 10,width ="100%"),
                    numericInput("ia_cases", tags$h6("Patients with intra-abdominal infections"), min = 0, max = 10000, value = 35,width ="100%"),
-                   numericInput("bj_cases", tags$h6("Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)"), min = 0, max = 10000, value = 30,width ="100%"),
-                   numericInput("cdif_cases", tags$h6("Patients with febrile neutropenic"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("sst_cases", tags$h6("Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("fn_cases", tags$h6("Patients with febrile neutropenic"), min = 0, max = 10000, value = 30,width ="100%"),
                    numericInput("sp_cases", tags$h6("Patients on surgical prophylaxis"), min = 0, max = 10000, value = 60,width ="100%")
                    ),
                )
@@ -130,12 +130,16 @@ app_ui <- dashboardPage(
       div(
         id = "Summary_input_table",
         column(width = 12,
-               downloadButton(
-                 "downloadInput",
-                 label = "Download",
-                 icon = shiny::icon("download")
+               column(width = 6,
+                   downloadButton(
+                     "downloadInput",
+                     label = "Download",
+                     icon = shiny::icon("download")
+                   ),
                ),
-        fileInput("load_params", "Load Inputs", accept = c(".csv"))
+               column(width = 6,
+                  fileInput("load_params", "", accept = c(".csv"))
+               ),
         ),
           tabBox(
             title = "",

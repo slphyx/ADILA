@@ -57,15 +57,16 @@ app_server <- function(session,input, output) {
                    "Patients with hospital acquired pneumonia (HAP) non-VAP", 
                    "Patients with bacterial meningitis", 
                    "Patients with intra-abdominal infections", 
-                   "Patients with upper urinary tract infection", 
                    "Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)", 
                    "Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)", 
+                   "Patients with upper urinary tract infection",
                    "Patients with febrile neutropenic", 
                    "Patients with sepsis & septic shock", 
-                   "Patients with Clostridioides difficile infection", 
-                   "Patients on surgical prophylaxis"),
-      cases = c(input$cap_cases, input$hap_cases, input$cns_cases, input$ia_cases, input$pye_cases,
-                input$sst_cases, input$bj_cases, input$cdif_cases, input$fn_cases, input$sepsis_cases, input$sp_cases)
+                   "Patients on surgical prophylaxis",
+                   "Patients with Clostridioides difficile infection"),
+      cases = c(input$cap_cases,    input$hap_cases, input$bm_cases , input$ia_cases,
+                input$bji_cases,    input$sst_cases, input$uut_cases, input$fn_cases, 
+                input$sepsis_cases, input$sp_cases,  input$cdif_cases)
     )
 
     para.data <- data.frame(
