@@ -12,7 +12,7 @@ app_ui <- dashboardPage(
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
     title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Data to Inform Local Action (ADILA)"),
-    titleWidth = 300
+    titleWidth = 400
   ),
   
   # SIDEBAR -----------------------------------------------------------------
@@ -100,8 +100,8 @@ app_ui <- dashboardPage(
       tags$link(
         rel = "stylesheet", 
         type = "text/css", 
-        href = "style.css"),
-      tags$script(src = "scripts.js")
+        href = "css/style.css"),
+      tags$script(src = "js/toTheTop.js")
     ),
     # Preconnect to Google Fonts and font assets
     tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
