@@ -155,6 +155,11 @@ app_ui <- dashboardPage(
           )
       )
     ),
+    tags$div(
+      tags$img(
+        src = "img/partners_image.png"
+      )
+    ),
     tags$div(id = "goTopButton", "Go to Top"),
   ),
   skin = "black",
