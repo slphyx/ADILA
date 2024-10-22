@@ -155,9 +155,9 @@ app_ui <- dashboardPage(
           )
       )
     ),
-    tags$div(
+    tags$div(id="partnersImage",
       tags$img(
-        src = "img/partners_image.png"
+        src = "img/partners_image.png", width="100%" ,height="100%"
       )
     ),
     tags$div(id = "goTopButton", "Go to Top"),

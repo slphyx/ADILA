@@ -4,6 +4,9 @@ body{
   font-weight: 300;
   font-style: normal;
 }
+div#partnersImage{
+  margin-bottom: 50px;
+}
 div.form-group.shiny-input-container{
   margin-top: -20px;
 }
@@ -11,9 +14,9 @@ div#load_params_progress{
   margin-top: -15px;
 }
 input.form-control{
-    font-size: 18px;
+    font-size: 14px;
     padding: 5px 12px;
-    height: 55px;
+    height: 35px;
     min-width: 50%;
     text-align: left;
     color: #727477;
@@ -31,9 +34,9 @@ input.form-control{
     align-content: center;
 }
 #downloadInput{
-    font-size: 18px;
+    font-size: 14px;
     padding: 5px 12px;
-    height: 55px;
+    height: 35px;
     min-width: 21.85%;
     margin: 0px 10px 14px 0px;
     text-align: left;
@@ -52,9 +55,9 @@ input.form-control{
     align-content: center;
 }
 .btn-file{
-    font-size: 18px;
+    font-size: 14px;
     padding: 5px 12px;
-    height: 55px;
+    height: 35px;
     min-width: 21.85%;
     margin: 0px 10px 14px 0px;
     text-align: left;
