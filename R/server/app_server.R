@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(gtsummary)
 library(gtools)
+library(plotly)
 
 
 
@@ -268,7 +269,7 @@ app_server <- function(session,input, output) {
 
   # Run the model when the button is clicked
   observeEvent(input$run_model, {
-    withProgress(message = 'Making table', value = 0, {
+    withProgress(message = 'Simulation in progress…', value = 0, {
     shinyjs::disable("run_model")
 
     # Create an empty dataframe to store model's output
@@ -370,9 +371,9 @@ app_server <- function(session,input, output) {
       theme(legend.position = "none",
             axis.text   = element_text(size = 8),
             axis.title  = element_text(size = 8),
-            title  = element_text(size = 10))
+            title  = element_text(size = 10)) 
     
-    plot_access
+    plot_access <- ggplotly(plot_access)
     
     # Plot 2
     # Watch antibiotic 
@@ -391,7 +392,7 @@ app_server <- function(session,input, output) {
             axis.title  = element_text(size = 8),
             title  = element_text(size = 10))
     
-    plot_watch
+    plot_watch - ggplotly(plot_watch)
     
     
     # AWaRe group by antibiotic class
@@ -433,7 +434,7 @@ app_server <- function(session,input, output) {
             axis.title  = element_text(size = 8),
             title  = element_text(size = 10))
     
-    plot_access_class
+    plot_access_class <- ggplotly(plot_access_class)
     
     # Plot 4
     # Watch antibiotic by antibiotic class
@@ -452,7 +453,7 @@ app_server <- function(session,input, output) {
             axis.title  = element_text(size = 8),
             title  = element_text(size = 10))
     
-    plot_watch_class
+    plot_watch_class <- ggplotly(plot_watch_class)
 
     shinyjs::enable("run_model")
 
@@ -467,19 +468,19 @@ app_server <- function(session,input, output) {
       summary_table_class
     })
     
-    output$plot_access <- renderPlot({
+    output$plot_access <- renderPlotly({
       plot_access
     })
     
-    output$plot_watch <- renderPlot({
+    output$plot_watch <- renderPlotly({
       plot_watch
     })
     
-    output$plot_access_class <- renderPlot({
+    output$plot_access_class <- renderPlotly({
       plot_access_class
     })
     
-    output$plot_watch_class <- renderPlot({
+    output$plot_watch_class <- renderPlotly({
       plot_watch_class
     })
     show("Summary_model")
@@ -551,7 +552,7 @@ app_server <- function(session,input, output) {
     tabBox(
       title = "",
       tabPanel(title = "Expected usage by antibiotic classes",
-               plotOutput("plot_access")
+               plotlyOutput("plot_access")
       )
     )
   })
@@ -559,7 +560,7 @@ app_server <- function(session,input, output) {
     tabBox(
       title = "",
       tabPanel(title = "Expected usage by antibiotic classes",
-               plotOutput("plot_watch")
+               plotlyOutput("plot_watch")
       )
     )
   })
@@ -567,10 +568,10 @@ app_server <- function(session,input, output) {
     tabBox(width = 12,
       title = "",
       tabPanel(title = "Access",
-               plotOutput("plot_access_class")
+               plotlyOutput("plot_access_class")
       ),
       tabPanel(title = "Watch",
-               plotOutput("plot_watch_class")
+               plotlyOutput("plot_watch_class")
       )
     )
   })
