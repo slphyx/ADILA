@@ -392,7 +392,7 @@ app_server <- function(session,input, output) {
             axis.title  = element_text(size = 8),
             title  = element_text(size = 10))
     
-    plot_watch - ggplotly(plot_watch)
+    plot_watch <- ggplotly(plot_watch)
     
     
     # AWaRe group by antibiotic class
@@ -552,7 +552,7 @@ app_server <- function(session,input, output) {
     tabBox(
       title = "",
       tabPanel(title = "Expected usage by antibiotic classes",
-               plotlyOutput("plot_access")
+               plotlyOutput("plot_access",height = "100%")
       )
     )
   })
@@ -560,18 +560,18 @@ app_server <- function(session,input, output) {
     tabBox(
       title = "",
       tabPanel(title = "Expected usage by antibiotic classes",
-               plotlyOutput("plot_watch")
+               plotlyOutput("plot_watch",height = "100%")
       )
     )
   })
   output$Visualization_output3 <- renderUI({
     tabBox(width = 12,
       title = "",
-      tabPanel(title = "Access",
-               plotlyOutput("plot_access_class")
+      tabPanel(title = "Expected Access Antibiotic Usage",
+               plotlyOutput("plot_access_class",height = "100%")
       ),
-      tabPanel(title = "Watch",
-               plotlyOutput("plot_watch_class")
+      tabPanel(title = "Expected Watch Antibiotic Usage",
+               plotlyOutput("plot_watch_class",height = "100%")
       )
     )
   })
