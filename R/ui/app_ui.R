@@ -147,9 +147,14 @@ app_ui <- dashboardPage(
              h4(
                tags$ul(
                  tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local prevalence of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
-                 tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and AWaRe (\"Access\", \"Watch\", \"Reserve\") antibiotic classification.")),
+                 tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and 
+                              <span style='color:#4DAE42;'>A</span><span style='color:#dfb31d;'>Wa</span><span style='color:#DC202A;'>Re</span>
+                              (<span style='color:#4DAE42;'>Access</span>, 
+                              <span style='color:#dfb31d;'>Watch</span>, 
+                              <span style='color:#DC202A;'>Reserve</span>) 
+                              antibiotic classification.")),
                  tags$li("You can visualize the expected estimates"),
-                 tags$li("You can download output tables and figures")
+                 tags$li("You can download output tables and figures"),
                )
              )
       ),
