@@ -4,6 +4,39 @@ body{
   font-weight: 300;
   font-style: normal;
 }
+div.navbar-custom-menu{
+  float: left !important; 
+}
+/*
+a.action-button.btn.btn-default.shiny-bound-input:hover{
+  background-color: #EDF2F9!important;
+}
+a.action-button.btn.btn-default.shiny-bound-input:focus{
+  background-color: #dae3f3 !important;
+  #b3c6e7
+}
+*/
+a#goto_intro.action-button.btn.btn-default.shiny-bound-input:hover{
+  /*#4DAE42*/
+  background-color: #dbeed9!important;
+}
+a#goto_intro.action-button.btn.btn-default.shiny-bound-input:focus{
+  background-color: #c9e6c6!important;
+}
+a#goto_simulation.action-button.btn.btn-default.shiny-bound-input:hover{
+  /*#f8c721*/
+  background-color: #fdf3d2!important;
+}
+a#goto_simulation.action-button.btn.btn-default.shiny-bound-input:focus{
+  background-color: #fce8a6!important;
+}
+a#goto_about.action-button.btn.btn-default.shiny-bound-input:hover{
+  /*#DC202A*/
+  background-color: #fbe8e9!important;
+}
+a#goto_about.action-button.btn.btn-default.shiny-bound-input:focus{
+  background-color: #f4bcbf!important;
+}
 div#partnersImage{
   margin-bottom: 50px;
 }

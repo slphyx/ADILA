@@ -134,19 +134,23 @@ app_ui <- dashboardPage(
       column(8,
              # Introduction Section
              h1("Introduction"),
-             tags$ul(
-               tags$li("This is an interactive open software dashboard to estimate expected usage of empirical antibiotic prescription in hospital settings"),
-               tags$li("It is a rapid, reproducible and easy-to-use platform that enables users without prior software experience to get expected pattern of empirical antibiotic usage in hospitals"),
-               tags$li(HTML("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project"))
+             h4(
+               tags$ul(
+                 tags$li("This is an interactive open software dashboard to estimate expected usage of empirical antibiotic prescription in hospital settings"),
+                 tags$li("It is a rapid, reproducible and easy-to-use platform that enables users without prior software experience to get expected pattern of empirical antibiotic usage in hospitals"),
+                 tags$li(HTML("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project"))
+               )
              ),
              
              # What Users Can Do Section
              h1("What you (users) can do:"),
-             tags$ul(
-               tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local prevalence of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
-               tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and AWaRe (\"Access\", \"Watch\", \"Reserve\") antibiotic classification.")),
-               tags$li("You can visualize the expected estimates"),
-               tags$li("You can download output tables and figures")
+             h4(
+               tags$ul(
+                 tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local prevalence of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
+                 tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and AWaRe (\"Access\", \"Watch\", \"Reserve\") antibiotic classification.")),
+                 tags$li("You can visualize the expected estimates"),
+                 tags$li("You can download output tables and figures")
+               )
              )
       ),
       
@@ -160,21 +164,22 @@ app_ui <- dashboardPage(
       column(12,
              # Title
              h1("Contact us"),
-             
+             h4(
              # Contact Information
-             tags$p(
-               strong("Drug-Resistant Infections and Disease Dynamics group"),
-               br(),
-               "Centre for Tropical Medicine and Global Health",
-               br(),
-               "Bid Data Institute, Old Road Campus, OX3 7LF",
-               br(),
-               "University of Oxford",
-               br(),
-               br(),
-               "For any inquiry about the dashboard, please contact",
-               br(),
-               "Email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk")
+               tags$p(
+                 strong("Drug-Resistant Infections and Disease Dynamics group"),
+                 br(),
+                 "Centre for Tropical Medicine and Global Health",
+                 br(),
+                 "Bid Data Institute, Old Road Campus, OX3 7LF",
+                 br(),
+                 "University of Oxford",
+                 br(),
+                 br(),
+                 "For any inquiry about the dashboard, please contact",
+                 br(),
+                 "Email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk")
+               )
              )
       )
     ),
