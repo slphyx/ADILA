@@ -5,17 +5,17 @@ load_disease_inputs <- function(params, session) {
   # Sidebar item for "Type of Patients" 1
   updateNumericInput(session, "cap_cases", value = unname(params["Patients with community acquired pneumonia (CAP)"]))
   updateNumericInput(session, "bm_cases", value = unname(params["Patients with bacterial meningitis"]))
-  updateNumericInput(session, "bji_cases", value = unname(params["Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)"]))
-  updateNumericInput(session, "uut_cases", value = unname(params["Patients with upper urinary tract infection"]))
-  updateNumericInput(session, "sepsis_cases", value = unname(params["Patients with sepsis & septic shock"]))
-  updateNumericInput(session, "cdif_cases", value = unname(params["Patients with Clostridioides difficile infection"]))
+  updateNumericInput(session, "bji_cases", value = unname(params["Patients with bone and joint infections (BJ)"]))
+  updateNumericInput(session, "uut_cases", value = unname(params["Patients with upper UTI"]))
+  updateNumericInput(session, "sepsis_cases", value = unname(params["Patients with sepsis/ septic shock (SEPSIS)"]))
+  updateNumericInput(session, "cdif_cases", value = unname(params["Patients with Clostridioides difficile infection (CDIF)"]))
   
   # Sidebar item for "Type of Patients" 2
-  updateNumericInput(session, "hap_cases", value = unname(params["Patients with hospital acquired pneumonia (HAP) non-VAP"]))
-  updateNumericInput(session, "ia_cases", value = unname(params["Patients with intra-abdominal infections"]))
-  updateNumericInput(session, "sst_cases", value = unname(params["Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)"]))
-  updateNumericInput(session, "fn_cases", value = unname(params["Patients with febrile neutropenic"]))
-  updateNumericInput(session, "sp_cases", value = unname(params["Patients on surgical prophylaxis"]))
+  updateNumericInput(session, "hap_cases", value = unname(params["Patients with hospital acquired pneumonia (HAP) Non-VAP"]))
+  updateNumericInput(session, "ia_cases", value = unname(params["Patients with intra-abdominal infection (IA)"]))
+  updateNumericInput(session, "sst_cases", value = unname(params["Patients with skin and soft-tissue infection (SST)"]))
+  updateNumericInput(session, "fn_cases", value = unname(params["Patients with febrile neutropenia (FN)"]))
+  updateNumericInput(session, "sp_cases", value = unname(params["Patients for surgical prophylaxis (SP)"]))
 
 
   # Sidebar item for "Severity of Cases"

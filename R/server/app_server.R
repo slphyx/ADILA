@@ -9,17 +9,20 @@ library(plotly)
 
 # Define server logic
 app_server <- function(session,input, output) {
-
   # Load shinyjs to enable showing/hiding
   useShinyjs()
   shinyjs::addClass(selector = "body", class = "sidebar-collapse")
-  
-  hide("Summary_input")
-  hide("Summary_model")
-  hide("Visualization")
-  hide("summary_inputs_ui")
-  hide("about_text")
-  
+  observeEvent("", {
+    show("Summary_input_table")
+    hide("Summary_model_table")
+    hide("Visualization_plot")
+    hide("Summary_input")
+    hide("Summary_model")
+    hide("Visualization")
+    hide("summary_inputs_ui")
+    hide("about_text")
+  }, once = TRUE)
+
   
   # goto_intro
   observeEvent(input$goto_intro,{
@@ -32,6 +35,7 @@ app_server <- function(session,input, output) {
     hide("about_text")
     hide("Summary_model_table")
     hide("Visualization_plot")
+    show("partnersImage")
   })
   
   
@@ -41,9 +45,14 @@ app_server <- function(session,input, output) {
     show("Summary_input")
     show("summary_inputs_ui")
     show("Summary_input_table")
+
+    if(value_fin$finished){
+      show("Summary_model")
+      show("Visualization")
+    }
     hide("intro_text")
     hide("about_text")
-    
+    hide("partnersImage")
     # show only when the simulation has run
     # show("Summary_model")
     # show("Visualization")
@@ -60,7 +69,7 @@ app_server <- function(session,input, output) {
     hide("Visualization")
     hide("intro_text")
     show("about_text")
-    
+    show("partnersImage")
     hide("Summary_model_table")
     hide("Visualization_plot")
     
@@ -548,6 +557,7 @@ app_server <- function(session,input, output) {
     output$plot_watch_class <- renderPlotly({
       plot_watch_class
     })
+    value_fin$finished <-1
     show("Summary_model")
     show("Visualization")
     
@@ -565,12 +575,6 @@ app_server <- function(session,input, output) {
   })
   
   # DYNAMIC RENDER RULES ----------------------------------------------------
-  
-  observeEvent("", {
-    show("Summary_input_table")
-    hide("Summary_model_table")
-    hide("Visualization_plot")
-  }, once = TRUE)
   
   observeEvent(input$Summary_input, {
     show("Summary_input_table")
@@ -590,7 +594,7 @@ app_server <- function(session,input, output) {
   
   observeEvent(input$load_params, {
     req(input$load_params)
-    # print(input$load_params)
+
     params <- read.csv(input$load_params$datapath)
     params_vec <- c(params[,2])
     names(params_vec) <- params[,1]

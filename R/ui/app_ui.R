@@ -189,12 +189,14 @@ app_ui <- dashboardPage(
                column(width = 6,
                    downloadButton(
                      "downloadInput",
-                     label = "Download",
+                     label = "Download Inputs",
                      icon = shiny::icon("download")
                    ),
                ),
                column(width = 6,
-                  fileInput("load_params", "", accept = c(".csv"))
+                  fileInput("load_params", "",
+                            buttonLabel="Upload Input File" ,
+                            accept = c(".csv"))
                ),
         ),
           tabBox(
