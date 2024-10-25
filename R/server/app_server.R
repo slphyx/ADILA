@@ -400,7 +400,7 @@ app_server <- function(session,input, output) {
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
-      modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**") %>% 
+      modify_caption("**Table 3: Expected access antibiotic usage by antibiotic class**") %>% 
       as_gt()
     
     
@@ -413,7 +413,7 @@ app_server <- function(session,input, output) {
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
-      modify_caption("**Table 4: Expected (Watch) antibiotic usage by antibiotic class**") %>%
+      modify_caption("**Table 4: Expected watch antibiotic usage by antibiotic class**") %>%
       as_gt()
     
     
@@ -612,9 +612,9 @@ app_server <- function(session,input, output) {
               tableOutput("summary_table_overall"),),
               tabPanel(title = "Expected usage by syndrome",
               tableOutput("summary_table_syndrome")),
-              tabPanel(title = "Expected (Access) usage by antibiotic classes",
+              tabPanel(title = "Expected access usage by antibiotic classes",
               tableOutput("summary_table_class_access")),
-              tabPanel(title = "Expected (Watch) usage by antibiotic classes",
+              tabPanel(title = "Expected watch usage by antibiotic classes",
               tableOutput("summary_table_class_watch")),
     )
   })
