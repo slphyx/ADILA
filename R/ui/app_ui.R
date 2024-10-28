@@ -10,7 +10,6 @@ library(rintrojs)
 
 app_ui <- dashboardPage(
 
-  
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
     title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Data to Inform Local Action (ADILA)"),

@@ -342,10 +342,7 @@ app_server <- function(session,input, output) {
         para_data = para.data,
         input.adult = input.adult
       )
-
     return(outlist)
-    
-
   })
 
   # Output the 'input.adult' data frame as a table
@@ -359,13 +356,20 @@ app_server <- function(session,input, output) {
     value_fin$TotalAdmittedPatient <- sum(input_big()$adult_cases[["cases"]])
   })
   
-  observeEvent(input$admitted_patients, {
-    if (input$admitted_patients < value_fin$TotalAdmittedPatient) {
+  observeEvent(c(input$admitted_patients,input$cap_cases , input$hap_cases,input$bm_cases,
+                 input$ia_cases, input$uut_cases,    input$sst_cases,    input$bji_cases, 
+                 input$cdif_cases,input$fn_cases,     input$sepsis_cases, input$sp_cases 
+                 
+                 ), {
+    if (is.na(value_fin$TotalAdmittedPatient) | is.na(input$admitted_patients)) {
+        disable("run_model")
+    }else if(input$admitted_patients < value_fin$TotalAdmittedPatient){
       #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
       shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
                                     Total admitted patients mustn't be less than ","\"",value_fin$TotalAdmittedPatient , "\""), type = "warning")
       disable("run_model")
-    }else{
+    }
+    else{
       enable("run_model")
     }
   })

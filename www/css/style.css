@@ -11,9 +11,10 @@ div.navbar-custom-menu{
   margin: 15px 0px 15px 15px;
   color: #fefef4;
 }
-#first_choice_table table, th, td {
+#first_choice_table table,#first_choice_table th,#first_choice_table td {
   border: 1px solid black;
 }
+
 #first_choice_table th {
   background-color: #194B64; 
 }
