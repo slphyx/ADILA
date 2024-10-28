@@ -21,6 +21,7 @@ app_server <- function(session,input, output) {
     hide("Visualization")
     hide("summary_inputs_ui")
     hide("about_text")
+    hide("howto_text")
   }, once = TRUE)
 
   
@@ -32,10 +33,26 @@ app_server <- function(session,input, output) {
     hide("Summary_model")
     hide("Visualization")
     show("intro_text")
+    hide("howto_text")
     hide("about_text")
     hide("Summary_model_table")
     hide("Visualization_plot")
     show("partnersImage")
+  })
+  
+  # goto_howto
+  observeEvent(input$goto_howto,{
+    shinyjs::addClass(selector = "body", class = "sidebar-collapse")
+    hide("Summary_input")
+    hide("Summary_input_table")
+    hide("Summary_model")
+    hide("Visualization")
+    hide("intro_text")
+    hide("about_text")
+    hide("Summary_model_table")
+    hide("Visualization_plot")
+    show("howto_text")
+    
   })
   
   
@@ -51,6 +68,7 @@ app_server <- function(session,input, output) {
       show("Visualization")
     }
     hide("intro_text")
+    hide("howto_text")
     hide("about_text")
     hide("partnersImage")
     # show only when the simulation has run

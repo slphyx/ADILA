@@ -17,6 +17,7 @@ app_ui <- dashboardPage(
     titleWidth = 400,
     # Header with actionLink buttons
     tags$li(actionLink("goto_intro", "Introduction", class = "btn btn-default"), class = "dropdown"),
+    tags$li(actionLink("goto_howto","How to use the dashboard", class = "btn btn-default"), class = "dropdown"),
     tags$li(actionLink("goto_simulation", "Simulation", class = "btn btn-default"), class = "dropdown"),
     tags$li(actionLink("goto_about", "About us", class = "btn btn-default"), class = "dropdown")
     
@@ -138,7 +139,9 @@ app_ui <- dashboardPage(
                tags$ul(
                  tags$li("This is an interactive open software dashboard to estimate expected usage of empirical antibiotic prescription in hospital settings"),
                  tags$li("It is a rapid, reproducible and easy-to-use platform that enables users without prior software experience to get expected pattern of empirical antibiotic usage in hospitals"),
-                 tags$li(HTML("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project"))
+                 tags$li(HTML("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project")),
+                 tags$li("The estimation of expected empirical antibiotic use is based on treatment guidelines for common infections, as specified in the WHO AWaRe antibiotic book"),
+                 tags$li("Expected use refer to the anticipated empirical prescription per day, considering patients with varying infections, case severity, access to recommended first-choice antibiotics, and the local prevalence of antimicrobial resistance (AMR)")
                )
              ),
              
@@ -164,6 +167,22 @@ app_ui <- dashboardPage(
              tags$img(src = "img/antibiotic_book.png", width = "70%")
       )
     ),
+    
+    fluidRow(id="howto_text",
+      column(12,
+             # Introduction Section
+             h1("How to use the dashboard"),
+             h4(
+               tags$ul(
+                 tags$li("Step 1: Users should put the required data on left side of the panel."),
+                 tags$li("Step 2: Once the data is entered, review the “SUMMARY OF INPUT DATA”. If any changes are needed, return to Step 1 and update the data."),
+                 tags$li("Step 3: Click “Run Model” and wait a few seconds for the model to process the data to generate the output."),
+                 tags$li("Step 4: Review the expected empirical antibiotic use across four different tables in “SUMMARY OF EXPECTED ANTIBIOTIC USAGE (MODEL’S OUTPUT)”"),
+                 tags$li("Step 5: You can also visualise the expected usage by AWaRe category and antibiotic class under “VISUALIZATION”.")
+               )
+             ))
+    ),
+    
     
     fluidRow(id = "about_text",
       column(12,
