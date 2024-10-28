@@ -38,6 +38,7 @@ a#goto_about.action-button.btn.btn-default.shiny-bound-input:focus{
   background-color: #f4bcbf!important;
 }
 div#partnersImage{
+  margin-top: 150px;
   margin-bottom: 50px;
 }
 div.form-group.shiny-input-container{

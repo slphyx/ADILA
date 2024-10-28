@@ -26,7 +26,6 @@ app_server <- function(session,input, output) {
     hide("howto_text")
   }, once = TRUE)
 
-  
   # goto_intro
   observeEvent(input$goto_intro,{
     shinyjs::addClass(selector = "body", class = "sidebar-collapse")
@@ -40,6 +39,7 @@ app_server <- function(session,input, output) {
     hide("Summary_model_table")
     hide("Visualization_plot")
     show("partnersImage")
+
   })
   
   # goto_howto
@@ -364,7 +364,11 @@ app_server <- function(session,input, output) {
   observeEvent(input$admitted_patients, {
     if (input$admitted_patients < value_fin$TotalAdmittedPatient) {
       #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
-      shinyalert("Warning!", "Simulated total must meet or exceed combined infected cases!", type = "error")
+      shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
+                                    Total admitted patients mustn't be less than ","\"",value_fin$TotalAdmittedPatient , "\""), type = "warning")
+      disable("run_model")
+    }else{
+      enable("run_model")
     }
   })
 
