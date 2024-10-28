@@ -425,6 +425,9 @@ app_server <- function(session,input, output) {
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose, CAP=community acquired pneumonia,
                   HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
       modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>% 
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(stat_0 == "0 (0%)", "NA", stat_0))
+      ) %>%
       as_gt()
     
     
