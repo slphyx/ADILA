@@ -11,6 +11,7 @@ library(shinyBS)
 library(ggplot2)
 library(hrbrthemes)
 library(viridis)
+library(shinyalert)
 
 source("R/global.R")
 

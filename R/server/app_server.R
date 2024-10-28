@@ -5,6 +5,8 @@ library(dplyr)
 library(gtsummary)
 library(gtools)
 library(plotly)
+library(shinyalert)
+
 
 
 # Define server logic
@@ -351,6 +353,19 @@ app_server <- function(session,input, output) {
   # Output the 'input.adult' data frame as a table
   output$input_summary <- renderTable({
     input_big()$input.adult
+  })
+  
+  
+  # Observe changes in `admitted_patients` and show warning if below total enter cases
+  observe({
+    value_fin$TotalAdmittedPatient <- sum(input_big()$adult_cases[["cases"]])
+  })
+  
+  observeEvent(input$admitted_patients, {
+    if (input$admitted_patients < value_fin$TotalAdmittedPatient) {
+      #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
+      shinyalert("Warning!", "Simulated total must meet or exceed combined infected cases!", type = "error")
+    }
   })
 
 

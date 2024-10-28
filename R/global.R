@@ -19,4 +19,4 @@ fluid_design <- function(id, w, x, y, z) {
 }
 
 
-value_fin <- reactiveValues(finished=0)   # for checking whether the simulation has finished ; 0 <- not finished 1 <- finished
+value_fin <- reactiveValues(finished=0, TotalAdmittedPatient=0)   # for checking whether the simulation has finished ; 0 <- not finished 1 <- finished
