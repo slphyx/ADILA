@@ -7,8 +7,6 @@ library(gtools)
 library(plotly)
 library(shinyalert)
 
-
-
 # Define server logic
 app_server <- function(session,input, output) {
   # Load shinyjs to enable showing/hiding
@@ -581,7 +579,7 @@ app_server <- function(session,input, output) {
       summary_table_class_watch
     })
     
-    
+
     output$plot_access <- renderPlotly({
       plot_access
     })
@@ -609,6 +607,9 @@ app_server <- function(session,input, output) {
 
   output$summary_inputs <- renderTable({
     input_big()$adult_cases
+  })
+  output$first_choice_table <- renderTable({
+    first_choice_list
   })
   output$summary_inputs2 <- renderTable({
     input_big()$para_data

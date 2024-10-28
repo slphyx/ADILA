@@ -25,7 +25,7 @@ app_ui <- dashboardPage(
   
   # SIDEBAR -----------------------------------------------------------------
   dashboardSidebar(
-    width = 350,
+    width = 400,
     useShinyjs(),
     sidebarMenu(
       introBox(data.step = 1, data.intro = "test", # intro tour
@@ -41,19 +41,19 @@ app_ui <- dashboardPage(
                div(id = "type_patients_inputs",
                    fluidRow(
                   column(6,
-                   numericInput("cap_cases", tags$h6("Patients with community acquired pneumonia (CAP)"), min = 0, max = 10000, value = 50,width ="100%"),
-                   numericInput("bm_cases", tags$h6("Patients with bacterial meningitis"), min = 0, max = 10000, value = 15,width ="100%"),
-                   numericInput("bji_cases", tags$h6("Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)"), min = 0, max = 10000, value = 30,width ="100%"),
-                   numericInput("uut_cases",tags$h6("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
-                   numericInput("sepsis_cases", tags$h6("Patients with sepsis & septic shock"), min = 0, max = 10000, value = 10,width ="100%"),
-                   numericInput("cdif_cases", tags$h6("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("cap_cases", tags$h5("Patients with community acquired pneumonia (CAP)"), min = 0, max = 10000, value = 50,width ="100%"),
+                   numericInput("bm_cases", tags$h5("Patients with bacterial meningitis"), min = 0, max = 10000, value = 15,width ="100%"),
+                   numericInput("bji_cases", tags$h5("Patients with bone and joint infection (acute bacterial osteomyelitis and septic arthritis)"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("uut_cases",tags$h5("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
+                   numericInput("sepsis_cases", tags$h5("Patients with sepsis & septic shock"), min = 0, max = 10000, value = 10,width ="100%"),
+                   numericInput("cdif_cases", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
                    ),
                    column(6,
-                   numericInput("hap_cases", tags$h6("Patients with hospital acquired pneumonia (HAP) non-VAP"), min = 0, max = 10000, value = 10,width ="100%"),
-                   numericInput("ia_cases", tags$h6("Patients with intra-abdominal infections"), min = 0, max = 10000, value = 35,width ="100%"),
-                   numericInput("sst_cases", tags$h6("Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)"), min = 0, max = 10000, value = 30,width ="100%"),
-                   numericInput("fn_cases", tags$h6("Patients with febrile neutropenic"), min = 0, max = 10000, value = 30,width ="100%"),
-                   numericInput("sp_cases", tags$h6("Patients on surgical prophylaxis"), min = 0, max = 10000, value = 60,width ="100%")
+                   numericInput("hap_cases", tags$h5("Patients with hospital acquired pneumonia (HAP) non-VAP"), min = 0, max = 10000, value = 10,width ="100%"),
+                   numericInput("ia_cases", tags$h5("Patients with intra-abdominal infections"), min = 0, max = 10000, value = 35,width ="100%"),
+                   numericInput("sst_cases", tags$h5("Patients with skin and soft-tissue infection (necrotizing fasciitis and pyomyositis)"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("fn_cases", tags$h5("Patients with febrile neutropenic"), min = 0, max = 10000, value = 30,width ="100%"),
+                   numericInput("sp_cases", tags$h5("Patients on surgical prophylaxis"), min = 0, max = 10000, value = 60,width ="100%")
                    ),
                )
                )
@@ -62,11 +62,11 @@ app_ui <- dashboardPage(
       # Sidebar item for "Severity of Cases"
       menuItem("Severity of cases", tabName = "severity_cases", icon = icon("exclamation-triangle"),
                div(id = "severity_cases_inputs",
-                   sliderInput("cap_severe", tags$h6("Proportion of severe CAP cases"), min = 0, max = 1, value = 0.4, step = 0.01),
-                   sliderInput("abd_severe", tags$h6("Proportion of severe intra-abdominal infection cases"), min = 0, max = 1, value = 0.45, step = 0.01),
-                   sliderInput("uti_severe", tags$h6("Proportion of severe upper UTI cases"), min = 0, max = 1, value = 0.35, step = 0.01),
-                   sliderInput("cdf_severe", tags$h6("Proportion of severe C. difficile infection cases"), min = 0, max = 1, value = 0.25, step = 0.01),
-                   sliderInput("sst_nf", tags$h6("Proportion of necrotizing fasciitis cases in SST patients"), min = 0, max = 1, value = 0.04, step = 0.01)
+                   sliderInput("cap_severe", tags$h5("Proportion of severe CAP cases"), min = 0, max = 1, value = 0.4, step = 0.01),
+                   sliderInput("abd_severe", tags$h5("Proportion of severe intra-abdominal infection cases"), min = 0, max = 1, value = 0.45, step = 0.01),
+                   sliderInput("uti_severe", tags$h5("Proportion of severe upper UTI cases"), min = 0, max = 1, value = 0.35, step = 0.01),
+                   sliderInput("cdf_severe", tags$h5("Proportion of severe C. difficile infection cases"), min = 0, max = 1, value = 0.25, step = 0.01),
+                   sliderInput("sst_nf", tags$h5("Proportion of necrotizing fasciitis cases in SST patients"), min = 0, max = 1, value = 0.04, step = 0.01)
                )
                
       ),
@@ -74,28 +74,29 @@ app_ui <- dashboardPage(
       # Sidebar item for "Availability of First Choice Antibiotics"
       menuItem("Availability of first choice antibiotics", tabName = "availability_antibiotics", icon = icon("capsules"),
                div(id = "availability_antibiotics_inputs",
-                   sliderInput("p_first", tags$h6("Probability of first-choice antibiotics"), min = 0, max = 1, value = 0.8, step = 0.01)
+                   tableOutput("first_choice_table"),
+                   sliderInput("p_first", tags$h5("Probability of first-choice antibiotics"), min = 0, max = 1, value = 0.8, step = 0.01)
                )           
       ),
       
       # Sidebar item for "Prevalence of AMR"
       menuItem("Prevalence of AMR", tabName = "prevalence_amr", icon = icon("chart-line"),
                div(id = "prevalence_amr_inputs",
-                   sliderInput("esbl_prevalence", tags$h6("Prevalence of ESBL"), min = 0, max = 1, value = 0.4, step = 0.01),
-                   sliderInput("mrsa_prevalence", tags$h6("Prevalence of MRSA"), min = 0, max = 1, value = 0.3, step = 0.01),
-                   sliderInput("hap_mdr", tags$h6("Prevalence of multi-drug resistance gram-negative infection in patients with hospital acquired pneumonia"), min = 0, max = 1, value = 0.1, step = 0.01),
-                   sliderInput("strep_pyogenes", tags$h6("Prevalence of Strep pyogenes infection in necrotizing fasciitis"), min = 0, max = 1, value = 0.1, step = 0.01)
+                   sliderInput("esbl_prevalence", tags$h5("Prevalence of ESBL"), min = 0, max = 1, value = 0.4, step = 0.01),
+                   sliderInput("mrsa_prevalence", tags$h5("Prevalence of MRSA"), min = 0, max = 1, value = 0.3, step = 0.01),
+                   sliderInput("hap_mdr", tags$h5("Prevalence of multi-drug resistance gram-negative infection in patients with hospital acquired pneumonia"), min = 0, max = 1, value = 0.1, step = 0.01),
+                   sliderInput("strep_pyogenes", tags$h5("Prevalence of Strep pyogenes infection in necrotizing fasciitis"), min = 0, max = 1, value = 0.1, step = 0.01)
                )         
       ),
       
       # Sidebar item for "Total Admitted Patients"
-      menuItem("Total admitted patients", tabName = tags$h6("total_patients"), icon = icon("hospital"),
+      menuItem("Total admitted patients", tabName = tags$h5("total_patients"), icon = icon("hospital"),
       div(id = "total_patients_inputs",
           column(width=6,
-          numericInput("admitted_patients", tags$h6("Total admitted patients"), min = 0, max = 10000, value = 600,width ="100%"),
+          numericInput("admitted_patients", tags$h5("Total admitted patients"), min = 0, max = 10000, value = 600,width ="100%"),
           )
           # ,column(width=6,
-          # numericInput("std_err", tags$h6("Standard error of the parameters"), min = 0, max = 100, value = 20,width ="100%")
+          # numericInput("std_err", tags$h5("Standard error of the parameters"), min = 0, max = 100, value = 20,width ="100%")
           # ),
       )
     )

@@ -5,6 +5,32 @@ source("R/functions/model.adult.shiny.v3.R")
 source("R/functions/data.adult.shiny.v3.R")
 source("R/functions/generate_input_dataframe.R")
 
+first_choice_list <- data.frame(First_choice=c("Amoxicillin",
+                                               "Amoxicillin/ clavulanic-acid",
+                                               "Phenoxymethyl penicillin",
+                                               "Ampicillin",
+                                               "Cloxacillin",
+                                               "Benzyl penicillin",
+                                               "Gentamycin Amikacin",
+                                               "Sulphamethoxazole-Trimethoprim",
+                                               "Clindamycin",
+                                               "Metronidazole",
+                                               "Doxycycline",
+                                               "Chloramphenicol",
+                                               "Cefalexin",
+                                               "Cefazolin",
+                                               "Cefuroxime",
+                                               "Cefotaxime",
+                                               "Ceftriaxone",
+                                               "Meropenem",
+                                               "Piperacillin + Tazobactam",
+                                               "Clarithromycin",
+                                               "Vancomycin",
+                                               "Ciprofloxacin"))
+
+# first_choice_list <- data.frame(x=1:3,y=3:1)
+
+
 fluid_design <- function(id, w, x, y, z) {
   fluidRow(
     div(

@@ -7,6 +7,22 @@ body{
 div.navbar-custom-menu{
   float: left !important; 
 }
+#first_choice_table table{
+  margin: 15px 0px 15px 15px;
+  color: #fefef4;
+}
+#first_choice_table table, th, td {
+  border: 1px solid black;
+}
+#first_choice_table th {
+  background-color: #194B64; 
+}
+#first_choice_table tr:nth-child(-n+14) td {
+        background-color: #4FAE45; /* Green */
+    }
+#first_choice_table tr:nth-child(n+15) td {
+        background-color: #d1d100; /* Yellow */
+    }
 /*
 a.action-button.btn.btn-default.shiny-bound-input:hover{
   background-color: #EDF2F9!important;
