@@ -237,13 +237,13 @@ app_ui <- dashboardPage(
         ),
           tabBox(
             title = "",
-            tabPanel(title = "Patients with different infection syndromes",
+            tabPanel(title = HTML("<b>Patients with different infection syndromes</b>"),
               tableOutput("summary_inputs")
             )
           ),
           tabBox(
             title = "",
-            tabPanel(title = "Proportion/ prevalence parameters",
+            tabPanel(title = HTML("<b>Proportion/ prevalence parameters</b>"),
               tableOutput("summary_inputs2")
             )
           )

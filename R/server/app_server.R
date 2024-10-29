@@ -653,13 +653,13 @@ app_server <- function(session,input, output) {
   output$summary_output <- renderUI({
     tabBox(width =12,
       title = "",
-              tabPanel(title = "Expected (overall) antibiotic usage",
+              tabPanel(title = HTML("<b>Expected (overall) antibiotic usage</b>"),
               tableOutput("summary_table_overall"),),
-              tabPanel(title = "Expected usage by syndrome",
+              tabPanel(title = HTML("<b>Expected usage by syndrome</b>"),
               tableOutput("summary_table_syndrome")),
-              tabPanel(title = "Expected access usage by antibiotic classes",
+              tabPanel(title = HTML("<b>Expected access usage by antibiotic classes</b>"),
               tableOutput("summary_table_class_access")),
-              tabPanel(title = "Expected watch usage by antibiotic classes",
+              tabPanel(title = HTML("<b>Expected watch usage by antibiotic classes</b>"),
               tableOutput("summary_table_class_watch")),
     )
   })
@@ -667,7 +667,7 @@ app_server <- function(session,input, output) {
   output$Visualization_output1 <- renderUI({
     tabBox(
       title = "",
-      tabPanel(title = "Expected usage by antibiotic classes",
+      tabPanel(title = HTML("<b>Expected usage by antibiotic classes</b>"),
                plotlyOutput("plot_access",height = "100%")
       )
     )
@@ -675,7 +675,7 @@ app_server <- function(session,input, output) {
   output$Visualization_output2 <- renderUI({
     tabBox(
       title = "",
-      tabPanel(title = "Expected usage by antibiotic classes",
+      tabPanel(title = HTML("<b>Expected usage by antibiotic classes</b>"),
                plotlyOutput("plot_watch",height = "100%")
       )
     )
@@ -683,10 +683,10 @@ app_server <- function(session,input, output) {
   output$Visualization_output3 <- renderUI({
     tabBox(width = 12,
       title = "",
-      tabPanel(title = "Expected Access Antibiotic Usage",
+      tabPanel(title = HTML("<b>Expected Access Antibiotic Usage</b>"),
                plotlyOutput("plot_access_class",height = "100%")
       ),
-      tabPanel(title = "Expected Watch Antibiotic Usage",
+      tabPanel(title = HTML("<b>Expected Watch Antibiotic Usage</b>"),
                plotlyOutput("plot_watch_class",height = "100%")
       )
     )
