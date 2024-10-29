@@ -428,7 +428,7 @@ app_server <- function(session,input, output) {
                   HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
       modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>% 
       modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0 == "0 (0%)", "NA", stat_0))
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
       as_gt()
     
