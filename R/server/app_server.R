@@ -532,7 +532,7 @@ app_server <- function(session,input, output) {
     # Access antibiotic by antibiotic class
     plot_access_class <- df_class %>%
       filter(aware == "Access") %>%
-      filter(!(text %in% c("Amphenicols","Tetracyclines", "Lincosamides"))) %>%
+      #filter(!(text %in% c("Amphenicols","Tetracyclines", "Lincosamides"))) %>%
       ggplot( aes(x=value, fill=text)) +
       geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
       scale_fill_viridis(discrete=TRUE) +
