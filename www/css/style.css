@@ -1,7 +1,7 @@
-body{
-  font-family: "Rubik", sans-serif;
+body, p, h1, h2, h3, h4, h5, h6, span{
+  font-family: "Noto Sans", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
 }
 div.navbar-custom-menu{
@@ -240,4 +240,33 @@ input.form-control{
   ul.sidebar-menu {
     padding-top: 150px;
   }
+}
+/* General layout for the container */
+#howto_text .col-sm-12 {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333; /* Dark gray for easy readability */
+    line-height: 1.6;
+    margin: auto;
+}
+
+/* Headings styling */
+#howto_text h1 {
+    color: #7c6310; /* Subtle blue color for formality */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#howto_text h4 {
+    font-size: 1.1em;
+    color: #444;
+}
+
+/* Image styling */
+#howto_text img {
+    display: block;
+    max-width: 100%; /* Ensures image is responsive */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
