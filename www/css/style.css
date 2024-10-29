@@ -19,40 +19,42 @@ div.navbar-custom-menu{
   background-color: #194B64; 
 }
 #first_choice_table tr:nth-child(-n+14) td {
-        background-color: #4FAE45; /* Green */
-    }
+  background-color: #4FAE45; /* Green */
+}
 #first_choice_table tr:nth-child(n+15) td {
-        background-color: #d1d100; /* Yellow */
-    }
-/*
-a.action-button.btn.btn-default.shiny-bound-input:hover{
-  background-color: #EDF2F9!important;
+  background-color: #d1d100; /* Yellow */
 }
-a.action-button.btn.btn-default.shiny-bound-input:focus{
-  background-color: #dae3f3 !important;
-  #b3c6e7
-}
-*/
 a#goto_intro.action-button.btn.btn-default.shiny-bound-input:hover{
   /*#4DAE42*/
   background-color: #dbeed9!important;
 }
 a#goto_intro.action-button.btn.btn-default.shiny-bound-input:focus{
   background-color: #c9e6c6!important;
+  color: #2e6827;
 }
-a#goto_simulation.action-button.btn.btn-default.shiny-bound-input:hover{
+a#goto_howto.action-button.btn.btn-default.shiny-bound-input:hover{
   /*#f8c721*/
   background-color: #fdf3d2!important;
 }
-a#goto_simulation.action-button.btn.btn-default.shiny-bound-input:focus{
+a#goto_howto.action-button.btn.btn-default.shiny-bound-input:focus{
   background-color: #fce8a6!important;
+  color: #7c6310;
 }
-a#goto_about.action-button.btn.btn-default.shiny-bound-input:hover{
+a#goto_simulation.action-button.btn.btn-default.shiny-bound-input:hover{
   /*#DC202A*/
   background-color: #fbe8e9!important;
 }
-a#goto_about.action-button.btn.btn-default.shiny-bound-input:focus{
+a#goto_simulation.action-button.btn.btn-default.shiny-bound-input:focus{
   background-color: #f4bcbf!important;
+  color: #9a161d;
+}
+a#goto_about.action-button.btn.btn-default.shiny-bound-input:hover{
+  /*#1387c0*/
+  background-color: #cfe7f2!important;
+}
+a#goto_about.action-button.btn.btn-default.shiny-bound-input:focus{
+  background-color: #a0cfe5!important;
+  color: #0b5173;
 }
 div#partnersImage{
   margin-top: 150px;
@@ -223,4 +225,19 @@ input.form-control{
   border-radius: 5px;
   cursor: pointer;
   z-index: 9999;
+}
+@media only screen and (max-width: 600px) {
+  ul.sidebar-menu {
+    padding-top: 50px;
+  }
+}
+@media only screen and (max-width: 530px) {
+  ul.sidebar-menu {
+    padding-top: 100px;
+  }
+}
+@media only screen and (max-width: 340px) {
+  ul.sidebar-menu {
+    padding-top: 150px;
+  }
 }
