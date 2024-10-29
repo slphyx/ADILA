@@ -15,10 +15,10 @@ app_ui <- dashboardPage(
     title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Data to Inform Local Action (ADILA)"),
     titleWidth = 400,
     # Header with actionLink buttons
-    tags$li(actionLink("goto_intro", "Introduction", class = "btn btn-default"), class = "dropdown"),
-    tags$li(actionLink("goto_howto","How to use the dashboard", class = "btn btn-default"), class = "dropdown"),
-    tags$li(actionLink("goto_simulation", "Simulation", class = "btn btn-default"), class = "dropdown"),
-    tags$li(actionLink("goto_about", "About us", class = "btn btn-default"), class = "dropdown")
+    tags$li(actionLink("goto_intro", HTML("<b>Introduction</b>"), class = "btn btn-default"), class = "dropdown"),
+    tags$li(actionLink("goto_howto",HTML("<b>How to use the dashboard</b>"), class = "btn btn-default"), class = "dropdown"),
+    tags$li(actionLink("goto_simulation", HTML("<b>Simulation</b>"), class = "btn btn-default"), class = "dropdown"),
+    tags$li(actionLink("goto_about", HTML("<b>About us</b>"), class = "btn btn-default"), class = "dropdown")
     
   ),
   
