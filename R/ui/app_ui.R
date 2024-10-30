@@ -175,22 +175,22 @@ app_ui <- dashboardPage(
                tags$ul(
                  tags$li(tags$b("Step 1:")," Users should put the required data on left side of the panel.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto1.png", height = "75%",width="75%")
+                         tags$img(src = "img/howto1.png", height = "50%",width="50%")
                  ), 
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 2:")," Once the data is entered, review the “SUMMARY OF INPUT DATA”. If any changes are needed, return to Step 1 and update the data.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto2.png", height = "75%",width="75%")),
+                         tags$img(src = "img/howto2.png", height = "50%",width="50%")),
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 3:")," Click “Run Model” and wait a few seconds for the model to process the data to generate the output."),
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 4:")," Review the expected empirical antibiotic use across four different tables in “SUMMARY OF EXPECTED ANTIBIOTIC USAGE (MODEL’S OUTPUT)”",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto3.png", height = "75%",width="75%")),
+                         tags$img(src = "img/howto3.png", height = "50%",width="50%")),
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 5:")," You can also visualise the expected usage by AWaRe category and antibiotic class under “VISUALIZATION”.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto4.png", height = "75%",width="75%"))
+                         tags$img(src = "img/howto4.png", height = "50%",width="50%"))
                )
              ))
     ),

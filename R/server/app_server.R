@@ -414,6 +414,15 @@ app_server <- function(session,input, output) {
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
       modify_caption("**Table 1: Overall expected antibiotic usage in hospital**") %>%
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+      ) %>%
+      modify_table_body(
+        ~ .x %>% filter(label != "0") # Remove rows where label is "0"
+      ) %>%
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
+      )  %>%
       as_gt()
     
     # Table 2
@@ -430,8 +439,13 @@ app_server <- function(session,input, output) {
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
+      modify_table_body(
+        ~ .x %>% filter(label != "0") # Remove rows where label is "0"
+      ) %>%
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
+      )  %>%
       as_gt()
-    
     
     # Table 3
     summary_table_class_access <- df_numeric[, 31:38] %>%
@@ -443,6 +457,15 @@ app_server <- function(session,input, output) {
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
       modify_caption("**Table 3: Expected access antibiotic usage by antibiotic class**") %>% 
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+      ) %>%
+      modify_table_body(
+        ~ .x %>% filter(label != "0") # Remove rows where label is "0"
+      ) %>%
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
+      )  %>%
       as_gt()
     
     
@@ -456,6 +479,15 @@ app_server <- function(session,input, output) {
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
       modify_caption("**Table 4: Expected watch antibiotic usage by antibiotic class**") %>%
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+      ) %>%
+      modify_table_body(
+        ~ .x %>% filter(label != "0") # Remove rows where label is "0"
+      ) %>%
+      modify_table_body(
+        ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
+      )  %>%
       as_gt()
     
     
@@ -479,7 +511,8 @@ app_server <- function(session,input, output) {
       labs(title = "Distribution of Expected Access Antibiotic Usage",
            x = "Percentage of Overall Usage", 
            y = "Frequency") +
-      scale_x_continuous(labels = scales::percent_format(scale = 1)) +
+      scale_x_continuous(labels = scales::percent_format(scale = 1),
+                         limits = c(0,100)) +
       theme(legend.position = "none",
             axis.text   = element_text(size = 8),
             axis.title  = element_text(size = 8),
@@ -498,7 +531,9 @@ app_server <- function(session,input, output) {
       labs(title = "Distribution of Expected Watch Antibiotic Usage",
            x = "Percentage of Overall Usage", 
            y = "Frequency") +
-      scale_x_continuous(labels = scales::percent_format(scale = 1)) +
+      scale_x_continuous(labels = scales::percent_format(scale = 1),
+                         limits = c(0,100)
+                         ) +
       theme(legend.position = "none",
             axis.text   = element_text(size = 8),
             axis.title  = element_text(size = 8),
