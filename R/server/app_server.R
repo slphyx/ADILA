@@ -437,10 +437,10 @@ app_server <- function(session,input, output) {
                   HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
       modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>% 
       modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
       modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
+        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
       ) %>%
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
@@ -458,10 +458,10 @@ app_server <- function(session,input, output) {
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
       modify_caption("**Table 3: Expected access antibiotic usage by antibiotic class**") %>% 
       modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
       )%>%
       modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
+        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
       ) %>%
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
@@ -480,10 +480,10 @@ app_server <- function(session,input, output) {
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
       modify_caption("**Table 4: Expected watch antibiotic usage by antibiotic class**") %>%
       modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
       modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
+        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
       ) %>%
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(is.na(stat_0), "NA", stat_0))
