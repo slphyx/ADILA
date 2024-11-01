@@ -413,7 +413,7 @@ app_server <- function(session,input, output) {
       ) %>%
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
-      modify_caption("**Table 1: Overall expected antibiotic usage in hospital**") %>%
+      modify_caption("**Table 1: Overall expected empirical antibiotic usage in hospital**") %>%
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
@@ -435,7 +435,7 @@ app_server <- function(session,input, output) {
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose, CAP=community acquired pneumonia,
                   HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-      modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>% 
+      modify_caption("**Table 2: Expected empirical antibiotic usage by infection syndrome**") %>% 
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
@@ -456,7 +456,7 @@ app_server <- function(session,input, output) {
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
-      modify_caption("**Table 3: Expected access antibiotic usage by antibiotic class**") %>% 
+      modify_caption("**Table 3: Expected empirical access antibiotic usage by antibiotic class**") %>% 
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
       )%>%
@@ -478,7 +478,7 @@ app_server <- function(session,input, output) {
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
       modify_footnote(all_stat_cols() ~ "Median (IQR), DDD = defined daily dose") %>%
-      modify_caption("**Table 4: Expected watch antibiotic usage by antibiotic class**") %>%
+      modify_caption("**Table 4: Expected empirical watch antibiotic usage by antibiotic class**") %>%
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
@@ -508,7 +508,7 @@ app_server <- function(session,input, output) {
       geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', binwidth = 1) +
       scale_fill_manual(values = c("#009E73")) +
       theme_ipsum() +
-      labs(title = "Distribution of Expected Access Antibiotic Usage",
+      labs(title = "Distribution of Expected Empirical Access Antibiotic Usage",
            x = "Percentage of Overall Usage", 
            y = "Frequency") +
       scale_x_continuous(labels = scales::percent_format(scale = 1),
@@ -528,7 +528,7 @@ app_server <- function(session,input, output) {
       geom_histogram(color="#5d5e5f", alpha=0.6, position = 'identity', binwidth = 1) +
       scale_fill_manual(values = c("#F0E442")) +
       theme_ipsum() +
-      labs(title = "Distribution of Expected Watch Antibiotic Usage",
+      labs(title = "Distribution of Expected Empirical Watch Antibiotic Usage",
            x = "Percentage of Overall Usage", 
            y = "Frequency") +
       scale_x_continuous(labels = scales::percent_format(scale = 1),
@@ -572,7 +572,7 @@ app_server <- function(session,input, output) {
       geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
       scale_fill_viridis(discrete=TRUE) +
       theme_ipsum() +
-      labs(title = "Distribution of Expected Access Antibiotic Usage",
+      labs(title = "Distribution of Expected Empirical Access Antibiotic Usage",
            x = "Expected usage (DDD)", 
            y = "Frequency",
            fill = "Antibiotic class") +
@@ -591,7 +591,7 @@ app_server <- function(session,input, output) {
       geom_histogram(color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
       scale_fill_viridis(discrete=TRUE) +
       theme_ipsum() +
-      labs(title = "Distribution of Expected Watch Antibiotic Usage",
+      labs(title = "Distribution of Expected Empirical Watch Antibiotic Usage",
            x = "Expected usage (DDD)", 
            y = "Frequency",
            fill = "Antibiotic class") +
@@ -688,13 +688,13 @@ app_server <- function(session,input, output) {
   output$summary_output <- renderUI({
     tabBox(width =12,
       title = "",
-              tabPanel(title = HTML("<b>Expected (overall) antibiotic usage</b>"),
+              tabPanel(title = HTML("<b>Overall expected empirical antibiotic usage</b>"),
               tableOutput("summary_table_overall"),),
-              tabPanel(title = HTML("<b>Expected usage by syndrome</b>"),
+              tabPanel(title = HTML("<b>Expected empirical usage by syndrome</b>"),
               tableOutput("summary_table_syndrome")),
-              tabPanel(title = HTML("<b>Expected access usage by antibiotic classes</b>"),
+              tabPanel(title = HTML("<b>Expected empirical access usage by antibiotic classes</b>"),
               tableOutput("summary_table_class_access")),
-              tabPanel(title = HTML("<b>Expected watch usage by antibiotic classes</b>"),
+              tabPanel(title = HTML("<b>Expected empirical watch usage by antibiotic classes</b>"),
               tableOutput("summary_table_class_watch")),
     )
   })
@@ -702,7 +702,7 @@ app_server <- function(session,input, output) {
   output$Visualization_output1 <- renderUI({
     tabBox(
       title = "",
-      tabPanel(title = HTML("<b>Expected usage by antibiotic classes</b>"),
+      tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
                plotlyOutput("plot_access",height = "100%")
       )
     )
@@ -710,7 +710,7 @@ app_server <- function(session,input, output) {
   output$Visualization_output2 <- renderUI({
     tabBox(
       title = "",
-      tabPanel(title = HTML("<b>Expected usage by antibiotic classes</b>"),
+      tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
                plotlyOutput("plot_watch",height = "100%")
       )
     )
@@ -718,10 +718,10 @@ app_server <- function(session,input, output) {
   output$Visualization_output3 <- renderUI({
     tabBox(width = 12,
       title = "",
-      tabPanel(title = HTML("<b>Expected Access Antibiotic Usage</b>"),
+      tabPanel(title = HTML("<b>Expected empirical Access Antibiotic Usage</b>"),
                plotlyOutput("plot_access_class",height = "100%")
       ),
-      tabPanel(title = HTML("<b>Expected Watch Antibiotic Usage</b>"),
+      tabPanel(title = HTML("<b>Expected empirical Watch Antibiotic Usage</b>"),
                plotlyOutput("plot_watch_class",height = "100%")
       )
     )

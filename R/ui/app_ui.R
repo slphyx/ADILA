@@ -138,9 +138,12 @@ app_ui <- dashboardPage(
                tags$ul(
                  tags$li("This is an interactive open software dashboard to estimate expected usage of empirical antibiotic prescription in hospital settings"),
                  tags$li("It is a rapid, reproducible and easy-to-use platform that enables users without prior software experience to get expected pattern of empirical antibiotic usage in hospitals"),
-                 tags$li(HTML("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project")),
+                 tags$li("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project"),
                  tags$li("The estimation of expected empirical antibiotic use is based on treatment guidelines for common infections, as specified in the WHO AWaRe antibiotic book"),
-                 tags$li("Expected use refer to the anticipated empirical prescription per day, considering patients with varying infections, case severity, access to recommended first-choice antibiotics, and the local prevalence of antimicrobial resistance (AMR)")
+                 tags$li("Expected use refer to the anticipated empirical prescription per day, considering patients with varying infections, case severity, access to recommended first-choice antibiotics, and the local prevalence of antimicrobial resistance (AMR)"),
+                 tags$li("A simplified model example illustrates how expected empirical antibiotic use is estimated for 10 adult patients with bacterial meningitis. For demonstration purpose, the calculation focuses only on the first-choice branch, with a similar method apply to the second-choice branch. PDD = Prescribed daily dose, DDD = Defined daily dose."),
+                 br(),
+                 tags$img(src = "img/intro_model.png", width = "85%")
                )
              ),
              
@@ -214,6 +217,10 @@ app_ui <- dashboardPage(
                  br(),
                  "Email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk")
                )
+             ),
+             br(),br(),br(),
+             h4(
+               tags$p(strong("ADILA is funded by the Wellcome Trust, 222051/Z/20/Z"))
              )
       )
     ),
