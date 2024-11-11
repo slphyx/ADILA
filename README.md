@@ -1,3 +1,3 @@
 # AWaRe
 
-![AWaRe](www/img/aware03.gif)
+![AWaRe](www/img/partners_image.png)
