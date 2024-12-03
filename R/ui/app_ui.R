@@ -197,8 +197,25 @@ app_ui <- dashboardPage(
                )
              ))
     ),
+
     fluidRow(id = "about_text",
       column(12,
+             # Title
+             h1("About us"),
+             h4(
+               # Model Development Team
+               tags$p(
+                 strong("Model development team:"),
+                 br(),
+                 "Dr. Myo Maung Maung Swe (email: ", tags$a(href = "mailto:a@email.com", "myo.swe@ndm.ox.ac.uk"), ")",
+                 br(),
+                 "Dr. Cherry Lim (email: ", tags$a(href = "mailto:b@email.com", "cherry.lim@ndm.ox.ac.uk"), ")",
+                 br(),
+                 "Prof. Ben Cooper (email: ", tags$a(href = "mailto:c@email.com", "ben.cooper@ndm.ox.ac.uk"), ")",
+                 br(), br(),br(),
+                 "ADILA Project email: ", tags$a(href = "mailto:project@email.com", "adila@sgul.ac.uk")
+               )
+             ),
              # Title
              h1("Contact us"),
              h4(
