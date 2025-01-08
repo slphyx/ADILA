@@ -49,8 +49,9 @@ pt.admt <- para.data$value[para.data$parameter=="total admitted patients"]
 
 # Probability of first-choice antibiotics
 p.first.est <- para.data$value[para.data$parameter=="probability of first-choice antibiotics"]
-p.first.para <- binomi.para(p.first.est, (p.first.est * std_err))
-p.first <- rbeta(1, p.first.para$alpha, p.first.para$beta)
+p.first.para.alpha <- (p.first.est * 100) + 1
+p.first.para.beta  <- ((1-p.first.est) * 100) + 1
+p.first <- rbeta(1, p.first.para.alpha, p.first.para.beta)
 
 # Availability of first-choice antibiotic for specific infections 
 p.first.cap <- p.first.bm <- p.first.abd <- p.first.bj <- p.first
@@ -60,24 +61,27 @@ p.first.bow.surg <- p.first.clean.cont.surg <- p.first.uro.surg <- p.first.cont.
 
 # Prevalence of ESBL
 p.esbl.est  <- para.data$value[para.data$parameter=="prevalence of ESBL"]
-p.esbl.para <- binomi.para(p.esbl.est, (p.esbl.est * std_err))
-p.esbl <- rbeta(1, p.esbl.para$alpha, p.esbl.para$beta)
+p.esbl.para.alpha <- (p.esbl.est * 100) + 1
+p.esbl.para.beta  <- ((1-p.esbl.est) * 100) + 1
+p.esbl <- rbeta(1, p.esbl.para.alpha, p.esbl.para.beta)
 
 # Assume the same prevalence/ risk of ESBL for different infection syndromes 
 p.esbl.abd <- p.esbl.uti <- p.esbl.fn <- p.g.neg.fn <- p.esbl
 
 # Prevalence of MRSA
 p.mrsa.est  <- para.data$value[para.data$parameter=="prevalence of MRSA"]
-p.mrsa.para <- binomi.para(p.mrsa.est, (p.mrsa.est * std_err))
-p.mrsa <- rbeta(1, p.mrsa.para$alpha, p.mrsa.para$beta)
+p.mrsa.para.alpha <- (p.mrsa.est * 100) + 1
+p.mrsa.para.beta  <- ((1-p.mrsa.est) * 100) + 1
+p.mrsa <- rbeta(1, p.mrsa.para.alpha, p.mrsa.para.beta)
 
 # Assume the same prevalence/ risk of ESBL for different infection syndromes 
 p.mrsa.sst <- p.mrsa.bj <- p.mrsa.fn <- p.mrsa
 
 # Prevalence of Strep pyogenes in patients with necrotizing fasciitis
 p.Strep.pyogene.est  <- para.data$value[para.data$parameter=="prevalence of Strep pyogenes infection in necrotizing fasciitis"]
-p.Strep.pyogene.para <- binomi.para(p.Strep.pyogene.est, (p.Strep.pyogene.est * std_err))
-p.Strep.pyogene      <- rbeta(1, p.Strep.pyogene.para$alpha, p.Strep.pyogene.para$beta)
+p.Strep.pyogene.para.alpha <- (p.Strep.pyogene.est * 100) + 1
+p.Strep.pyogene.para.beta  <- ((1-p.Strep.pyogene.est) * 100) + 1
+p.Strep.pyogene      <- rbeta(1, p.Strep.pyogene.para.alpha, p.Strep.pyogene.para.beta)
 
 # Severity of cases
 # Probability of severe CAP cases
