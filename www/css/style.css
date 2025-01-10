@@ -9,7 +9,7 @@ div.navbar-custom-menu{
 }
 #first_choice_table table{
   margin: 15px 0px 15px 15px;
-  color: #fefef4;
+  color: #000;
 }
 #first_choice_table table,#first_choice_table th,#first_choice_table td {
   border: 1px solid black;
@@ -17,11 +17,13 @@ div.navbar-custom-menu{
 
 #first_choice_table th {
   background-color: #194B64; 
+  color: #fefef4;
+  
 }
-#first_choice_table tr:nth-child(-n+14) td {
+#first_choice_table tr:nth-child(-n+12) td {
   background-color: #4FAE45; /* Green */
 }
-#first_choice_table tr:nth-child(n+15) td {
+#first_choice_table tr:nth-child(n+13) td {
   background-color: #d1d100; /* Yellow */
 }
 a#goto_intro.action-button.btn.btn-default.shiny-bound-input:hover{

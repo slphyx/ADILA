@@ -632,6 +632,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -650,6 +651,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -669,6 +671,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
@@ -688,6 +691,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
@@ -836,13 +840,14 @@ app_server <- function(session,input, output) {
       # Convert all columns to numeric
       df_numeric <- result_child %>%
         mutate_all(~ as.numeric(as.character(.)))
-      print(df_numeric[,9:12])
+
       # Summary tables----
       # Table 1
       summary_table_overall <- df_numeric[,1:8] %>%
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -861,6 +866,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -880,6 +886,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DOT)**") %>%
@@ -899,6 +906,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DOT)**") %>%

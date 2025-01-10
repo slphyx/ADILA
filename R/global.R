@@ -14,21 +14,19 @@ first_choice_list <- data.frame("First-choice antibiotics (WHO AwaRe book)"=c("A
                                                "Ampicillin",
                                                "Cloxacillin",
                                                "Benzyl penicillin",
-                                               "Gentamycin Amikacin",
+                                               "Gentamycin",
+                                               "Amikacin",
                                                "Sulphamethoxazole-Trimethoprim",
-                                               "Clindamycin",
                                                "Metronidazole",
-                                               "Doxycycline",
-                                               "Chloramphenicol",
                                                "Cefalexin",
                                                "Cefazolin",
                                                "Cefuroxime",
                                                "Cefotaxime",
                                                "Ceftriaxone",
-                                               "Meropenem",
                                                "Piperacillin + Tazobactam",
                                                "Clarithromycin",
-                                               "Vancomycin",
                                                "Ciprofloxacin"),check.names = FALSE)
+
+
 
 value_fin <- reactiveValues(finished=0, TotalAdmittedPatient=0)   # for checking whether the simulation has finished ; 0 <- not finished 1 <- finished

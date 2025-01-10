@@ -226,7 +226,17 @@ app_ui <- dashboardPage(
                  br(),
                  "For any inquiry about the dashboard, please contact",
                  br(),
-                 "Email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk")
+                 br(),
+                 tags$b("Model development team:"),
+                 br(),
+                 "Dr. Myo Maung Maung Swe (email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk"),")",
+                 br(),
+                 "Dr. Cherry Lim (email: ", tags$a(href="mailto:cherry.lim@ndm.ox.ac.uk", "cherry.lim@ndm.ox.ac.uk"),")",
+                 br(),
+                 "Prof. Ben Cooper (email: ", tags$a(href="mailto:ben.cooper@ndm.ox.ac.uk", "ben.cooper@ndm.ox.ac.uk"),")",
+                 br(),
+                 br(),
+                 tags$b("ADILA project email: "),tags$a(href="mailto:adila@sgul.ac.uk", "adila@sgul.ac.uk"),
                )
              ),
              br(),br(),br(),
