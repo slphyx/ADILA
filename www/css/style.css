@@ -7,6 +7,15 @@ body, p, h1, h2, h3, h4, h5, h6, span{
 div.navbar-custom-menu{
   float: left !important; 
 }
+.sidebar-menu .treeview-menu{
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+div#sidebar_button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 #first_choice_table table{
   margin: 15px 0px 15px 15px;
   color: #000;
@@ -260,7 +269,7 @@ input.form-control{
 }
 
 #howto_text h4 {
-    font-size: 1.1em;
+    font-size: 1.5em;
     color: #444;
 }
 

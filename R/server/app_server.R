@@ -11,6 +11,7 @@ library(shinyalert)
 app_server <- function(session,input, output) {
   # Load shinyjs to enable showing/hiding
   useShinyjs()
+  disable("run_model")
   shinyjs::addClass(selector = "body", class = "sidebar-collapse")
   observeEvent("", {
     show("Summary_input_table")
@@ -126,7 +127,12 @@ app_server <- function(session,input, output) {
 
   # Reactive block to compute input.adult
   input_big <- reactive({
-    req(!is.null(input$cap_severe))
+    req(!is.null(input$cap_severe)  & !is.null(input$hap_cases)
+        & !is.null(input$bm_cases)  & !is.null(input$ia_cases)
+        & !is.null(input$uut_cases) & !is.null(input$sst_cases)
+        & !is.null(input$bji_cases) & !is.null(input$cdif_cases)
+        & !is.null(input$fn_cases)  & !is.null(input$sepsis_cases)
+        & !is.null(input$sp_cases)  & length(input$choices_ac ) != 0)
     # write.csv
     outlist <- NULL
     
@@ -351,7 +357,7 @@ app_server <- function(session,input, output) {
     }
     if(input$choices_ac == "child"){
       std_err     <- 0.2     # Standard error (assumed 20%)
-      req(!is.null(input$hiv_severe))
+      req(!is.null(input$hiv_severe) & !is.null(input$cap_no_resp))
       
       # A dataframe with number of cases with 11 type of clinical infection syndromes 
       
@@ -572,29 +578,31 @@ app_server <- function(session,input, output) {
   })
   
   # Observe changes in `admitted_patients` and show warning if below total enter cases
-  observe({
-    if(input$choices_ac == "adult"){
-    value_fin$TotalAdmittedPatient <- sum(input_big()$adult_cases[["cases"]])
-    }else if (input$choices_ac == "child"){
-    value_fin$TotalAdmittedPatient <- sum(input_big()$child_cases[["cases"]])
-    }
-  })
   
   observeEvent(c(input$admitted_patients,input$cap_cases , input$hap_cases,input$bm_cases,
                  input$ia_cases, input$uut_cases,    input$sst_cases,    input$bji_cases, 
                  input$cdif_cases,input$fn_cases,     input$sepsis_cases, input$sp_cases 
                  
                  ), {
-    if (is.na(value_fin$TotalAdmittedPatient) | is.na(input$admitted_patients)) {
-        disable("run_model")
-    }else if(input$admitted_patients < value_fin$TotalAdmittedPatient){
-      #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
-      shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
-                                    Total admitted patients mustn't be less than ","\"",value_fin$TotalAdmittedPatient , "\""), type = "warning")
-      disable("run_model")
+    if(input$choices_ac == "adult"){
+    value_fin$TotalAdmittedPatient <- sum(input_big()$adult_cases[["cases"]])
+    }else{
+    value_fin$TotalAdmittedPatient <- sum(input_big()$child_cases[["cases"]])
     }
-    else{
-      enable("run_model")
+    if(length(input$choices_ac)==0){
+      disable("run_model")
+    }else{
+      if (is.na(value_fin$TotalAdmittedPatient) | is.na(input$admitted_patients)) {
+          disable("run_model")
+      }else if(input$admitted_patients < value_fin$TotalAdmittedPatient){
+        #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
+        shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
+                                      Total admitted patients mustn't be less than ","\"",value_fin$TotalAdmittedPatient , "\""), type = "warning")
+        disable("run_model")
+      }
+      else{
+        enable("run_model")
+      }
     }
   })
 
@@ -1073,7 +1081,7 @@ app_server <- function(session,input, output) {
   # Display the summary of inputs in a table in the "Summary Inputs" tab
 
   output$summary_inputs <- renderTable({
-
+    req(length(input$choices_ac ) != 0)
     if(input$choices_ac == "adult"){
       req(!is.null(input_big()$adult_cases))
     input_big()$adult_cases
@@ -1171,32 +1179,15 @@ app_server <- function(session,input, output) {
     hide("Visualization_plot")
     if(input$choices_ac =="adult"){
       hide("severity_cases_inputs_child")
-    }else{
+      enable("run_model")
+
+    }else if(input$choices_ac =="child"){
       show("severity_cases_inputs_child")
+      enable("run_model")
+
+    }else{
+      disable("run_model")
     }
-    output$type_severity_cases <- renderUI({
-      if (input$choices_ac == "adult") {
-        tagList(
-          sliderInput("cap_severe", tags$h5("Proportion of severe CAP cases"), min = 0, max = 1, value = 0.4, step = 0.01),
-          sliderInput("abd_severe", tags$h5("Proportion of severe intra-abdominal infection cases"), min = 0, max = 1, value = 0.45, step = 0.01),
-          sliderInput("uti_severe", tags$h5("Proportion of severe upper UTI cases"), min = 0, max = 1, value = 0.35, step = 0.01),
-          sliderInput("cdf_severe", tags$h5("Proportion of severe C. difficile infection cases"), min = 0, max = 1, value = 0.25, step = 0.01),
-          sliderInput("sst_nf", tags$h5("Proportion of necrotizing fasciitis cases in SST patients"), min = 0, max = 1, value = 0.04, step = 0.01)
-        )
-      } else if (input$choices_ac == "child") {
-        tagList(
-              sliderInput("cap_severe", tags$h5("Proportion of severe CAP cases"), min = 0, max = 1, value = 0.4, step = 0.01),
-              sliderInput("cap_no_resp", tags$h5("proportion of severe CAP patients with no clinical response to first-line treatment (Penicillin + Gentamicin) after 48 hr"), min = 0, max = 1, value = 0.5, step = 0.01),
-              sliderInput("hiv_severe", tags$h5("proportion of severe CAP patients with HIV infection"), min = 0, max = 1, value = 0.01, step = 0.01),
-              sliderInput("abd_severe", tags$h5("Proportion of severe intra-abdominal infection cases"), min = 0, max = 1, value = 0.45, step = 0.01),
-              sliderInput("uti_severe", tags$h5("Proportion of severe upper UTI cases"), min = 0, max = 1, value = 0.35, step = 0.01),
-              sliderInput("cdf_severe", tags$h5("Proportion of severe C. difficile infection cases"), min = 0, max = 1, value = 0.25, step = 0.01),
-              sliderInput("sst_nf", tags$h5("Proportion of necrotizing fasciitis cases in SST patients"), min = 0, max = 1, value = 0.04, step = 0.01)
-          
-        )
-      }
-    })
-    
   })
   
   output$type_severity_cases <- renderUI({
