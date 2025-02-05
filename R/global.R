@@ -3,6 +3,8 @@ library(gtools)
 
 source("R/functions/model.adult.shiny.v3.R")
 source("R/functions/data.adult.shiny.v3.R")
+source("R/functions/model.child.shiny.R")
+source("R/functions/data.child.shiny.R")
 source("R/functions/generate_input_dataframe.R")
 source("R/functions/fluid_design.R")
 
