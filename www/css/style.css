@@ -7,6 +7,10 @@ body, p, h1, h2, h3, h4, h5, h6, span{
 div.navbar-custom-menu{
   float: left !important; 
 }
+.sidebarSlider{
+  display: flex; 
+  align-items: center;  
+}
 #first_choice_table table{
   margin: 15px 0px 15px 15px;
   color: #fefef4;
@@ -269,4 +273,14 @@ input.form-control{
     border: 1px solid #ccc;
     border-radius: 6px;
     box-shadow: rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.popover {
+  color: black;
+}
+a.link-pop{
+  color: #2c6dbc !important;
+}
+.poph5{
+ margin-left: 15px !important; 
 }
