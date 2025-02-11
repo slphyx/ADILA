@@ -1,6 +1,6 @@
 #!!!
 # Load input parameters into the fields
-load_disease_inputs <- function(params, session) {
+load_disease_inputs <- function(params,choices_ac, session) {
   
   # Sidebar item for "Type of Patients" 1
   updateNumericInput(session, "cap_cases", value = unname(params["Patients with community acquired pneumonia (CAP)"]))
@@ -24,9 +24,16 @@ load_disease_inputs <- function(params, session) {
   updateSliderInput(session, "uti_severe", value = unname(params["proportion of severe cases in patients with acute pyelonephritis (upper UTI)"]))
   updateSliderInput(session, "cdf_severe", value = unname(params["proportion of severe cases in patients with C. difficile infection"]))
   updateSliderInput(session, "sst_nf", value = unname(params["proportion of necrotizing fasciitis cases in patient with SST"]))
-                    
+  
   # Sidebar item for "Availability of First Choice Antibiotics"
-  updateSliderInput(session, "p_first", value = unname(params["probability of first-choice antibiotics"]))
+  # Populate checkboxGroupInput dynamically with all antibiotics
+    # Populate checkboxGroupInput dynamically with all antibiotics
+    updateCheckboxGroupInput(
+      session = session,
+      inputId = "selected_antibiotics",
+      selected =  unname(params[names(params) == "first-choice antibiotics"])  # Select all by default
+    )
+  
   
   # Sidebar item for "Prevalence of AMR"
   updateSliderInput(session, "esbl_prevalence", value = unname(params["prevalence of ESBL"]))
@@ -36,6 +43,5 @@ load_disease_inputs <- function(params, session) {
 
   # Sidebar item for "Total Admitted Patients"
   updateNumericInput(session, "admitted_patients", value = unname(params["total admitted patients"]))
-  updateNumericInput(session, "std_err", value = unname(params["std_err"]))
 
 }

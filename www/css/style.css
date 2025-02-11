@@ -7,6 +7,11 @@ body, p, h1, h2, h3, h4, h5, h6, span{
 div.navbar-custom-menu{
   float: left !important; 
 }
+div#sidebar_button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .sidebarSlider{
   display: flex; 
   align-items: center;  

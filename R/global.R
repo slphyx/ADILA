@@ -9,14 +9,40 @@ source("R/functions/generate_input_dataframe.R")
 source("R/functions/fluid_design.R")
 source("R/functions/Popover_sidebar.R")
 
-first_choice_list <- data.frame(Antibiotic=c("Amoxicillin",
+# first_choice_list <- data.frame(Antibiotic=c("Amoxicillin",
+#                                              "Amoxicillin/ clavulanic-acid",
+#                                              "Phenoxymethyl penicillin",
+#                                              "Ampicillin",
+#                                              "Cloxacillin",
+#                                              "Benzyl penicillin",
+#                                              "Gentamycin Amikacin",
+#                                              "Sulphamethoxazole-Trimethoprim",
+#                                              "Clindamycin",
+#                                              "Metronidazole",
+#                                              "Doxycycline",
+#                                              "Chloramphenicol",
+#                                              "Cefalexin",
+#                                              "Cefazolin",
+#                                              "Cefuroxime",
+#                                              "Cefotaxime",
+#                                              "Ceftriaxone",
+#                                              "Meropenem",
+#                                              "Piperacillin + Tazobactam",
+#                                              "Clarithromycin",
+#                                              "Vancomycin",
+#                                              "Ciprofloxacin"),stringsAsFactors = FALSE)
+
+
+# Adult does not include Sulfamethoxazole-Trimethoprim
+
+first_choice_list_adult <- data.frame(Antibiotic=c("Amoxicillin",
                                              "Amoxicillin/ clavulanic-acid",
                                              "Phenoxymethyl penicillin",
                                              "Ampicillin",
                                              "Cloxacillin",
                                              "Benzyl penicillin",
                                              "Gentamycin Amikacin",
-                                             "Sulphamethoxazole-Trimethoprim",
+                                             # "Sulphamethoxazole-Trimethoprim",
                                              "Clindamycin",
                                              "Metronidazole",
                                              "Doxycycline",
@@ -29,6 +55,30 @@ first_choice_list <- data.frame(Antibiotic=c("Amoxicillin",
                                              "Meropenem",
                                              "Piperacillin + Tazobactam",
                                              "Clarithromycin",
+                                             "Vancomycin",
+                                             "Ciprofloxacin"),stringsAsFactors = FALSE)
+
+# Children does not include Doxycycline and Clarithromycin.
+first_choice_list_child <- data.frame(Antibiotic=c("Amoxicillin",
+                                             "Amoxicillin/ clavulanic-acid",
+                                             "Phenoxymethyl penicillin",
+                                             "Ampicillin",
+                                             "Cloxacillin",
+                                             "Benzyl penicillin",
+                                             "Gentamycin Amikacin",
+                                             "Sulphamethoxazole-Trimethoprim",
+                                             "Clindamycin",
+                                             "Metronidazole",
+                                             # "Doxycycline",
+                                             "Chloramphenicol",
+                                             "Cefalexin",
+                                             "Cefazolin",
+                                             "Cefuroxime",
+                                             "Cefotaxime",
+                                             "Ceftriaxone",
+                                             "Meropenem",
+                                             "Piperacillin + Tazobactam",
+                                             # "Clarithromycin",
                                              "Vancomycin",
                                              "Ciprofloxacin"),stringsAsFactors = FALSE)
 

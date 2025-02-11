@@ -120,12 +120,14 @@ app_server <- function(session,input, output) {
     content = function(file) {
       # Write the dataset to the `file` that will be downloaded
       if(input$choices_ac == "adult"){
-      write.csv(data.frame(name_parameter = c(input_big()$adult_cases[,1],input_big()$para_data[,1],"std_err"),
-                           value = c(input_big()$adult_cases[,2],input_big()$para_data[,2],input_big()$std_err*100)) , file,
+        # input.adult
+      write.csv(data.frame(name_parameter = c(input_big()$adult_cases[,1],input_big()$adult_para_data[,1],rep("first-choice antibiotics",length(input$selected_antibiotics))),
+                           value = c(input_big()$adult_cases[,2],input_big()$adult_para_data[,2],input$selected_antibiotics)
+                           ) , file,
                 row.names=F)
       }else if(input$choices_ac == "child"){
-        write.csv(data.frame(name_parameter = c(input_big()$child_cases[,1],input_big()$para_data[,1],"std_err"),
-                             value = c(input_big()$child_cases[,2],input_big()$para_data[,2],input_big()$std_err*100)) , file,
+        write.csv(data.frame(name_parameter = c(input_big()$child_cases[,1],input_big()$child_para_data[,1],rep("first-choice antibiotics",length(input$selected_antibiotics))),
+                             value = c(input_big()$child_cases[,2],input_big()$child_para_data[,2],input$selected_antibiotics)) , file,
                   row.names=F)
       }
     }
@@ -135,6 +137,7 @@ app_server <- function(session,input, output) {
   # Reactive block to compute input.adult
   input_big <- reactive({
     req(!is.null(input$cap_severe_single_adult) & !is.null(input$cap_severe_single_child))
+
     # write.csv
     outlist <- NULL
     
@@ -160,7 +163,7 @@ app_server <- function(session,input, output) {
                 input$fn_cases,     input$sepsis_cases, input$sp_cases)
     )
     ######
-    p_first <- length(input$selected_antibiotics)/22
+    p_first <- length(input$selected_antibiotics)/length(first_choice_list_adult$Antibiotic)
     adult_para.data <- data.frame(
       parameter = c("probability of first-choice antibiotics", 
                     "proportion of severe cases in CAP patients", 
@@ -202,7 +205,7 @@ app_server <- function(session,input, output) {
                   input$uut_cases_adult,    input$sst_cases_adult,    input$bji_cases_adult,   input$cdif_cases_adult, 
                   input$fn_cases_adult,     input$sepsis_cases_adult, input$sp_cases_adult)
       )
-      p_first <- length(input$selected_antibiotics)/22
+      p_first <- length(input$selected_antibiotics_adult)/length(first_choice_list_adult$Antibiotic)
       adult_para.data <- data.frame(
         parameter = c("probability of first-choice antibiotics", 
                       "proportion of severe cases in CAP patients", 
@@ -423,7 +426,7 @@ app_server <- function(session,input, output) {
                   input$uut_cases,    input$sst_cases,    input$bji_cases,   input$cdif_cases,
                   input$fn_cases,     input$sepsis_cases, input$sp_cases)
       )
-      p_first <- length(input$selected_antibiotics)/22
+      p_first <- length(input$selected_antibiotics)/length(first_choice_list_child$Antibiotic)
       # Parameter value 
       child.para.data <- data.frame(
         parameter = c("probability of first-choice antibiotics", 
@@ -472,7 +475,7 @@ app_server <- function(session,input, output) {
                     input$fn_cases_child,     input$sepsis_cases_child, input$sp_cases_child)
         )
         # Parameter value 
-        p_first <- length(input$selected_antibiotics)/22
+        p_first <- length(input$selected_antibiotics)/length(first_choice_list_child$Antibiotic)
         child.para.data <- data.frame(
           parameter = c("probability of first-choice antibiotics", 
                         "proportion of severe cases in CAP patients", 
@@ -1778,9 +1781,9 @@ app_server <- function(session,input, output) {
   })
   
   
-  output$first_choice_table <- renderTable({
-    first_choice_list
-  })
+  # output$first_choice_table <- renderTable({
+  #   first_choice_list
+  # })
   
   output$adult_input_table2 <- renderTable({
     req(!is.null(input_big()$adult_para_data))
@@ -1839,7 +1842,7 @@ app_server <- function(session,input, output) {
     names(params_vec) <- params[,1]
 
     # Load parameters into the input fields
-    load_disease_inputs(params_vec, session)  # Load inputs function
+    load_disease_inputs(params_vec,input$choices_ac, session)  # Load inputs function
   })
   
   # UI - OUTCOME  -----------------------------------------------------
@@ -2127,47 +2130,59 @@ app_server <- function(session,input, output) {
     if(input$choices_ac=="adult"){
       show("cap_severe_single_adult")
       hide("cap_severe_single_child")
+      # Populate checkboxGroupInput dynamically with all antibiotics
+      updateCheckboxGroupInput(
+        session = session,
+        inputId = "selected_antibiotics",
+        choices = first_choice_list_adult$Antibiotic,  # Use Antibiotic column as choices
+        selected = first_choice_list_adult$Antibiotic  # Select all by default
+      )
     }else if(input$choices_ac=="child"){
       show("cap_severe_single_child")
       hide("cap_severe_single_adult")
+      # Populate checkboxGroupInput dynamically with all antibiotics
+      updateCheckboxGroupInput(
+        session = session,
+        inputId = "selected_antibiotics",
+        choices = first_choice_list_child$Antibiotic,  # Use Antibiotic column as choices
+        selected = first_choice_list_child$Antibiotic  # Select all by default
+      )
     }else{
       hide("cap_severe_single_adult")
       hide("cap_severe_single_child")
     }
   })
   
-  # Populate checkboxGroupInput dynamically with all antibiotics
-  updateCheckboxGroupInput(
-    session = session,
-    inputId = "selected_antibiotics",
-    choices = first_choice_list$Antibiotic,  # Use Antibiotic column as choices
-    selected = first_choice_list$Antibiotic  # Select all by default
-  )
+
   # Populate checkboxGroupInput dynamically with all antibiotics
   updateCheckboxGroupInput(
     session = session,
     inputId = "selected_antibiotics_adult",
-    choices = first_choice_list$Antibiotic,  # Use Antibiotic column as choices
-    selected = first_choice_list$Antibiotic  # Select all by default
+    choices = first_choice_list_adult$Antibiotic,  # Use Antibiotic column as choices
+    selected = first_choice_list_adult$Antibiotic  # Select all by default
   )
   # Populate checkboxGroupInput dynamically with all antibiotics
   updateCheckboxGroupInput(
     session = session,
     inputId = "selected_antibiotics_child",
-    choices = first_choice_list$Antibiotic,  # Use Antibiotic column as choices
-    selected = first_choice_list$Antibiotic  # Select all by default
+    choices = first_choice_list_child$Antibiotic,  # Use Antibiotic column as choices
+    selected = first_choice_list_child$Antibiotic  # Select all by default
   )
   # Display the count of selected antibiotics
   output$prob_1stchoice <- renderText({
-    paste("Probability of first-choice antibiotics: ", round(length(input$selected_antibiotics)/22,2))
+    if(input$choices_ac=="adult"){
+      paste("proportion of recommended first-choice antibiotics which are available: ", round(length(input$selected_antibiotics)/length(first_choice_list_adult$Antibiotic),2))
+    }else if(input$choices_ac=="child"){
+      paste("proportion of recommended first-choice antibiotics which are available: ", round(length(input$selected_antibiotics)/length(first_choice_list_child$Antibiotic),2))
+    }
   })
   
   output$prob_1stchoice_adult <- renderText({
-    paste("Probability of first-choice antibiotics: ", round(length(input$selected_antibiotics_adult)/22,2))
+    paste("proportion of recommended first-choice antibiotics which are available: ", round(length(input$selected_antibiotics_adult)/length(first_choice_list_adult$Antibiotic),2))
   })
   
   output$prob_1stchoice_child <- renderText({
-    paste("Probability of first-choice antibiotics: ", round(length(input$selected_antibiotics_child)/22,2))
+    paste("proportion of recommended first-choice antibiotics which are available: ", round(length(input$selected_antibiotics_child)/length(first_choice_list_child$Antibiotic),2))
   })
 
 }

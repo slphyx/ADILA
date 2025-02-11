@@ -12,7 +12,7 @@ app_ui <- dashboardPage(
 
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
-    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 35), "Antibiotic Data to Inform Local Action (ADILA)"),
+    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 25), "Antibiotic Data to Inform Local Action (ADILA)"),
     titleWidth = 600,
     # Header with actionLink buttons
     tags$li(actionLink("goto_intro", HTML("<b>Introduction</b>"), class = "btn btn-default"), class = "dropdown"),
@@ -229,6 +229,8 @@ app_ui <- dashboardPage(
       menuItem("Severity of cases", tabName = "severity_cases", 
                icon = icon("exclamation-triangle"),
                div(id = "severity_cases_inputs_single",
+                   tags$h6(class="poph5","*Click on the slider thumb to view the parameter information."),
+               
                    sliderInput("cap_severe_single_adult", tags$h5("Proportion of CAP cases which are severe"), min = 0, max = 1, value = 0.26, step = 0.01),
                    sliderInput("cap_severe_single_child", tags$h5("Proportion of CAP cases which are severe"), min = 0, max = 1, value = 0.64, step = 0.01),
                    div(id="severity_cases_inputs_child",
@@ -244,6 +246,7 @@ app_ui <- dashboardPage(
                    fluidRow(
                      tabsetPanel(
                        tabPanel("Adult",
+                                tags$h6(class="poph5","*Click on the slider thumb to view the parameter information."),
                                 sliderInput("cap_severe_adult", tags$h5("Proportion of CAP cases which are severe"), min = 0, max = 1, value = 0.26, step = 0.01),
                                 sliderInput("abd_severe_adult", tags$h5("Proportion of intra-abdominal infection cases which are severe"), min = 0, max = 1, value = 0.45, step = 0.01),
                                 sliderInput("uti_severe_adult", tags$h5("Proportion of upper UTI cases which are severe"), min = 0, max = 1, value = 0.16, step = 0.01),
@@ -251,6 +254,7 @@ app_ui <- dashboardPage(
                                 sliderInput("sst_nf_adult", tags$h5("Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infections"), min = 0, max = 0.2, value = 0.05, step = 0.01)
                        ),
                        tabPanel("Child",
+                                tags$h6(class="poph5","*Click on the slider thumb to view the parameter information."),
                                 sliderInput("cap_severe_child", tags$h5("Proportion of CAP cases which are severe"), min = 0, max = 1, value = 0.64, step = 0.01),
                                 sliderInput("cap_no_resp_child", tags$h5("proportion of severe CAP patients with no clinical response to first-line treatment (Penicillin + Gentamicin) after 48 hr"), min = 0, max = 1, value = 0.5, step = 0.01),
                                 sliderInput("hiv_severe_child", tags$h5("proportion of severe CAP patients with HIV infection"), min = 0, max = 1, value = 0.01, step = 0.01),
@@ -270,7 +274,9 @@ app_ui <- dashboardPage(
                div(id = "availability_antibiotics_inputs_single",
                    checkboxGroupInput(
                      inputId = "selected_antibiotics",
-                     label = "First-choice antibiotics (WHO AwaRe book):",
+                     label = list(tags$h5("Proportion of recommended first-choice antibiotics which are available in the hospital :"),
+                                  tags$h6("*Please de-select the box next to the antibiotic if it is not available in your hospital")
+                                  ),
                      choices = NULL,  # Initially empty; populated dynamically
                      selected = NULL  # Initially empty; populated dynamically
                    ),
@@ -282,7 +288,9 @@ app_ui <- dashboardPage(
                        tabPanel("Adult",
                                 checkboxGroupInput(
                                   inputId = "selected_antibiotics_adult",
-                                  label = "First-choice antibiotics (WHO AwaRe book):",
+                                  label = list(tags$h5("Proportion of recommended first-choice antibiotics which are available in the hospital :"),
+                                               tags$h6("*Please de-select the box next to the antibiotic if it is not available in your hospital")
+                                  ),
                                   choices = NULL,  # Initially empty; populated dynamically
                                   selected = NULL  # Initially empty; populated dynamically
                                 ),
@@ -291,7 +299,9 @@ app_ui <- dashboardPage(
                        tabPanel("Child",
                                 checkboxGroupInput(
                                   inputId = "selected_antibiotics_child",
-                                  label = "First-choice antibiotics (WHO AwaRe book):",
+                                  label = list(tags$h5("Proportion of recommended first-choice antibiotics which are available in the hospital :"),
+                                               tags$h6("*Please de-select the box next to the antibiotic if it is not available in your hospital")
+                                  ),
                                   choices = NULL,  # Initially empty; populated dynamically
                                   selected = NULL  # Initially empty; populated dynamically
                                 ),
@@ -388,33 +398,30 @@ app_ui <- dashboardPage(
              # Introduction Section
              h1("Introduction"),
              h4(
-               tags$ul(
-                 tags$li("This is an interactive, open-software dashboard to estimate expected empirical antibiotic use in hospitals in a given day."),
-                 tags$li("It is a rapid, reproducible and easy-to-use platform that enables users without prior software experience to get expected pattern of empirical antibiotic usage in hospitals"),
-                 tags$li("The dashboard is part of the Antibiotic Data to Inform Local Action (ADILA) project"),
-                 tags$li("The estimation of expected empirical antibiotic use is based on treatment guidelines for common infections, as specified in the WHO AWaRe antibiotic book"),
-                 tags$li("Expected use refer to the anticipated empirical prescription per day, considering patients with varying infections, case severity, access to recommended first-choice antibiotics, and the local prevalence of antimicrobial resistance (AMR)"),
-                 tags$li("A simplified model example illustrates how expected empirical antibiotic use is estimated for 10 adult patients with bacterial meningitis. For demonstration purpose, the calculation focuses only on the first-choice branch, with a similar method apply to the second-choice branch. PDD = Prescribed daily dose, DDD = Defined daily dose."),
+               tags$ol(
+                 tags$li("This interactive online tool estimates expected empirical antibiotic use in hospitals on a given day assuming prescribing follows the WHO AWaRe guidelines (",tags$a(href="https://www.who.int/publications/i/item/9789240062382",target='_blank', "https://www.who.int/publications/i/item/9789240062382"),  ")."),
+                 tags$li("Expected use refers to the anticipated empirical antibiotic use based on local data or assumptions about numbers of patients with different types of infections, their severity, availability of recommended first-choice antibiotics, and local prevalence of antimicrobial resistance in different pathogens."),
+                 tags$li("A 2-minute video explaining how the estimation is done is available here (video link)."),
                  br(),
-                 tags$img(src = "img/intro_model.png", width = "85%")
+                 # tags$img(src = "img/intro_model.png", width = "85%")
                )
              ),
              
-             # What Users Can Do Section
-             h1("What you (users) can do:"),
-             h4(
-               tags$ul(
-                 tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local prevalence of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
-                 tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and 
-                              <span style='color:#4DAE42;'>A</span><span style='color:#dfb31d;'>Wa</span><span style='color:#DC202A;'>Re</span>
-                              (<span style='color:#4DAE42;'>Access</span>, 
-                              <span style='color:#dfb31d;'>Watch</span>, 
-                              <span style='color:#DC202A;'>Reserve</span>) 
-                              antibiotic classification.")),
-                 tags$li("You can visualize the expected estimates"),
-                 tags$li("You can download output tables and figures"),
-               )
-             )
+             # # What Users Can Do Section
+             # h1("What you (users) can do:"),
+             # h4(
+             #   tags$ul(
+             #     tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local prevalence of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
+             #     tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and 
+             #                  <span style='color:#4DAE42;'>A</span><span style='color:#dfb31d;'>Wa</span><span style='color:#DC202A;'>Re</span>
+             #                  (<span style='color:#4DAE42;'>Access</span>, 
+             #                  <span style='color:#dfb31d;'>Watch</span>, 
+             #                  <span style='color:#DC202A;'>Reserve</span>) 
+             #                  antibiotic classification.")),
+             #     tags$li("You can visualize the expected estimates"),
+             #     tags$li("You can download output tables and figures"),
+             #   )
+             # )
       ),
       
       # Image on the right
@@ -427,6 +434,8 @@ app_ui <- dashboardPage(
       column(12,
              # Introduction Section
              h1("How to use the dashboard"),
+             tabsetPanel(
+               tabPanel("Input",
              h4(
                tags$ul(
                  tags$li(tags$b("Step 1:")," Users need to select type of patients (adult or children).",
@@ -459,7 +468,33 @@ app_ui <- dashboardPage(
                          tags$img(src = "img/howto6.png", height = "50%",width="50%")
                  )
                ))
+               ),
+             tabPanel("CSV File",
+                          h4(
+                            tags$ul(
+                              tags$li(tags$b("Step 1:")," Download the inputs.",
+                                      tags$br(),tags$br(),
+                                      tags$img(src = "img/csvfile1.png", height = "50%",width="50%")
+                              ), 
+                              tags$br(),tags$br(),
+                              tags$li(tags$b("Step 2:")," Changes the values of parameters as necessary in the downloaded csv.file.",
+                                      tags$br(),tags$br(),
+                                      tags$img(src = "img/csvfile2.png", height = "50%",width="50%"),
+                              ),
+                              tags$br(),tags$br(),
+                              tags$li(tags$b("Step 3:")," Save the updated csv.file.",
+                                      tags$br(),tags$br(),
+                                      tags$img(src = "img/csvfile3.png", height = "50%",width="50%"),
+                              ),
+                              tags$br(),tags$br(),
+                              tags$li(tags$b("Step 4:")," Use “UPLOAD INPUT FILE” button to upload the updated csv.file.",
+                                      tags$br(),tags$br(),
+                                      tags$img(src = "img/csvfile4.png", height = "50%",width="50%"),
+                              ),
+                            ))
              )
+             )
+      )
     ),
     fluidRow(id = "about_text",
       column(12,
@@ -526,7 +561,7 @@ app_ui <- dashboardPage(
     tags$div(id="partnersImage",
              style = "text-align: center;", 
       tags$img(
-        src = "img/partners_image.png", width="70%" ,height="70%"
+        src = "img/partners_image.png", width="50%" ,height="50%"
       )
     ),
     tags$div(id = "goTopButton", "Go to Top"),
