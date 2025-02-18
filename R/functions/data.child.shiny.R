@@ -41,8 +41,8 @@ child.para.data <- data.frame(
                 "proportion(risk) of severe CAP patients with HIV infection",
                 "probability(risk) of multi-drug resistant infection in HAP patients", 
                 "proportion of severe cases in patients with intra-abdominal infection",
-                "proportion of sever cases in patients with acute pyelonephritis (upper UTI)", 
-                "proportion of sever cases in patients with C. difficle infection", 
+                "proportion of severe cases in patients with acute pyelonephritis (upper UTI)", 
+                "proportion of severe cases in patients with C. difficile infection", 
                 "proportion of necrotizing fasciitis cases in patient with SST",
                 "prevalence of ESBL", "prevalence of MRSA", 
                 "prevalence of Strep pyogenes infection in necrotizing fasciitis",
@@ -70,7 +70,7 @@ pt.atb   <- sum(child_cases$cases)
 # Total admitted patients
 pt.admt <- child.para.data$value[child.para.data$parameter=="total admitted patients"]
 
-# Probability of first-choice antibiotics
+# Probability of first-choice antibiotics 
 p.first.est <- child.para.data$value[child.para.data$parameter=="probability of first-choice antibiotics"]
 p.first.para.alpha <- (p.first.est * 100) + 1
 p.first.para.beta  <- ((1-p.first.est) * 100) + 1
@@ -141,13 +141,13 @@ beta.abd  <- (1 - p.sev.abd.est) * child_cases$cases[child_cases$syndrome=="Pati
 p.sev.abd <- rbeta(1, 1+alpha.abd, 1+beta.abd)
 
 # Probability of upper UTI (Pyelonephritis) with severe cases
-p.sev.uti.est <- child.para.data$value[child.para.data$parameter=="proportion of sever cases in patients with acute pyelonephritis (upper UTI)"]
+p.sev.uti.est <- child.para.data$value[child.para.data$parameter=="proportion of severe cases in patients with acute pyelonephritis (upper UTI)"]
 alpha.uti <- p.sev.uti.est * child_cases$cases[child_cases$syndrome=="Patients with upper UTI"]
 beta.uti  <- (1 - p.sev.uti.est) * child_cases$cases[child_cases$syndrome=="Patients with upper UTI"]
 p.sev.uti <- rbeta(1, 1+alpha.uti, 1+beta.uti)
 
 # Probability of C. difficile with severe cases
-p.sev.cdf.est <- child.para.data$value[child.para.data$parameter=="proportion of sever cases in patients with C. difficle infection"]
+p.sev.cdf.est <- child.para.data$value[child.para.data$parameter=="proportion of severe cases in patients with C. difficile infection"]
 alpha.cdf <- p.sev.cdf.est * child_cases$cases[child_cases$syndrome=="Patients with Clostridioides difficile infection (CDIF)"]
 beta.cdf  <- (1 - p.sev.cdf.est) * child_cases$cases[child_cases$syndrome=="Patients with Clostridioides difficile infection (CDIF)"]
 p.sev.cdf <- rbeta(1, 1+alpha.cdf, 1+beta.cdf)
@@ -168,59 +168,59 @@ type.surg <- rdirichlet(1, c(10,10,10,10))
 input.child <- data.frame(
   
   # Patients on Antimicrobial 
-  pt.atb   <- pt.atb,
+  pt.atb   = pt.atb,
   # Total admitted patients
-  pt.admt  <- pt.admt,
+  pt.admt  = pt.admt,
   
   # Probability of first choice antibiotic 
-  p.first.cap <- p.first.cap, 
-  p.first.bm  <- p.first.bm,
-  p.first.abd <- p.first.abd,
-  p.first.bj  <- p.first.bj, 
+  p.first.cap = p.first.cap, 
+  p.first.bm  = p.first.bm,
+  p.first.abd = p.first.abd,
+  p.first.bj  = p.first.bj, 
   
   # Probability of each syndrome
-  p.cap     <- syd.child[1],
-  p.hap     <- syd.child[2],
-  p.bmen    <- syd.child[3],
-  p.abd     <- syd.child[4],
-  p.uuti    <- syd.child[5],
-  p.sst     <- syd.child[6],
-  p.bj      <- syd.child[7],
-  p.clodiff <- syd.child[8],
-  p.fneut   <- syd.child[9],
-  p.sep     <- syd.child[10],
-  p.sug     <- syd.child[11],
+  p.cap     = syd.child[1],
+  p.hap     = syd.child[2],
+  p.bmen    = syd.child[3],
+  p.abd     = syd.child[4],
+  p.uuti    = syd.child[5],
+  p.sst     = syd.child[6],
+  p.bj      = syd.child[7],
+  p.clodiff = syd.child[8],
+  p.fneut   = syd.child[9],
+  p.sep     = syd.child[10],
+  p.sug     = syd.child[11],
   
   # Severity for each syndrome 
   
-  p.sev.cap      <- p.sev.cap, 
-  p.no.resp.cap  <- p.no.resp.cap,
-  p.hiv          <- p.hiv,
-  p.highrisk.hap <- p.highrisk.hap, 
-  p.sev.abd      <- p.sev.abd, 
-  p.sev.uti      <- p.sev.uti, 
-  p.sev.cdf      <- p.sev.cdf, 
+  p.sev.cap      = p.sev.cap, 
+  p.no.resp.cap  = p.no.resp.cap,
+  p.hiv          = p.hiv,
+  p.highrisk.hap = p.highrisk.hap, 
+  p.sev.abd      = p.sev.abd, 
+  p.sev.uti      = p.sev.uti, 
+  p.sev.cdf      = p.sev.cdf, 
   
   # Probability of necrotizing fasciitis and pyomyositis among pt with SST
-  p.nf    <- p.nf,
-  p.pyomy <- (1- p.nf), 
+  p.nf    = p.nf,
+  p.pyomy = (1- p.nf), 
   
   # Prevalence of AMR
-  p.esbl.abd <- p.esbl.abd,
-  p.esbl.uti <- p.esbl.uti,
-  p.esbl.fn  <- p.esbl.fn,
-  p.g.neg.fn <- p.g.neg.fn,
+  p.esbl.abd = p.esbl.abd,
+  p.esbl.uti = p.esbl.uti,
+  p.esbl.fn  = p.esbl.fn,
+  p.g.neg.fn = p.g.neg.fn,
   
-  p.mrsa.sst <- p.mrsa.sst,
-  p.mrsa.bj  <- p.mrsa.bj,
-  p.mrsa.fn  <- p.mrsa.fn, 
+  p.mrsa.sst = p.mrsa.sst,
+  p.mrsa.bj  = p.mrsa.bj,
+  p.mrsa.fn  = p.mrsa.fn, 
   
-  p.Strep.pyogene <- p.Strep.pyogene, # Probability of Strep pyogenes infection in necrotizing fasciitis 
+  p.Strep.pyogene = p.Strep.pyogene, # Probability of Strep pyogenes infection in necrotizing fasciitis 
   
   # Type of surgical prophylaxis 
-  p.bowsg  <- type.surg[1],
-  p.clean  <- type.surg[2],
-  p.urosg  <- type.surg[3],
-  p.contsg <- type.surg[4]
+  p.bowsg  = type.surg[1],
+  p.clean  = type.surg[2],
+  p.urosg  = type.surg[3],
+  p.contsg = type.surg[4]
 )
 

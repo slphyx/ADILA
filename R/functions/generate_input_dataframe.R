@@ -250,13 +250,13 @@ generate_input_dataframe_child <- function(child_cases, child.para.data, std_err
   p.sev.abd <- rbeta(1, 1+alpha.abd, 1+beta.abd)
   
   # Probability of upper UTI (Pyelonephritis) with severe cases
-  p.sev.uti.est <- child.para.data$value[child.para.data$parameter=="proportion of sever cases in patients with acute pyelonephritis (upper UTI)"]
+  p.sev.uti.est <- child.para.data$value[child.para.data$parameter=="proportion of severe cases in patients with acute pyelonephritis (upper UTI)"]
   alpha.uti <- p.sev.uti.est * child_cases$cases[child_cases$syndrome=="Patients with upper UTI"]
   beta.uti  <- (1 - p.sev.uti.est) * child_cases$cases[child_cases$syndrome=="Patients with upper UTI"]
   p.sev.uti <- rbeta(1, 1+alpha.uti, 1+beta.uti)
   
   # Probability of C. difficile with severe cases
-  p.sev.cdf.est <- child.para.data$value[child.para.data$parameter=="proportion of sever cases in patients with C. difficle infection"]
+  p.sev.cdf.est <- child.para.data$value[child.para.data$parameter=="proportion of severe cases in patients with C. difficile infection"]
   alpha.cdf <- p.sev.cdf.est * child_cases$cases[child_cases$syndrome=="Patients with Clostridioides difficile infection (CDIF)"]
   beta.cdf  <- (1 - p.sev.cdf.est) * child_cases$cases[child_cases$syndrome=="Patients with Clostridioides difficile infection (CDIF)"]
   p.sev.cdf <- rbeta(1, 1+alpha.cdf, 1+beta.cdf)

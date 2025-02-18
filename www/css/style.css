@@ -282,10 +282,39 @@ input.form-control{
 
 .popover {
   color: black;
+  max-width: 600px !important;
 }
 a.link-pop{
   color: #2c6dbc !important;
 }
 .poph5{
  margin-left: 15px !important; 
+}
+div.container-pop {
+            background-color: #fff8dc !important;
+            border: 2px solid #8b8000 !important;
+            padding: 20px;
+            width: 100%;
+            margin: auto;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* First level unordered list */
+.container-pop > ul {
+    list-style-type: disc;  /* Square bullets for first-level */
+}
+
+/* Second level unordered list */
+.container-pop ul ul {
+    list-style-type: "- ";  /* Circle bullets for second-level */
+}
+
+/* Third level unordered list */
+.container-pop ul ul ul {
+    list-style-type: circle;  /* Default bullets for third-level */
+}
+
+modal-header{
+    background-color: #c33;
+    color: #eee;
 }

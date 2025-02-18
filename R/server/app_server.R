@@ -115,6 +115,8 @@ app_server <- function(session,input, output) {
       paste0("input_data_adult.csv")
       }else if(input$choices_ac == "child"){
         paste0("input_data_child.csv")
+      }else if(input$choices_ac == "both"){
+        paste0("input_data_both.csv")
       }
     },
     content = function(file) {
@@ -129,6 +131,18 @@ app_server <- function(session,input, output) {
         write.csv(data.frame(name_parameter = c(input_big()$child_cases[,1],input_big()$child_para_data[,1],rep("first-choice antibiotics",length(input$selected_antibiotics))),
                              value = c(input_big()$child_cases[,2],input_big()$child_para_data[,2],input$selected_antibiotics)) , file,
                   row.names=F)
+      }else if(input$choices_ac == "both"){
+        write.csv(data.frame(name_parameter = c(input_big()$adult_cases[,1],input_big()$adult_para_data[,1],rep("first-choice antibiotics",length(input$selected_antibiotics_adult)),
+                                                "END_ADULT",
+                                                input_big()$child_cases[,1],input_big()$child_para_data[,1],rep("first-choice antibiotics",length(input$selected_antibiotics_child)),
+                                                "END_CHILD"
+                                                ),
+                             value = c(input_big()$adult_cases[,2],input_big()$adult_para_data[,2],input$selected_antibiotics_adult,
+                             "END_ADULT",
+                             input_big()$child_cases[,2],input_big()$child_para_data[,2],input$selected_antibiotics_child,
+                             "END_CHILD"
+                             )) , file,
+                  row.names=F)
       }
     }
   )
@@ -136,8 +150,7 @@ app_server <- function(session,input, output) {
 
   # Reactive block to compute input.adult
   input_big <- reactive({
-    req(!is.null(input$cap_severe_single_adult) & !is.null(input$cap_severe_single_child))
-
+    req(!is.null(input$cap_severe_single_adult) & !is.null(input$cap_severe_single_child) & !is.null(input$cap_severe_adult)& !is.null(input$cap_severe_child))
     # write.csv
     outlist <- NULL
     
@@ -164,6 +177,9 @@ app_server <- function(session,input, output) {
     )
     ######
     p_first <- length(input$selected_antibiotics)/length(first_choice_list_adult$Antibiotic)
+    if(p_first > 1){
+      p_first <- 1
+    }
     adult_para.data <- data.frame(
       parameter = c("probability of first-choice antibiotics", 
                     "proportion of severe cases in CAP patients", 
@@ -206,6 +222,7 @@ app_server <- function(session,input, output) {
                   input$fn_cases_adult,     input$sepsis_cases_adult, input$sp_cases_adult)
       )
       p_first <- length(input$selected_antibiotics_adult)/length(first_choice_list_adult$Antibiotic)
+      
       adult_para.data <- data.frame(
         parameter = c("probability of first-choice antibiotics", 
                       "proportion of severe cases in CAP patients", 
@@ -244,6 +261,7 @@ app_server <- function(session,input, output) {
 
     p.first.para.alpha <- (p.first.est * 100) + 1
     p.first.para.beta  <- ((1-p.first.est) * 100) + 1
+
     p.first <- rbeta(1, p.first.para.alpha, p.first.para.beta)
     
     # Availability of first-choice antibiotic for specific infections
@@ -427,6 +445,9 @@ app_server <- function(session,input, output) {
                   input$fn_cases,     input$sepsis_cases, input$sp_cases)
       )
       p_first <- length(input$selected_antibiotics)/length(first_choice_list_child$Antibiotic)
+      if(p_first > 1){
+        p_first <- 1
+      }
       # Parameter value 
       child.para.data <- data.frame(
         parameter = c("probability of first-choice antibiotics", 
@@ -435,8 +456,8 @@ app_server <- function(session,input, output) {
                       "proportion(risk) of severe CAP patients with HIV infection",
                       "probability(risk) of multi-drug resistant infection in HAP patients", 
                       "proportion of severe cases in patients with intra-abdominal infection",
-                      "proportion of sever cases in patients with acute pyelonephritis (upper UTI)", 
-                      "proportion of sever cases in patients with C. difficle infection", 
+                      "proportion of severe cases in patients with acute pyelonephritis (upper UTI)", 
+                      "proportion of severe cases in patients with C. difficile infection", 
                       "proportion of necrotizing fasciitis cases in patient with SST",
                       "prevalence of ESBL", "prevalence of MRSA", 
                       "prevalence of Strep pyogenes infection in necrotizing fasciitis",
@@ -475,7 +496,7 @@ app_server <- function(session,input, output) {
                     input$fn_cases_child,     input$sepsis_cases_child, input$sp_cases_child)
         )
         # Parameter value 
-        p_first <- length(input$selected_antibiotics)/length(first_choice_list_child$Antibiotic)
+        p_first <- length(input$selected_antibiotics_child)/length(first_choice_list_child$Antibiotic)
         child.para.data <- data.frame(
           parameter = c("probability of first-choice antibiotics", 
                         "proportion of severe cases in CAP patients", 
@@ -483,8 +504,8 @@ app_server <- function(session,input, output) {
                         "proportion(risk) of severe CAP patients with HIV infection",
                         "probability(risk) of multi-drug resistant infection in HAP patients", 
                         "proportion of severe cases in patients with intra-abdominal infection",
-                        "proportion of sever cases in patients with acute pyelonephritis (upper UTI)", 
-                        "proportion of sever cases in patients with C. difficle infection", 
+                        "proportion of severe cases in patients with acute pyelonephritis (upper UTI)", 
+                        "proportion of severe cases in patients with C. difficile infection", 
                         "proportion of necrotizing fasciitis cases in patient with SST",
                         "prevalence of ESBL", "prevalence of MRSA", 
                         "prevalence of Strep pyogenes infection in necrotizing fasciitis",
@@ -515,7 +536,6 @@ app_server <- function(session,input, output) {
       pt.atb   <- sum(child_cases$cases)
       # Total admitted patients
       pt.admt <- child.para.data$value[child.para.data$parameter=="total admitted patients"]
-      
       # Probability of first-choice antibiotics
       p.first.est <- child.para.data$value[child.para.data$parameter=="probability of first-choice antibiotics"]
       p.first.para.alpha <- (p.first.est * 100) + 1
@@ -587,13 +607,13 @@ app_server <- function(session,input, output) {
       p.sev.abd <- rbeta(1, 1+alpha.abd, 1+beta.abd)
 
       # Probability of upper UTI (Pyelonephritis) with severe cases
-      p.sev.uti.est <- child.para.data$value[child.para.data$parameter=="proportion of sever cases in patients with acute pyelonephritis (upper UTI)"]
+      p.sev.uti.est <- child.para.data$value[child.para.data$parameter=="proportion of severe cases in patients with acute pyelonephritis (upper UTI)"]
       alpha.uti <- p.sev.uti.est * child_cases$cases[child_cases$syndrome=="Patients with upper UTI"]
       beta.uti  <- (1 - p.sev.uti.est) * child_cases$cases[child_cases$syndrome=="Patients with upper UTI"]
       p.sev.uti <- rbeta(1, 1+alpha.uti, 1+beta.uti)
       
       # Probability of C. difficile with severe cases
-      p.sev.cdf.est <- child.para.data$value[child.para.data$parameter=="proportion of sever cases in patients with C. difficle infection"]
+      p.sev.cdf.est <- child.para.data$value[child.para.data$parameter=="proportion of severe cases in patients with C. difficile infection"]
       alpha.cdf <- p.sev.cdf.est * child_cases$cases[child_cases$syndrome=="Patients with Clostridioides difficile infection (CDIF)"]
       beta.cdf  <- (1 - p.sev.cdf.est) * child_cases$cases[child_cases$syndrome=="Patients with Clostridioides difficile infection (CDIF)"]
       p.sev.cdf <- rbeta(1, 1+alpha.cdf, 1+beta.cdf)
@@ -691,49 +711,6 @@ app_server <- function(session,input, output) {
     input_big()$input.adult
   })
   
-  # Observe changes in `admitted_patients` and show warning if below total enter cases
-  observe({
-    value_fin$obseveing <- 1
-    if(input$choices_ac == "adult"){
-      show("type_patients_inputs_single")
-      show("severity_cases_inputs_single")
-      show("availability_antibiotics_inputs_single")
-      show("prevalence_amr_inputs_single")
-      show("total_patients_inputs_single")
-      hide("severity_cases_inputs_child")
-      
-      hide("type_patients_inputs_both")
-      hide("severity_cases_inputs_both")
-      hide("availability_antibiotics_inputs_both")
-      hide("prevalence_amr_inputs_both")
-      hide("total_patients_inputs_both")
-    }else if (input$choices_ac == "child"){
-      show("type_patients_inputs_single")
-      show("severity_cases_inputs_single")
-      show("availability_antibiotics_inputs_single")
-      show("prevalence_amr_inputs_single")
-      show("total_patients_inputs_single")
-      show("severity_cases_inputs_child")
-      
-      hide("type_patients_inputs_both")
-      hide("severity_cases_inputs_both")
-      hide("availability_antibiotics_inputs_both")
-      hide("prevalence_amr_inputs_both")
-      hide("total_patients_inputs_both")
-    }else{
-      hide("type_patients_inputs_single")
-      hide("severity_cases_inputs_single")
-      hide("availability_antibiotics_inputs_single")
-      hide("prevalence_amr_inputs_single")
-      hide("total_patients_inputs_single")
-      
-      show("type_patients_inputs_both")
-      show("severity_cases_inputs_both")
-      show("availability_antibiotics_inputs_both")
-      show("prevalence_amr_inputs_both")
-      show("total_patients_inputs_both")
-    }
-  })
   
   observeEvent(c(input$admitted_patients,input$cap_cases , input$hap_cases,input$bm_cases,
                  input$ia_cases, input$uut_cases,    input$sst_cases,    input$bji_cases, 
@@ -758,7 +735,7 @@ app_server <- function(session,input, output) {
       }else if(input$admitted_patients < value_fin$TotalAdmittedPatient){
         #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
         shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
-                                      Total admitted patients mustn't be less than ","\"",value_fin$TotalAdmittedPatient , "\""), type = "warning")
+                                      Total admitted patients mustn't be more than ","\"",input$admitted_patients, "\" total = ",value_fin$TotalAdmittedPatient ), type = "warning")
         disable("run_model")
       }else if(!value_fin$run){
         disable("run_model")
@@ -775,12 +752,12 @@ app_server <- function(session,input, output) {
       }else if(input$admitted_patients_adult < value_fin$TotalAdmittedPatient_adult ){
         #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
         shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
-                                      Total admitted patients (Adult) mustn't be less than ","\"",value_fin$TotalAdmittedPatient_adult , "\""), type = "warning")
+                                      Total admitted patients (Adult) mustn't be more than ","\"",input$admitted_patients_adult , "\" total = ",value_fin$TotalAdmittedPatient_adult), type = "warning")
         disable("run_model")
       }else if(input$admitted_patients_child < value_fin$TotalAdmittedPatient_child){
         #showNotification("Warning: The number of total admitted patients is below the sum of all patients with different infections !", type = "warning", duration = 5)
         shinyalert("Warning!", paste0("Simulated total must meet or exceed combined infected cases!\n 
-                                      Total admitted patients (Child) mustn't be less than ","\"",value_fin$TotalAdmittedPatient_child , "\""), type = "warning")
+                                      Total admitted patients (Child) mustn't be more than ","\"",input$admitted_patients_child, "\" total = ",value_fin$TotalAdmittedPatient_child ), type = "warning")
         disable("run_model")
       }else if(!value_fin$run){
         disable("run_model")
@@ -826,6 +803,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -844,6 +822,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -863,6 +842,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
@@ -882,6 +862,7 @@ app_server <- function(session,input, output) {
       tbl_summary(
         by = NULL,
         statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+        type = all_categorical() ~ "continuous",
         missing = "no"
       ) %>%
       modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
@@ -1036,6 +1017,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -1054,6 +1036,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -1073,6 +1056,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DOT)**") %>%
@@ -1092,6 +1076,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DOT)**") %>%
@@ -1243,6 +1228,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -1261,6 +1247,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -1280,6 +1267,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
@@ -1299,6 +1287,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DDD)**") %>%
@@ -1454,6 +1443,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -1472,6 +1462,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Description**", stat_0 = "**Expected usage**") %>%
@@ -1491,6 +1482,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DOT)**") %>%
@@ -1510,6 +1502,7 @@ app_server <- function(session,input, output) {
         tbl_summary(
           by = NULL,
           statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+          type = all_categorical() ~ "continuous",
           missing = "no"
         ) %>%
         modify_header(label="**Antibiotic class**", stat_0 = "**Expected usage (DOT)**") %>%
@@ -1836,13 +1829,41 @@ app_server <- function(session,input, output) {
   
   observeEvent(input$load_params, {
     req(input$load_params)
-
+    if(input$choices_ac != "both"){
     params <- read.csv(input$load_params$datapath)
     params_vec <- c(params[,2])
     names(params_vec) <- params[,1]
 
     # Load parameters into the input fields
     load_disease_inputs(params_vec,input$choices_ac, session)  # Load inputs function
+    }else{
+      params <- read.csv(input$load_params$datapath)
+      params_vec <- params[,2]
+      names(params_vec) <- params[,1]
+      
+      # Find the index of "END"
+      end_idx <- which(names(params_vec) == "END_ADULT")
+
+      if(length(end_idx) == 0){
+        showModal(modalDialog(
+          title = "Warning",
+          html("An error occurred: CSV format isn't correct"),
+          easyClose = TRUE,
+          footer = modalButton("OK"),
+          size = "m"  # Medium-sized modal
+        ))
+        return()
+      }
+      
+      # Separate into two groups
+      params_adult <- params_vec[1:(end_idx - 1)]
+      params_child <- params_vec[(end_idx + 1):length(params_vec)]
+      # print(params_adult)
+      # print(params_child)
+      # Load parameters into the input fields
+      load_disease_inputs_adult(params_adult,input$choices_ac, session)  # Load inputs function
+      load_disease_inputs_child(params_child,input$choices_ac, session)  # Load inputs function
+    }
   })
   
   # UI - OUTCOME  -----------------------------------------------------
@@ -1978,58 +1999,32 @@ app_server <- function(session,input, output) {
   # Popover ####
   popover_id <- reactiveVal("cap_severe_1")  # Initial popover ID
   #### cap_severe #####
-  addPopover(session,"cap_severe_adult",
-             HTML("<p>Severe cases are those with a CURB-65 score of&nbsp; &ge; 2.</p>
-  <p>The default value (0.26) is based on a study that evaluated different severity scoring systems in 1640
-  hospitalised CAP patients in a hospital affiliated to Zhejiang University in China
-  (doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.1038/srep22911'>10.1038/srep22911</a>)</p>
-  <p>Severity is defined by the <strong>CURB-65</strong> severity scoring system (WHO AWaRe book).</p>
-                    <img width='240' src='img/cap_severe_adult_pic.png' alt='' />"), 
-             placement = "right", trigger = "click", options = NULL)
+  addPopover(session,"cap_severe_adult",includeHTML("www/popover_text/cap_severe_adult.html"),
+             placement = "bottom", trigger = "click", options = NULL)
   
   addPopover(session,"cap_severe_single_adult",
-             HTML("<p>Severe cases are those with a CURB-65 score of&nbsp; &ge; 2.</p>
-  <p>The default value (0.26) is based on a study that evaluated different severity scoring systems in 1640
-  hospitalised CAP patients in a hospital affiliated to Zhejiang University in China
-  (doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.1038/srep22911'>10.1038/srep22911</a>)</p>
-  <p>Severity is defined by the <strong>CURB-65</strong> severity scoring system (WHO AWaRe book).</p>
-                    <img width='240' src='img/cap_severe_adult_pic.png' alt='' />"), 
-             placement = "right", trigger = "click", options = NULL)
+             includeHTML("www/popover_text/cap_severe_adult.html"), 
+             placement = "bottom", trigger = "click", options = NULL)
 
   addPopover(session,"cap_severe_child",
-             HTML("<p>The default value (0.64) is based on a study that investigated incidence and risk factors for severe pneumonia
-             in children hospitalized with pneumonia in Ujjain, India. (doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.3390/ijerph17134637'>10.3390/ijerph17134637</a>)</p>
-  <p><strong>WHO AWaRe book definition </strong></p>
-                  <img width='240' src='img/cap_severe_child_pic.png' alt='' />"), 
-             placement = "right", trigger = "click", options = NULL)
+             includeHTML("www/popover_text/cap_severe_child.html"), 
+             placement = "bottom", trigger = "click", options = NULL)
   
   addPopover(session,"cap_severe_single_child",
-             HTML("<p>The default value (0.64) is based on a study that investigated incidence and risk factors for severe pneumonia
-             in children hospitalized with pneumonia in Ujjain, India. (doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.3390/ijerph17134637'>10.3390/ijerph17134637</a>)</p>
-  <p><strong>WHO AWaRe book definition </strong></p>
-                  <img width='240' src='img/cap_severe_child_pic.png' alt='' />"), 
-             placement = "right", trigger = "click", options = NULL)
+             includeHTML("www/popover_text/cap_severe_child.html"),
+             placement = "bottom", trigger = "click", options = NULL)
   
   ####abd_severe #####
   addPopover(session,"abd_severe",
-             HTML("<p>The default value (0.45) is based on a multicentre prospective study that recruited 567 hospitalised patients with acute cholecystitis patients worldwide.
-             doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.1016/j.ijsu.2015.07.013'>10.1016/j.ijsu.2015.07.013</a></p>
-                  <p><strong>WHO AWaRe book</strong></p>
-                    <img width='240' src='img/abd_severe_pic.png' alt='' />"), 
+             includeHTML("www/popover_text/abd_severe.html"),
              placement = "right", trigger = "click", options = NULL)
   
   addPopover(session,"abd_severe_adult",
-             HTML("<p>The default value (0.45) is based on a multicentre prospective study that recruited 567 hospitalised patients with acute cholecystitis patients worldwide.
-             doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.1016/j.ijsu.2015.07.013'>10.1016/j.ijsu.2015.07.013</a></p>
-                  <p><strong>WHO AWaRe book</strong></p>
-                    <img width='240' src='img/abd_severe_pic.png' alt='' />"), 
+             includeHTML("www/popover_text/abd_severe.html"),
              placement = "right", trigger = "click", options = NULL)
   
   addPopover(session,"abd_severe_child",
-             HTML("<p>The default value (0.45) is based on a multicentre prospective study that recruited 567 hospitalised patients with acute cholecystitis patients worldwide.
-             doi:&nbsp;<a class='link-pop' target='_blank' href='https://doi.org/10.1016/j.ijsu.2015.07.013'>10.1016/j.ijsu.2015.07.013</a></p>
-                  <p><strong>WHO AWaRe book</strong></p>
-                    <img width='240' src='img/abd_severe_pic.png' alt='' />"), 
+             includeHTML("www/popover_text/abd_severe.html"),
              placement = "right", trigger = "click", options = NULL)
   
   #### uti_severe #####
@@ -2059,22 +2054,13 @@ app_server <- function(session,input, output) {
   
   #### cdf_severe #####
   addPopover(session,"cdf_severe",
-             HTML("<p>The default value (0.36) is based on a retrospective study of 857 hospitalised patients with CDI episodes admitted to two Swiss university hospitals. 
-             (DOI: <a class='link-pop' target='_blank' href='https://doi.org/10.1016/j.idnow.2022.05.002'> 10.1016/j.idnow.2022.05.002</a>)</p>
-                   <p><strong>WHO AWaRe book</strong></p>
-                  <img width='240' src='img/cdf_severe_pic.png' alt='' />"), 
+             includeHTML("www/popover_text/cdf_severe.html"),
              placement = "right", trigger = "click", options = NULL)
   addPopover(session,"cdf_severe_adult",
-             HTML("<p>The default value (0.36) is based on a retrospective study of 857 hospitalised patients with CDI episodes admitted to two Swiss university hospitals. 
-             (DOI: <a class='link-pop' target='_blank' href='https://doi.org/10.1016/j.idnow.2022.05.002'> 10.1016/j.idnow.2022.05.002</a>)</p>
-                   <p><strong>WHO AWaRe book</strong></p>
-                  <img width='240' src='img/cdf_severe_pic.png' alt='' />"), 
+             includeHTML("www/popover_text/cdf_severe.html"),
              placement = "right", trigger = "click", options = NULL)
   addPopover(session,"cdf_severe_child",
-             HTML("<p>The default value (0.36) is based on a retrospective study of 857 hospitalised patients with CDI episodes admitted to two Swiss university hospitals. 
-             (DOI: <a class='link-pop' target='_blank' href='https://doi.org/10.1016/j.idnow.2022.05.002'> 10.1016/j.idnow.2022.05.002</a>)</p>
-                   <p><strong>WHO AWaRe book</strong></p>
-                  <img width='240' src='img/cdf_severe_pic.png' alt='' />"), 
+             includeHTML("www/popover_text/cdf_severe.html"),
              placement = "right", trigger = "click", options = NULL)
   
   #### sst_nf #####
@@ -2124,6 +2110,8 @@ app_server <- function(session,input, output) {
   #### choices_ac ####
   observeEvent(input$choices_ac,{
     value_fin$finished <-0
+    hide("Summary_model")
+    hide("Visualization")
     show("Summary_input_table")
     hide("Summary_model_table")
     hide("Visualization_plot")
@@ -2137,6 +2125,19 @@ app_server <- function(session,input, output) {
         choices = first_choice_list_adult$Antibiotic,  # Use Antibiotic column as choices
         selected = first_choice_list_adult$Antibiotic  # Select all by default
       )
+      
+      show("type_patients_inputs_single")
+      show("severity_cases_inputs_single")
+      show("availability_antibiotics_inputs_single")
+      show("prevalence_amr_inputs_single")
+      show("total_patients_inputs_single")
+      hide("severity_cases_inputs_child")
+      
+      hide("type_patients_inputs_both")
+      hide("severity_cases_inputs_both")
+      hide("availability_antibiotics_inputs_both")
+      hide("prevalence_amr_inputs_both")
+      hide("total_patients_inputs_both")
     }else if(input$choices_ac=="child"){
       show("cap_severe_single_child")
       hide("cap_severe_single_adult")
@@ -2147,9 +2148,34 @@ app_server <- function(session,input, output) {
         choices = first_choice_list_child$Antibiotic,  # Use Antibiotic column as choices
         selected = first_choice_list_child$Antibiotic  # Select all by default
       )
+      
+      show("type_patients_inputs_single")
+      show("severity_cases_inputs_single")
+      show("availability_antibiotics_inputs_single")
+      show("prevalence_amr_inputs_single")
+      show("total_patients_inputs_single")
+      show("severity_cases_inputs_child")
+      
+      hide("type_patients_inputs_both")
+      hide("severity_cases_inputs_both")
+      hide("availability_antibiotics_inputs_both")
+      hide("prevalence_amr_inputs_both")
+      hide("total_patients_inputs_both")
     }else{
       hide("cap_severe_single_adult")
       hide("cap_severe_single_child")
+      
+      hide("type_patients_inputs_single")
+      hide("severity_cases_inputs_single")
+      hide("availability_antibiotics_inputs_single")
+      hide("prevalence_amr_inputs_single")
+      hide("total_patients_inputs_single")
+      
+      show("type_patients_inputs_both")
+      show("severity_cases_inputs_both")
+      show("availability_antibiotics_inputs_both")
+      show("prevalence_amr_inputs_both")
+      show("total_patients_inputs_both")
     }
   })
   

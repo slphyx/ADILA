@@ -12,7 +12,7 @@ app_ui <- dashboardPage(
 
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
-    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 25), "Antibiotic Data to Inform Local Action (ADILA)"),
+    title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 24), "Antibiotic Data to Inform Local Action (ADILA)"),
     titleWidth = 600,
     # Header with actionLink buttons
     tags$li(actionLink("goto_intro", HTML("<b>Introduction</b>"), class = "btn btn-default"), class = "dropdown"),
@@ -426,7 +426,7 @@ app_ui <- dashboardPage(
       
       # Image on the right
       column(4,
-             tags$img(src = "img/antibiotic_book.png", width = "70%")
+             tags$img(src = "img/antibiotic_book.png", width = "50%")
       )
     ),
     
@@ -440,56 +440,72 @@ app_ui <- dashboardPage(
                tags$ul(
                  tags$li(tags$b("Step 1:")," Users need to select type of patients (adult or children).",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto1.png", height = "50%",width="50%")
+                         tags$img(src = "img/howto1.png", 
+                                  # height = "50%",
+                                  # width="50%",
+                                  style="max-width: 40%;"
+                                  )
                  ), 
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 2:")," Users need to enter required data on the left side of the panel.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto2.png", height = "50%",width="50%"),
+                         tags$img(src = "img/howto2.png", 
+                                  # height = "50%",
+                                  width="40%"),
                  ),
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 3:")," Once all the required data is entered, users can review the “SUMMARY OF INPUT DATA” . If any changes are needed, return to Step 2 to update the data.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto3.png", height = "50%",width="50%"),
+                         tags$img(src = "img/howto3.png", 
+                                  # height = "50%",
+                                  width="40%"),
                  ),
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 4:")," Click “Run Model” and wait a few seconds for the model to process the data to generate the output.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto4.png", height = "50%",width="50%"),
+                         tags$img(src = "img/howto4.png", 
+                                  # height = "50%",
+                                  # width="50%"
+                                  style="max-width: 100%;"
+                                  ),
                  ),
                  tags$br(),tags$br(),
                  tags$li(tags$b("Step 5:")," Review the expected empirical antibiotic use across four different tables under “SUMMARY OF EXPECTED ANTIBIOTIC USAGE (MODEL’S OUTPUT)”.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto5.png", height = "50%",width="50%"),
+                         tags$img(src = "img/howto5.png", 
+                                  # height = "50%",
+                                  width="40%"),
                          tags$br(),tags$br(),
                  ),
                  tags$li(tags$b("Step 6:")," You can also visualise the expected use by AWaRe category and by antibiotic classes under “VISUALIZATION”.",
                          tags$br(),tags$br(),
-                         tags$img(src = "img/howto6.png", height = "50%",width="50%")
+                         tags$img(src = "img/howto6.png", 
+                                  # height = "50%",
+                                  width="40%")
                  )
                ))
                ),
-             tabPanel("CSV File",
+             tabPanel("Input Input File",
                           h4(
                             tags$ul(
                               tags$li(tags$b("Step 1:")," Download the inputs.",
                                       tags$br(),tags$br(),
-                                      tags$img(src = "img/csvfile1.png", height = "50%",width="50%")
+                                      tags$img(src = "img/csvfile1.png",width="20%")
                               ), 
                               tags$br(),tags$br(),
                               tags$li(tags$b("Step 2:")," Changes the values of parameters as necessary in the downloaded csv.file.",
                                       tags$br(),tags$br(),
-                                      tags$img(src = "img/csvfile2.png", height = "50%",width="50%"),
+                                      tags$img(src = "img/csvfile2.png",width="40%"),
                               ),
                               tags$br(),tags$br(),
                               tags$li(tags$b("Step 3:")," Save the updated csv.file.",
                                       tags$br(),tags$br(),
-                                      tags$img(src = "img/csvfile3.png", height = "50%",width="50%"),
+                                      tags$img(src = "img/csvfile3.png", width="20%"),
                               ),
                               tags$br(),tags$br(),
                               tags$li(tags$b("Step 4:")," Use “UPLOAD INPUT FILE” button to upload the updated csv.file.",
                                       tags$br(),tags$br(),
-                                      tags$img(src = "img/csvfile4.png", height = "50%",width="50%"),
+                                      tags$img(src = "img/csvfile4.png",width="30%"),
                               ),
                             ))
              )
@@ -561,7 +577,7 @@ app_ui <- dashboardPage(
     tags$div(id="partnersImage",
              style = "text-align: center;", 
       tags$img(
-        src = "img/partners_image.png", width="50%" ,height="50%"
+        src = "img/partners_image.png", width="40%" ,height="40%"
       )
     ),
     tags$div(id = "goTopButton", "Go to Top"),
