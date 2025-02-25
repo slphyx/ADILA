@@ -63,7 +63,7 @@ child.para.data <- data.frame(
 
 
 # Probability of each infection syndromes from the "child_cases" data 
-syd.child <- rdirichlet(1, child_cases$cases)
+syd.child <- child_cases$cases/ sum(child_cases$cases)
 
 # Total patients on antimicrobial 
 pt.atb   <- sum(child_cases$cases)

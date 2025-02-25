@@ -280,6 +280,10 @@ input.form-control{
     box-shadow: rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
+#howto_text ul{
+  font-size: 20px;
+}
+
 .popover {
   color: black;
   max-width: 600px !important;
@@ -317,4 +321,12 @@ div.container-pop {
 modal-header{
     background-color: #c33;
     color: #eee;
+}
+
+.sweet-alert p{
+  color: black !important;
+}
+
+.sweet-alert h2{
+  color: red !important;
 }

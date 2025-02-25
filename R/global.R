@@ -1,5 +1,8 @@
 # load library
 library(gtools)
+library(DT)
+library(stringr)
+library(forcats)
 
 source("R/functions/model.adult.shiny.v3.R")
 source("R/functions/data.adult.shiny.v3.R")

@@ -46,7 +46,7 @@ adult_para.data <- data.frame(
 )
 
 # Probability of each infection syndromes from the "adult_cases" data 
-syd.adult <- rdirichlet(1, adult_cases$cases)
+syd.adult <- adult_cases$cases/ sum(adult_cases$cases)
 
 # Total patients on antimicrobial
 pt.atb   <- sum(adult_cases$cases)

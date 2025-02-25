@@ -37,7 +37,7 @@ app_ui <- dashboardPage(
       ),
       br(),
       radioButtons("choices_ac", "Type of patients :",
-                                  c("Adult (> 12 years)" = "adult",
+                                  c("Adolescents and adults (> 12 years)" = "adult",
                                     "Child (1 month – 12 years)" = "child",
                                     "Both" = "both"),
                    inline = T
@@ -67,7 +67,7 @@ app_ui <- dashboardPage(
                    #3
                    fluidRow(
                      column(6,
-                            numericInput("uut_cases",tags$h5("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
+                            numericInput("uut_cases",tags$h5("Patients with Community acquired pyelonephritis "), min = 0, max = 10000, value = 35,width ="100%"),
                      ),
                      column(6,
                             numericInput("cdif_cases", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
@@ -128,7 +128,7 @@ app_ui <- dashboardPage(
                                   #3
                                   fluidRow(
                                     column(6,
-                                           numericInput("uut_cases_adult",tags$h5("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
+                                           numericInput("uut_cases_adult",tags$h5("Patients with Community acquired pyelonephritis "), min = 0, max = 10000, value = 35,width ="100%"),
                                     ),
                                     column(6,
                                            numericInput("cdif_cases_adult", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
@@ -185,7 +185,7 @@ app_ui <- dashboardPage(
                                   #3
                                   fluidRow(
                                     column(6,
-                                           numericInput("uut_cases_child",tags$h5("Patients with upper urinary tract infection"), min = 0, max = 10000, value = 35,width ="100%"),
+                                           numericInput("uut_cases_child",tags$h5("Patients with Community acquired pyelonephritis "), min = 0, max = 10000, value = 35,width ="100%"),
                                     ),
                                     column(6,
                                            numericInput("cdif_cases_child", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
@@ -283,7 +283,6 @@ app_ui <- dashboardPage(
                    verbatimTextOutput("prob_1stchoice")
                ),
                div(id = "availability_antibiotics_inputs_both",
-
                      tabsetPanel(
                        tabPanel("Adult",
                                 checkboxGroupInput(
@@ -312,8 +311,9 @@ app_ui <- dashboardPage(
                )   
       ),
       
-      # Sidebar item for "Prevalence of AMR"
-      menuItem("Prevalence of AMR", tabName = "prevalence_amr", icon = icon("chart-line"),
+      # Sidebar item for "Prevalence of local AMR"
+      menuItem("Prevalence of local AMR", tabName = "prevalence_amr", icon = icon("chart-line"),
+               tags$h6(class="poph5","*Click on the slider thumb to view the parameter information."),
                div(id = "prevalence_amr_inputs_single",
                    sliderInput("esbl_prevalence", tags$h5("Proportion of ESBL producing E. coli among bloodstream infections with E. coli"), min = 0, max = 1, value = 0.4, step = 0.01),
                    sliderInput("mrsa_prevalence", tags$h5("Proportion of MRSA among bloodstream infections with Staphylococcus aureus"), min = 0, max = 1, value = 0.3, step = 0.01),
@@ -338,23 +338,24 @@ app_ui <- dashboardPage(
                )   
       ),
       
-      # Sidebar item for "Total Admitted Patients"
-      menuItem("Total admitted patients", tabName = tags$h5("total_patients"), icon = icon("hospital"),
+      # Sidebar item for "Total inpatients in a given day"
+      menuItem("Total inpatients in a given day", tabName = tags$h5("total_patients"), icon = icon("hospital"),
                div(id = "total_patients_inputs_single",
                    column(width=6,
-                          numericInput("admitted_patients", tags$h5("Total admitted patients"), min = 0, max = 10000, value = 600,width ="100%"),
+                          numericInput("admitted_patients", tags$h5("Total inpatients in a given day"), min = 0, max = 10000, value = 600,width ="100%"),
                    )
                ),
                div(id = "total_patients_inputs_both",
+                   
                    tabsetPanel(
                      tabPanel("Adult",
-                              column(width=6,
-                                     numericInput("admitted_patients_adult", tags$h5("Total admitted patients"), min = 0, max = 10000, value = 600,width ="100%"),
+                              column(width=12,
+                                     numericInput("admitted_patients_adult", tags$h5("Total inpatients in a given day"), min = 0, max = 10000, value = 600,width ="100%"),
                               )
                      ),
                      tabPanel("Child",
-                              column(width=6,
-                                     numericInput("admitted_patients_child", tags$h5("Total admitted patients"), min = 0, max = 10000, value = 600,width ="100%"),
+                              column(width=12,
+                                     numericInput("admitted_patients_child", tags$h5("Total inpatients in a given day"), min = 0, max = 10000, value = 600,width ="100%"),
                               )
                      ),
                    )
@@ -435,7 +436,7 @@ app_ui <- dashboardPage(
              # Introduction Section
              h1("How to use the dashboard"),
              tabsetPanel(
-               tabPanel("Input",
+               tabPanel("Input Parameter",
              h4(
                tags$ul(
                  tags$li(tags$b("Step 1:")," Users need to select type of patients (adult or children).",
@@ -485,7 +486,7 @@ app_ui <- dashboardPage(
                  )
                ))
                ),
-             tabPanel("Input Input File",
+             tabPanel("Input File",
                           h4(
                             tags$ul(
                               tags$li(tags$b("Step 1:")," Download the inputs.",
@@ -513,35 +514,45 @@ app_ui <- dashboardPage(
       )
     ),
     fluidRow(id = "about_text",
-      column(12,
-             # Title
-             h1("Contact us"),
-             h4(
-             # Contact Information
-               tags$p(
-                 strong("Drug-Resistant Infections and Disease Dynamics group"),
-                 br(),
-                 "Centre for Tropical Medicine and Global Health",
-                 br(),
-                 "Bid Data Institute, Old Road Campus, OX3 7LF",
-                 br(),
-                 "University of Oxford",
-                 br(),
-                 br(),
-                 "For any inquiry about the dashboard, please contact",
-                 br(),
-                 "Email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk")
-               )
-             ),
-             br(),br(),br(),
-             h4(
-               tags$p(strong("ADILA is funded by the Wellcome Trust, 222051/Z/20/Z"))
+             column(12,
+                    # Title
+                    h1("Contact us"),
+                    h4(
+                      # Contact Information
+                      tags$p(
+                        strong("Drug-Resistant Infections and Disease Dynamics group"),
+                        br(),
+                        "Centre for Tropical Medicine and Global Health",
+                        br(),
+                        "Bid Data Institute, Old Road Campus, OX3 7LF",
+                        br(),
+                        "University of Oxford",
+                        br(),
+                        br(),
+                        "For any inquiry about the dashboard, please contact",
+                        br(),
+                        br(),
+                        tags$b("Model development team:"),
+                        br(),
+                        "Dr. Myo Maung Maung Swe (email: ", tags$a(href="mailto:myo.swe@ndm.ox.ac.uk", "myo.swe@ndm.ox.ac.uk"),")",
+                        br(),
+                        "Dr. Cherry Lim (email: ", tags$a(href="mailto:cherry.lim@ndm.ox.ac.uk", "cherry.lim@ndm.ox.ac.uk"),")",
+                        br(),
+                        "Prof. Ben Cooper (email: ", tags$a(href="mailto:ben.cooper@ndm.ox.ac.uk", "ben.cooper@ndm.ox.ac.uk"),")",
+                        br(),
+                        br(),
+                        tags$b("ADILA project email: "),tags$a(href="mailto:adila@sgul.ac.uk", "adila@sgul.ac.uk"),
+                      )
+                    ),
+                    br(),br(),br(),
+                    h4(
+                      tags$p(strong("ADILA is funded by the Wellcome Trust, 222051/Z/20/Z"))
+                    )
              )
-      )
     ),
     
     fluid_design("Summary_model_table", "summary_output", NULL, NULL, NULL),
-    fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2", "Visualization_output3",NULL),
+    fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2","Visualization_output3" ,NULL),
     
     fluidRow(id = "summary_inputs_ui",
       div(
