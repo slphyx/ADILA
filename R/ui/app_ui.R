@@ -70,7 +70,7 @@ app_ui <- dashboardPage(
                             numericInput("uut_cases",tags$h5("Patients with Community acquired pyelonephritis "), min = 0, max = 10000, value = 35,width ="100%"),
                      ),
                      column(6,
-                            numericInput("cdif_cases", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
+                            numericInput("cdif_cases", tags$h5("Patients with", tags$em("Clostridioides difficile"), "infection"), min = 0, max = 10000, value = 30,width ="100%"),
                      ),
                    ),
                    #4
@@ -131,7 +131,7 @@ app_ui <- dashboardPage(
                                            numericInput("uut_cases_adult",tags$h5("Patients with Community acquired pyelonephritis "), min = 0, max = 10000, value = 35,width ="100%"),
                                     ),
                                     column(6,
-                                           numericInput("cdif_cases_adult", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
+                                           numericInput("cdif_cases_adult", tags$h5("Patients with", tags$em("Clostridioides difficile"), "infection"), min = 0, max = 10000, value = 30,width ="100%"),
                                     ),
                                   ),
                                   #4
@@ -188,7 +188,7 @@ app_ui <- dashboardPage(
                                            numericInput("uut_cases_child",tags$h5("Patients with Community acquired pyelonephritis "), min = 0, max = 10000, value = 35,width ="100%"),
                                     ),
                                     column(6,
-                                           numericInput("cdif_cases_child", tags$h5("Patients with Clostridioides difficile infection"), min = 0, max = 10000, value = 30,width ="100%"),
+                                           numericInput("cdif_cases_child", tags$h5("Patients with", tags$em("Clostridioides difficile"), "infection"), min = 0, max = 10000, value = 30,width ="100%"),
                                     ),
                                   ),
                                   #4
@@ -239,7 +239,7 @@ app_ui <- dashboardPage(
                    ),
                    sliderInput("abd_severe", tags$h5("Proportion of intra-abdominal infection cases which are severe"), min = 0, max = 1, value = 0.45, step = 0.01),
                    sliderInput("uti_severe", tags$h5("Proportion of upper UTI cases which are severe"), min = 0, max = 1, value = 0.16, step = 0.01),
-                   sliderInput("cdf_severe", tags$h5("Proportion of C. difficile infection (CDI) cases which are severe"), min = 0, max = 1, value = 0.36, step = 0.01),
+                   sliderInput("cdf_severe", tags$h5("Proportion of", tags$em("Clostridioides difficile"), "infection (CDI) cases which are severe"), min = 0, max = 1, value = 0.36, step = 0.01),
                    sliderInput("sst_nf", tags$h5("Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infections"), min = 0, max = 0.2, value = 0.05, step = 0.01)
                ),
                div(id = "severity_cases_inputs_both",
@@ -250,7 +250,7 @@ app_ui <- dashboardPage(
                                 sliderInput("cap_severe_adult", tags$h5("Proportion of CAP cases which are severe"), min = 0, max = 1, value = 0.26, step = 0.01),
                                 sliderInput("abd_severe_adult", tags$h5("Proportion of intra-abdominal infection cases which are severe"), min = 0, max = 1, value = 0.45, step = 0.01),
                                 sliderInput("uti_severe_adult", tags$h5("Proportion of upper UTI cases which are severe"), min = 0, max = 1, value = 0.16, step = 0.01),
-                                sliderInput("cdf_severe_adult", tags$h5("Proportion of C. difficile infection (CDI) cases which are severe"), min = 0, max = 1, value = 0.36, step = 0.01),
+                                sliderInput("cdf_severe_adult", tags$h5("Proportion of", tags$em("Clostridioides difficile"), "infection (CDI) cases which are severe"), min = 0, max = 1, value = 0.36, step = 0.01),
                                 sliderInput("sst_nf_adult", tags$h5("Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infections"), min = 0, max = 0.2, value = 0.05, step = 0.01)
                        ),
                        tabPanel("Child",
@@ -260,7 +260,7 @@ app_ui <- dashboardPage(
                                 sliderInput("hiv_severe_child", tags$h5("proportion of severe CAP patients with HIV infection"), min = 0, max = 1, value = 0.01, step = 0.01),
                                 sliderInput("abd_severe_child", tags$h5("Proportion of intra-abdominal infection cases which are severe"), min = 0, max = 1, value = 0.45, step = 0.01),
                                 sliderInput("uti_severe_child", tags$h5("Proportion of upper UTI cases which are severe"), min = 0, max = 1, value = 0.16, step = 0.01),
-                                sliderInput("cdf_severe_child", tags$h5("Proportion of C. difficile infection (CDI) cases which are severe"), min = 0, max = 1, value = 0.36, step = 0.01),
+                                sliderInput("cdf_severe_child", tags$h5("Proportion of", tags$em("Clostridioides difficile"), "infection (CDI) cases which are severe"), min = 0, max = 1, value = 0.36, step = 0.01),
                                 sliderInput("sst_nf_child", tags$h5("Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infections"), min = 0, max = 0.2, value = 0.05, step = 0.01)
                        ),
                      )
@@ -311,28 +311,28 @@ app_ui <- dashboardPage(
                )   
       ),
       
-      # Sidebar item for "Prevalence of local AMR"
-      menuItem("Prevalence of local AMR", tabName = "prevalence_amr", icon = icon("chart-line"),
+      # Sidebar item for "Proportion of local AMR"
+      menuItem("Proportion of local AMR", tabName = "prevalence_amr", icon = icon("chart-line"),
                tags$h6(class="poph5","*Click on the slider thumb to view the parameter information."),
                div(id = "prevalence_amr_inputs_single",
-                   sliderInput("esbl_prevalence", tags$h5("Proportion of ESBL producing E. coli among bloodstream infections with E. coli"), min = 0, max = 1, value = 0.4, step = 0.01),
-                   sliderInput("mrsa_prevalence", tags$h5("Proportion of MRSA among bloodstream infections with Staphylococcus aureus"), min = 0, max = 1, value = 0.3, step = 0.01),
-                   sliderInput("hap_mdr", tags$h5("Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)"), min = 0, max = 1, value = 0.37, step = 0.01),
-                   sliderInput("strep_pyogenes", tags$h5("Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis"), min = 0, max = 1, value = 0.6, step = 0.01)
+                   sliderInput("esbl_prevalence", tags$h5("Proportion of ESBL producing ", tags$em("Escherichia coli") ," among bloodstream infections with ",tags$em("Escherichia coli")), min = 0, max = 1, value = 0.4, step = 0.01),
+                   sliderInput("mrsa_prevalence", tags$h5("Proportion of MRSA among bloodstream infections with", tags$em("Staphylococcus aureus")),  min = 0, max = 1, value = 0.3, step = 0.01),
+                   sliderInput("hap_mdr", tags$h5("Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)"), min = 0, max = 1, value = 0.37, step = 0.01),
+                   sliderInput("strep_pyogenes", tags$h5("Proportion of", tags$em("Streptococcus pyogenes"), "(Group A Streptococcus) infection among patients with necrotizing fasciitis"), min = 0, max = 1, value = 0.6, step = 0.01)
                ),
                div(id = "prevalence_amr_inputs_both",
                    tabsetPanel(
                      tabPanel("Adult",
-                              sliderInput("esbl_prevalence_adult", tags$h5("Proportion of ESBL producing E. coli among bloodstream infections with E. coli"), min = 0, max = 1, value = 0.4, step = 0.01),
-                              sliderInput("mrsa_prevalence_adult", tags$h5("Proportion of MRSA among bloodstream infections with Staphylococcus aureus"), min = 0, max = 1, value = 0.3, step = 0.01),
-                              sliderInput("hap_mdr_adult", tags$h5("Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)"), min = 0, max = 1, value = 0.37, step = 0.01),
-                              sliderInput("strep_pyogenes_adult", tags$h5("Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis"), min = 0, max = 1, value = 0.6, step = 0.01)
+                              sliderInput("esbl_prevalence_adult", tags$h5("Proportion of ESBL producing ", tags$em("Escherichia coli") ," among bloodstream infections with ",tags$em("Escherichia coli")), min = 0, max = 1, value = 0.4, step = 0.01),
+                              sliderInput("mrsa_prevalence_adult", tags$h5("Proportion of MRSA among bloodstream infections with", tags$em("Staphylococcus aureus")), min = 0, max = 1, value = 0.3, step = 0.01),
+                              sliderInput("hap_mdr_adult", tags$h5("Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)"), min = 0, max = 1, value = 0.37, step = 0.01),
+                              sliderInput("strep_pyogenes_adult", tags$h5("Proportion of", tags$em("Streptococcus pyogenes"), "(Group A Streptococcus) infection among patients with necrotizing fasciitis"), min = 0, max = 1, value = 0.6, step = 0.01)
                      ),
                      tabPanel("Child",
-                              sliderInput("esbl_prevalence_child", tags$h5("Proportion of ESBL producing E. coli among bloodstream infections with E. coli"), min = 0, max = 1, value = 0.4, step = 0.01),
-                              sliderInput("mrsa_prevalence_child", tags$h5("Proportion of MRSA among bloodstream infections with Staphylococcus aureus"), min = 0, max = 1, value = 0.3, step = 0.01),
-                              sliderInput("hap_mdr_child", tags$h5("Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)"), min = 0, max = 1, value = 0.37, step = 0.01),
-                              sliderInput("strep_pyogenes_child", tags$h5("Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis"), min = 0, max = 1, value = 0.6, step = 0.01)
+                              sliderInput("esbl_prevalence_child", tags$h5("Proportion of ESBL producing ", tags$em("Escherichia coli") ," among bloodstream infections with ",tags$em("Escherichia coli")), min = 0, max = 1, value = 0.4, step = 0.01),
+                              sliderInput("mrsa_prevalence_child", tags$h5("Proportion of MRSA among bloodstream infections with", tags$em("Staphylococcus aureus")),  min = 0, max = 1, value = 0.3, step = 0.01),
+                              sliderInput("hap_mdr_child", tags$h5("Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)"), min = 0, max = 1, value = 0.37, step = 0.01),
+                              sliderInput("strep_pyogenes_child", tags$h5("Proportion of", tags$em("Streptococcus pyogenes"), "(Group A Streptococcus) infection among patients with necrotizing fasciitis"), min = 0, max = 1, value = 0.6, step = 0.01)
                      ),
                    )
                )   
@@ -401,7 +401,7 @@ app_ui <- dashboardPage(
              h4(
                tags$ol(
                  tags$li("This interactive online tool estimates expected empirical antibiotic use in hospitals on a given day assuming prescribing follows the WHO AWaRe guidelines (",tags$a(href="https://www.who.int/publications/i/item/9789240062382",target='_blank', "https://www.who.int/publications/i/item/9789240062382"),  ")."),
-                 tags$li("Expected use refers to the anticipated empirical antibiotic use based on local data or assumptions about numbers of patients with different types of infections, their severity, availability of recommended first-choice antibiotics, and local prevalence of antimicrobial resistance in different pathogens."),
+                 tags$li("Expected use refers to the anticipated empirical antibiotic use based on local data or assumptions about numbers of patients with different types of infections, their severity, availability of recommended first-choice antibiotics, and local Proportion of antimicrobial resistance in different pathogens."),
                  tags$li("A 2-minute video explaining how the estimation is done is available here (video link)."),
                  br(),
                  # tags$img(src = "img/intro_model.png", width = "85%")
@@ -412,7 +412,7 @@ app_ui <- dashboardPage(
              # h1("What you (users) can do:"),
              # h4(
              #   tags$ul(
-             #     tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local prevalence of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
+             #     tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local Proportion of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
              #     tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and 
              #                  <span style='color:#4DAE42;'>A</span><span style='color:#dfb31d;'>Wa</span><span style='color:#DC202A;'>Re</span>
              #                  (<span style='color:#4DAE42;'>Access</span>, 
@@ -579,7 +579,7 @@ app_ui <- dashboardPage(
           ),
           tabBox(
             title = "",
-            tabPanel(title = HTML("<b>Proportion/ prevalence parameters</b>"),
+            tabPanel(title = HTML("<b>Proportion/ Proportion parameters</b>"),
                      uiOutput("summary_inputs_ui2")
             )
           )
@@ -588,7 +588,7 @@ app_ui <- dashboardPage(
     tags$div(id="partnersImage",
              style = "text-align: center;", 
       tags$img(
-        src = "img/partners_image.png", width="40%" ,height="40%"
+        src = "img/partners_image.png", width="75%" ,height="75%"
       )
     ),
     tags$div(id = "goTopButton", "Go to Top"),

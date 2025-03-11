@@ -207,14 +207,14 @@ app_server <- function(session,input, output) {
                     "total admitted patients"),
       parameter2 = c("Proportion of recommended first-choice antibiotics which are available in the hospital", 
                     "Proportion of CAP cases which are severe", 
-                    "Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)", 
+                    "Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)", 
                     "Proportion of intra-abdominal infection cases which are severe",
                     "Proportion of upper UTI cases which are severe", 
                     "Proportion of C. difficile infection (CDI) cases which are severe", 
                     "Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infection",
-                    "Proportion of ESBL producing E. coli among bloodstream infections with E. coli", 
+                    "Proportion of ESBL producing Escherichia coli among bloodstream infections with Escherichia coli", 
                     "Proportion of MRSA among bloodstream infections with Staphylococcus aureus", 
-                    "Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
+                    "Proportion of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
                     "Total inpatients in a given day"),
       value = c(p_first, 
                 input$cap_severe_single_adult, 
@@ -272,14 +272,14 @@ app_server <- function(session,input, output) {
                       "total admitted patients"),
         parameter2 = c("Proportion of recommended first-choice antibiotics which are available in the hospital", 
                        "Proportion of CAP cases which are severe", 
-                       "Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)", 
+                       "Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)", 
                        "Proportion of intra-abdominal infection cases which are severe",
                        "Proportion of upper UTI cases which are severe", 
                        "Proportion of C. difficile infection (CDI) cases which are severe", 
                        "Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infection",
-                       "Proportion of ESBL producing E. coli among bloodstream infections with E. coli", 
+                       "Proportion of ESBL producing Escherichia coli among bloodstream infections with Escherichia coli", 
                        "Proportion of MRSA among bloodstream infections with Staphylococcus aureus", 
-                       "Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
+                       "Proportion of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
                        "Total inpatients in a given day"),
         value = c(p_first, 
                   input$cap_severe_adult, 
@@ -523,14 +523,14 @@ app_server <- function(session,input, output) {
                        "Proportion of CAP cases which are severe",
                        "proportion of severe CAP patients with no clinical response to first-line treatment (Penicillin + Gentamicin) after 48 hr", 
                        "proportion of severe CAP patients with HIV infection",
-                       "Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)", 
+                       "Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)", 
                        "Proportion of intra-abdominal infection cases which are severe",
                        "Proportion of upper UTI cases which are severe", 
                        "Proportion of C. difficile infection (CDI) cases which are severe", 
                        "Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infection",
-                       "Proportion of ESBL producing E. coli among bloodstream infections with E. coli", 
+                       "Proportion of ESBL producing Escherichia coli among bloodstream infections with Escherichia coli", 
                        "Proportion of MRSA among bloodstream infections with Staphylococcus aureus", 
-                       "Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
+                       "Proportion of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
                        "Total inpatients in a given day"),
         value = c(p_first,
                   #input$p_first, 
@@ -595,14 +595,14 @@ app_server <- function(session,input, output) {
                          "Proportion of CAP cases which are severe",
                          "proportion of severe CAP patients with no clinical response to first-line treatment (Penicillin + Gentamicin) after 48 hr", 
                          "proportion of severe CAP patients with HIV infection",
-                         "Prevalence of multi-drug resistance (MDR) gram-negative infection in patients with non-ventilator associated hospital acquired infection (non-VA HAP)", 
+                         "Proportion of multi-drug resistance (MDR) infection among patients with hospital acquired pneumonia (non-ventilator associated)", 
                          "Proportion of intra-abdominal infection cases which are severe",
                          "Proportion of upper UTI cases which are severe", 
                          "Proportion of C. difficile infection (CDI) cases which are severe", 
                          "Proportion of necrotizing fasciitis (NF) among patients with skin and soft-tissue (SST) infection",
-                         "Proportion of ESBL producing E. coli among bloodstream infections with E. coli", 
+                         "Proportion of ESBL producing Escherichia coli among bloodstream infections with Escherichia coli", 
                          "Proportion of MRSA among bloodstream infections with Staphylococcus aureus", 
-                         "Prevalence of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
+                         "Proportion of Streptococcus pyogenes infection in patients with necrotizing fasciitis",
                          "Total inpatients in a given day"),
           value = c(p_first, 
                     input$cap_severe_child, 
@@ -884,39 +884,18 @@ app_server <- function(session,input, output) {
       mutate_all(~ as.numeric(as.character(.)))
     
     # Summary tables----
-    # Table 1
-    summary_table_overall <- df_numeric[,1:8] %>%
+    # Table 1 ----
+    summary_table_overall <- df_numeric[, 1:8] %>%
       tbl_summary(
         by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
+        statistic = all_continuous() ~ "{median}",  # Display median
         missing = "no",
-        digits = all_continuous() ~ 1
-      ) %>%
-      modify_header(label="Description", stat_0 = "Expected usage") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-      modify_caption("**Table 1: Overall expected antibiotic usage in hospital**") %>%
-      modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
-      ) %>%
-      modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-      ) %>%
-      as_tibble()
-
-    # Table 2 ------
-    summary_table_syndrome <- df_numeric[,9:(9+21)] %>%
-      tbl_summary(
-        by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
-        missing = "no",
-        digits = all_continuous() ~ 1
+        digits = all_continuous() ~ 1  # Ensure 1 decimal place for median
       ) %>%
       modify_header(label="Description", stat_0 = "Expected_usage") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose, CAP=community acquired pneumonia,
+      modify_footnote(all_stat_cols() ~ "Median (95% credible intervals), DDD = defined daily dose, CAP=community acquired pneumonia,
                   HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-      modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
+      modify_caption("**Table 1: Overall expected empirical antibiotic usage in hospital**") %>%
       modify_table_body(
         ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
       ) %>%
@@ -925,36 +904,92 @@ app_server <- function(session,input, output) {
       ) %>%
       as_tibble()
     
+    # Calculate quantiles and add them to the summary table
+    quantiles_overall <- df_numeric[, 1:8] %>%
+      summarise(across(everything(), list(
+        `0.025 Quantile` = ~ quantile(., probs = 0.025),
+        `0.975 Quantile` = ~ quantile(., probs = 0.975)
+      ))) %>%
+      pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
+      mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+    
+    # Combine the median and quantiles into a single column
+    summary_table_overall <- summary_table_overall %>%
+      left_join(quantiles_overall, by = "Description") %>%
+      mutate(`Expected_usage (95% CI)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
+      select(Description, `Expected_usage (95% CI)`)
+
+    # Table 2 ------
+    summary_table_syndrome_long <- as.data.frame(df_numeric[,9:(9+21)]) %>%
+      pivot_longer(
+        cols = everything(),         # pivot all columns
+        names_to = "Description",         # create a column for the original column names
+        values_to = "expected_use"     # create a column for the values
+      ) 
+    
+    # Compute summary statistics by syndrome 
+    
+    summary_table_syndrome_stat <- summary_table_syndrome_long %>%
+      group_by(Description) %>%
+      mutate(
+        median_value = round(median(expected_use, na.rm = TRUE), 1),
+        lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+        upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
+      ) %>%
+      ungroup() %>%
+      select(Description, median_value, lower, upper) %>%
+      distinct() %>%
+      mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+      select(Description, expected_use)
+    
+    percent_table_syndrome_long <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
+      pivot_longer(
+        cols = everything(),         # pivot all columns
+        names_to = "Description",         # create a column for the original column names
+        values_to = "Expected use (% of total use)"     # create a column for the values
+      ) 
+    
     # expected use in percentage of total 
-    percent_table_syndrome <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
-      tbl_summary(
-        by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
-        missing = "no",
-        digits = all_continuous() ~ 1
+    percent_table_syndrome <- percent_table_syndrome_long %>%
+      group_by(Description) %>%
+      mutate(
+        median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+        lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+        upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
       ) %>%
-      modify_header(label="Description", stat_0 = "Expected_usage_percent") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose, CAP=community acquired pneumonia,
-                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-      modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
-      modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+      ungroup() %>%
+      select(Description, median_value, lower, upper) %>%
+      distinct() %>%
+      mutate(
+        median_value = paste0(median_value, "%"),
+        lower = paste0(lower, "%"),
+        upper = paste0(upper, "%"),
+        expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
       ) %>%
-      modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-      ) %>%
+      select(Description, expected_use)
+    
+    
+    # # Combine the median and quantiles into a single column
+    # summary_table_combined <- percent_table_syndrome %>%
+    #   left_join(quantiles_overall, by = "Description") %>%
+    #   mutate(`Expected_usage (95% CI)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
+    #   select(Description, `Expected_usage (95% CI)`)
+    
+    
+    # Store as dataframe
+    percent_table_syndrome_df <- percent_table_syndrome %>%
       as_tibble()
     
     # Combine DDD and percent use 
-    summary_table_syndrome_ddd_percent <- left_join(summary_table_syndrome, percent_table_syndrome, by = "Description")
+    summary_table_syndrome_ddd_percent <- left_join(summary_table_syndrome_stat, percent_table_syndrome_df, by = "Description")
+    
     
     summary_table_syndrome_ddd_percent <- summary_table_syndrome_ddd_percent %>%
       mutate(
         AWaRe_category = str_extract(Description, "Access|Watch"), # Extract "Access" or "Watch"
         Infection_syndromes = str_remove(Description, ".*: ") # Remove everything before ": "
       ) %>%
-      select(AWaRe_category, Infection_syndromes, Expected_usage, Expected_usage_percent) %>% # Reorder columns
+      select(AWaRe_category, Infection_syndromes, expected_use.x, expected_use.y) %>% # Reorder columns
       mutate(Infection_syndromes = case_when(
         Infection_syndromes == "CAP" ~ "Community acquired pneumonia",
         Infection_syndromes == "HAP(non-VAP)" ~ "Hospital acquired pneumonia (non-VAP)",
@@ -965,105 +1000,208 @@ app_server <- function(session,input, output) {
       )) %>%
       rename(`AWaRe category`      = AWaRe_category,
              `Infection syndromes` = Infection_syndromes,
-             `Expected use (DDD)` = Expected_usage,
-             `Expected use (% of total use)` = Expected_usage_percent)
-    
+             `Expected use (DDD)` = expected_use.x,
+             `Expected use (% of total use)` = expected_use.y)
     
     # Table 3 -------
-    summary_table_class_access <- df_numeric[, 31:38] %>%
-      tbl_summary(
-        by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
-        missing = "no",
-        digits = all_continuous() ~ 1 
-      ) %>%
-      modify_header(label="Antibiotic class", stat_0 = "Expected usage (DDD)") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-      modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**")  %>% 
-      modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-      )%>%
-      modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-      ) %>%
-      as_tibble()%>%
-      mutate(`AWaRe category` = "Access")
+    summary_table_class_access_long <- as.data.frame(df_numeric[, 31:38]) %>%
+      pivot_longer(
+        cols = everything(),         # pivot all columns
+        names_to = "Description",         # create a column for the original column names
+        values_to = "expected_use"     # create a column for the values
+      ) 
     
-    # Percentage "Access" out of total use 
-    access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
+    # Compute summary statistics by syndrome 
     
-    # Percentage "Access" out of total use 
-    access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
-    
-    percent_access_df <- access_df %>%
-      tbl_summary(
-        by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
-        missing = "no",
-        digits = all_continuous() ~ 1 
+    summary_table_class_access <- summary_table_class_access_long %>%
+      group_by(Description) %>%
+      mutate(
+        median_value = round(median(expected_use, na.rm = TRUE), 1),
+        lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+        upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
       ) %>%
-      modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-      modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**")  %>%
+      ungroup() %>%
+      select(Description, median_value, lower, upper) %>%
+      distinct() %>%
+      mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+      select(Description, expected_use)
+    
+    # summary_table_class_access <- df_numeric[, 31:38] %>%
+    #   tbl_summary(
+    #     by = NULL,
+    #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    #     missing = "no",
+    #     digits = all_continuous() ~ 0
+    #   ) %>%
+    #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
+    #   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = days of therapy") %>%
+    #   modify_caption("**Table 3: Expected empirical Access antibiotic usage by antibiotic class**")
+    # 
+    
+    # Store as a dataframe
+    summary_table_class_access <- summary_table_class_access %>%
       as_tibble()
     
-    summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Antibiotic class" ) %>%
+    summary_table_class_access <- summary_table_class_access %>%
+      mutate(`AWaRe category` = "Access")
+    
+    
+    # Percentage "Access" out of total use 
+    # expected use in percentage of total 
+    access_df <- ((df_numeric[, 31:38]/ df_numeric[, 1])*100) %>%
+      pivot_longer(
+        cols = everything(),         # pivot all columns
+        names_to = "Description",         # create a column for the original column names
+        values_to = "Expected use (% of total use)"     # create a column for the values
+      ) 
+    
+    # expected use in percentage of total 
+    percent_access_df <- access_df %>%
+      group_by(Description) %>%
+      mutate(
+        median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+        lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+        upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
+      ) %>%
+      ungroup() %>%
+      select(Description, median_value, lower, upper) %>%
+      distinct() %>%
+      mutate(
+        median_value = paste0(median_value, "%"),
+        lower = paste0(lower, "%"),
+        upper = paste0(upper, "%"),
+        expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
+      ) %>%
+      select(Description, expected_use)
+    # access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
+    # 
+    # percent_access_df <- access_df %>%
+    #   tbl_summary(
+    #     by = NULL,
+    #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    #     missing = "no",
+    #     digits = all_continuous() ~ 1 
+    #   ) %>%
+    #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
+    #   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = Days of Therapy") %>%
+    #   modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**") 
+    
+    
+    
+    # Store as a dataframe
+    percent_access_df <- percent_access_df %>%
+      as_tibble()
+    
+    
+    summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Description" ) %>%
       select(`AWaRe category`, everything())
     
     
-    # DDD "Watch" out of total use 
-    summary_table_class_watch <- df_numeric[, 39:ncol(df_numeric)] %>%
-      tbl_summary(
-        by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
-        missing = "no",
-        digits = all_continuous() ~ 1 
+    # DOT "Watch" out of total use 
+    summary_table_class_Watch_long <- as.data.frame(df_numeric[, 39:ncol(df_numeric)]) %>%
+      pivot_longer(
+        cols = everything(),         # pivot all columns
+        names_to = "Description",         # create a column for the original column names
+        values_to = "expected_use"     # create a column for the values
+      ) 
+    
+    # Compute summary statistics by syndrome 
+    
+    summary_table_class_Watch <- summary_table_class_Watch_long %>%
+      group_by(Description) %>%
+      mutate(
+        median_value = round(median(expected_use, na.rm = TRUE), 1),
+        lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+        upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
       ) %>%
-      modify_header(label="Antibiotic class", stat_0 = "Expected usage (DDD)") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-      modify_caption("**Table 4: Expected (Watch) antibiotic usage by antibiotic class**")  %>%
-      modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-      ) %>%
-      modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-      ) %>%
-      as_tibble()%>%
+      ungroup() %>%
+      select(Description, median_value, lower, upper) %>%
+      distinct() %>%
+      mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+      select(Description, expected_use)
+    
+    # summary_table_class_watch <- df_numeric[, 39:ncol(df_numeric)] %>%
+    #   tbl_summary(
+    #     by = NULL,
+    #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    #     missing = "no",
+    #     digits = all_continuous() ~ 0
+    #   ) %>%
+    #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
+    #   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = days of therapy") %>%
+    #   modify_caption("**Table 4: Expected empirical Watch antibiotic usage by antibiotic class**") 
+    # 
+    
+    
+    # Store as a dataframe
+    summary_table_class_watch <- summary_table_class_Watch %>%
+      as_tibble()
+    
+    
+    summary_table_class_watch <- summary_table_class_watch %>%
       mutate(`AWaRe category` = "Watch")
     
+    
     # Percentage "Watch" out of total use 
-    watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+    # expected use in percentage of total 
+    watch_df <- ((df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100) %>%
+      pivot_longer(
+        cols = everything(),         # pivot all columns
+        names_to = "Description",         # create a column for the original column names
+        values_to = "Expected use (% of total use)"     # create a column for the values
+      ) 
     
-    
+    # expected use in percentage of total 
     percent_watch_df <- watch_df %>%
-      tbl_summary(
-        by = NULL,
-        statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-        type = all_categorical() ~ "continuous",
-        missing = "no",
-        digits = all_continuous() ~ 1 
+      group_by(Description) %>%
+      mutate(
+        median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+        lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+        upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
       ) %>%
-      modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-      modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-      modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**")  %>%
-      modify_table_body(
-        ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
+      ungroup() %>%
+      select(Description, median_value, lower, upper) %>%
+      distinct() %>%
+      mutate(
+        median_value = paste0(median_value, "%"),
+        lower = paste0(lower, "%"),
+        upper = paste0(upper, "%"),
+        expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
       ) %>%
-      modify_table_body(
-        ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-      ) %>%
+      select(Description, expected_use)
+    
+    # watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+    # 
+    # 
+    # percent_watch_df <- watch_df %>%
+    #   tbl_summary(
+    #     by = NULL,
+    #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    #     missing = "no",
+    #     digits = all_continuous() ~ 1 
+    #   ) %>%
+    #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
+    #   modify_footnote(all_stat_cols() ~ "Median (IQR), DTT = Days of Therapy") %>%
+    #   modify_caption("**Table 3: Expected (Watch) antibiotic usage by antibiotic class**") 
+    
+    
+    
+    
+    # Store as a dataframe
+    percent_watch_df <- percent_watch_df %>%
       as_tibble()
     
     # Merge  Watch DDD and percent 
-    summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Antibiotic class" ) %>%
+    summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Description" ) %>%
       select(`AWaRe category`, everything())
     
-    # Append Access and Watch 
-    atb_class_summary_tbl <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)
     
+    # Append Access and Watch 
+    atb_class_summary_tbl <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)%>%
+      rename(`AWaRe category`      = `AWaRe category`,
+             `Antibiotic class` = Description,
+             `Expected use (DDD)` = expected_use.x,
+             `Expected use (% of total use)` = expected_use.y)
     
     #Plotting----
     # Change the dataformat for the plot
@@ -1123,17 +1261,16 @@ app_server <- function(session,input, output) {
     plot_access_class <- df_class %>%
       filter(aware == "Access") %>%
       ggplot( aes(x=value, fill=text)) +
-      geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
+      geom_histogram( color="black", alpha=0.5, position = 'identity', binwidth = 2) +
       scale_fill_viridis(discrete=TRUE) +
       theme_minimal() +
       labs(title = "Distribution of Expected Access Antibiotic Usage",
            x = "Expected usage (DDD)", 
            y = "Frequency",
            fill = "Antibiotic class") +
-      theme(legend.text = element_text(size = 8),
-            axis.text   = element_text(size = 10),
-            axis.title  = element_text(size = 10),
-            title  = element_text(size = 10))
+      theme(
+            plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
+
     
     plot_access_class <- ggplotly(plot_access_class)
     
@@ -1142,17 +1279,14 @@ app_server <- function(session,input, output) {
     plot_watch_class <- df_class %>%
       filter(aware == "Watch") %>%
       ggplot( aes(x=value, fill=text)) +
-      geom_histogram(color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
+      geom_histogram(color="black", alpha=0.5, position = 'identity', binwidth = 2) +
       scale_fill_viridis(discrete=TRUE) +
       theme_minimal() +
       labs(title = "Distribution of Expected Watch Antibiotic Usage",
            x = "Expected usage (DDD)", 
            y = "Frequency",
            fill = "Antibiotic class") +
-      theme(legend.text = element_text(size = 8),
-            axis.text   = element_text(size = 10),
-            axis.title  = element_text(size = 10),
-            title  = element_text(size = 10))
+      theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
     
     plot_watch_class <- ggplotly(plot_watch_class)
     
@@ -1211,15 +1345,23 @@ app_server <- function(session,input, output) {
     # Reorder the syndrome factor in the main dataset
     percent_atb_syndrome <- percent_atb_syndrome %>%
       mutate(syndrome = factor(syndrome, levels = syndrome_order))
+    # print(percent_atb_syndrome)
     
-    
-    aware_syndrome_plot <-  percent_atb_syndrome %>%
-      ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-      geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+# Create a ggplot2 bar plot with error bars
+    # Create a ggplot2 bar plot with error bars
+    aware_syndrome_plot <- percent_atb_syndrome %>%
+      ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+        "Syndrome: ", syndrome, "<br>",
+        "AWaRe Category: ", AWaRe_category, "<br>",
+        "Median: ", round(median_value, 1), "<br>",
+        "Lower CI: ", round(lower, 1), "<br>",
+        "Upper CI: ", round(upper, 1)
+      ))) +
+      geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
       geom_errorbar(aes(ymin = lower, ymax = upper),
                     position = position_dodge(width = 0.8),
                     width = 0.20,
-                    size = 0.25) +
+                    size = 0.25)  +
       scale_fill_manual(
         values = c("Access" = "#009E73",    # Green for Access
                    "Watch"  = "#F0E442"),   # Yellow for Watch
@@ -1238,7 +1380,9 @@ app_server <- function(session,input, output) {
             plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
       )
     
-    aware_syndrome_plot <- ggplotly(aware_syndrome_plot)
+    # Convert ggplot to plotly and customize hover template
+    aware_syndrome_plot <- ggplotly(aware_syndrome_plot, tooltip = "text") %>%
+      layout(hovermode = "closest")
     
     # Plot 5 ------
     # Percent for CAP  
@@ -1337,8 +1481,14 @@ app_server <- function(session,input, output) {
     
     # Then plot using the reordered factor levels
     aware_ind_syndrome_plot <- percent_aware_syndrome %>%
-      ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-      geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+      ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+        "Syndrome: ", syndrome, "<br>",
+        "AWaRe Category: ", AWaRe_category, "<br>",
+        "Median: ", round(median_value, 1), "<br>",
+        "Lower CI: ", round(lower, 1), "<br>",
+        "Upper CI: ", round(upper, 1)
+      ))) +
+      geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
       geom_errorbar(aes(ymin = lower, ymax = upper),
                     position = position_dodge(width = 0.8),
                     width = 0.20,
@@ -1360,7 +1510,9 @@ app_server <- function(session,input, output) {
       theme(axis.text.x = element_text(),
             plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
     
-    aware_ind_syndrome_plot <- ggplotly(aware_ind_syndrome_plot)
+    # Convert ggplot to plotly and customize hover template
+    aware_ind_syndrome_plot <- ggplotly(aware_ind_syndrome_plot, tooltip = "text") %>%
+      layout(hovermode = "closest")
     
     # plot 6 ------
     # Percentage "Access" out of total use 
@@ -1407,14 +1559,18 @@ app_server <- function(session,input, output) {
       select(atb_class, aware, median_value, lower, upper) %>%
       distinct()
     
-    
     # 2. Create the bar graph with error bars
-    
     aware_atbclass_plot <- percent_aware_atb %>%
-      ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware)) +
-      geom_bar(stat = "identity", 
+      ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware, text = paste(
+        "Antibiotic Class: ", atb_class, "<br>",
+        "AWaRe Category: ", aware, "<br>",
+        "Median: ", round(median_value, 1), "<br>",
+        "Lower CI: ", round(lower, 1), "<br>",
+        "Upper CI: ", round(upper, 1)
+      ))) +
+      geom_bar(aes(text = NULL),stat = "identity", 
                position = position_dodge(width = 0.8), 
-               color = "grey50",
+               color = "black",
                width = 0.8) +
       geom_errorbar(aes(ymin = lower, ymax = upper),
                     position = position_dodge(width = 0.8),
@@ -1441,7 +1597,8 @@ app_server <- function(session,input, output) {
         plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
       )
     
-    aware_atbclass_plot <- ggplotly(aware_atbclass_plot)
+    aware_atbclass_plot <- ggplotly(aware_atbclass_plot, tooltip = "text") %>%
+      layout(hovermode = "closest")
     
     } else if(input$choices_ac == "child"){
       # Create an empty dataframe to store model's output
@@ -1469,16 +1626,16 @@ app_server <- function(session,input, output) {
       
       # Summary tables----
       # Table 1
-      summary_table_overall <- df_numeric[,1:8] %>%
+      summary_table_overall <- df_numeric[, 1:8] %>%
         tbl_summary(
           by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
+          statistic = all_continuous() ~ "{median}",  # Display median
           missing = "no",
-          digits = all_continuous() ~ 0 
+          digits = all_continuous() ~ 1  # Ensure 1 decimal place for median
         ) %>%
-        modify_header(label="Description", stat_0 = "Expected usage") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy") %>%
+        modify_header(label="Description", stat_0 = "Expected_usage") %>%
+        modify_footnote(all_stat_cols() ~ "Median (95% credible intervals), DDD = defined daily dose, CAP=community acquired pneumonia,
+                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
         modify_caption("**Table 1: Overall expected empirical antibiotic usage in hospital**") %>%
         modify_table_body(
           ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
@@ -1487,6 +1644,21 @@ app_server <- function(session,input, output) {
           ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
         ) %>%
         as_tibble()
+      
+      # Calculate quantiles and add them to the summary table
+      quantiles_overall <- df_numeric[, 1:8] %>%
+        summarise(across(everything(), list(
+          `0.025 Quantile` = ~ quantile(., probs = 0.025),
+          `0.975 Quantile` = ~ quantile(., probs = 0.975)
+        ))) %>%
+        pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
+        mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+      
+      # Combine the median and quantiles into a single column
+      summary_table_overall <- summary_table_overall %>%
+        left_join(quantiles_overall, by = "Description") %>%
+        mutate(`Expected_usage (DOT)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
+        select(Description, `Expected_usage (DOT)`)
       
       # Table 2 ------
       # Expected use (DOT) for each syndrome 
@@ -1498,15 +1670,14 @@ app_server <- function(session,input, output) {
           values_to = "expected_use"     # create a column for the values
         ) 
       
-      
       # Compute summary statistics by syndrome 
       
       summary_table_syndrome_stat <- summary_table_syndrome_long %>%
         group_by(Description) %>%
         mutate(
-          median_value = round(median(expected_use, na.rm = TRUE), 0),
-          lower = round(quantile(expected_use, 0.25, na.rm = TRUE), 0),
-          upper = round(quantile(expected_use, 0.75, na.rm = TRUE), 0)
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
         ungroup() %>%
         select(Description, median_value, lower, upper) %>%
@@ -1514,31 +1685,39 @@ app_server <- function(session,input, output) {
         mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
         select(Description, expected_use)
       
+      percent_table_syndrome_long <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
       
       # expected use in percentage of total 
-      percent_table_syndrome <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
-        tbl_summary(
-          by = NULL,
-          statistic = everything() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1
+      percent_table_syndrome <- percent_table_syndrome_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Description", stat_0 = "Expected_usage_percent") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy, CAP=community acquired pneumonia,
-                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-        modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
         ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        select(Description, expected_use)
+      
+      
+      # Store as dataframe
+      percent_table_syndrome_df <- percent_table_syndrome %>%
         as_tibble()
       
-      
       # Combine DDD and percent use 
-      summary_table_syndrome_dot_percent <- left_join(summary_table_syndrome_stat, percent_table_syndrome, by = "Description")
+      summary_table_syndrome_dot_percent <- left_join(summary_table_syndrome_stat, percent_table_syndrome_df, by = "Description")
       
       # Data table preparation
       summary_table_syndrome_dot_percent <- summary_table_syndrome_dot_percent %>%
@@ -1546,7 +1725,7 @@ app_server <- function(session,input, output) {
           AWaRe_category = str_extract(Description, "Access|Watch"), # Extract "Access" or "Watch"
           Infection_syndromes = str_remove(Description, ".*: ") # Remove everything before ": "
         ) %>%
-        select(AWaRe_category, Infection_syndromes, expected_use, Expected_usage_percent) %>% # Reorder columns
+        select(AWaRe_category, Infection_syndromes, expected_use.x, expected_use.y) %>% # Reorder columns
         mutate(Infection_syndromes = case_when(
           Infection_syndromes == "CAP" ~ "Community acquired pneumonia",
           Infection_syndromes == "HAP" ~ "Hospital acquired pneumonia (non-VAP)",
@@ -1557,107 +1736,154 @@ app_server <- function(session,input, output) {
         )) %>%
         rename(`AWaRe category`      = AWaRe_category,
                `Infection syndromes` = Infection_syndromes,
-               `Expected use (DOT)` = expected_use,
-               `Expected use (% of total use)` = Expected_usage_percent)
+               `Expected use (DOT)` = expected_use.x,
+               `Expected use (% of total use)` = expected_use.y)
+      
       
       
       # Table 3 -------
-      summary_table_class_access <- df_numeric[, 31:38] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 0 
-        ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy") %>%
-        modify_caption("**Table 3: Expected empirical Access antibiotic usage by antibiotic class**")  %>% 
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        )%>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()%>%
-        mutate(`AWaRe category` = "Access")
+      summary_table_class_access_long <- as.data.frame(df_numeric[, 31:38]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
       
-      # Percentage "Access" out of total use 
-      access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
+      # Compute summary statistics by syndrome 
       
-      percent_access_df <- access_df %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+      summary_table_class_access <- summary_table_class_access_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = Days of Therapy") %>%
-        modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        )%>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      summary_table_class_access <- summary_table_class_access %>%
         as_tibble()
       
-      summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Antibiotic class" ) %>%
+      summary_table_class_access <- summary_table_class_access %>%
+        mutate(`AWaRe category` = "Access")
+      
+      
+      # Percentage "Access" out of total use 
+      # expected use in percentage of total 
+      access_df <- ((df_numeric[, 31:38]/ df_numeric[, 1])*100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
+      
+      # expected use in percentage of total 
+      percent_access_df <- access_df %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
+        ) %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
+        ) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      percent_access_df <- percent_access_df %>%
+        as_tibble()
+      
+      
+      summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Description" ) %>%
         select(`AWaRe category`, everything())
       
       
       # DOT "Watch" out of total use 
-      summary_table_class_watch <- df_numeric[, 39:ncol(df_numeric)] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 0
+      summary_table_class_Watch_long <- as.data.frame(df_numeric[, 39:ncol(df_numeric)]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
+      
+      # Compute summary statistics by syndrome 
+      
+      summary_table_class_Watch <- summary_table_class_Watch_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy") %>%
-        modify_caption("**Table 4: Expected empirical Watch antibiotic usage by antibiotic class**")   %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()%>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      summary_table_class_watch <- summary_table_class_Watch %>%
+        as_tibble()
+      
+      
+      summary_table_class_watch <- summary_table_class_watch %>%
         mutate(`AWaRe category` = "Watch")
       
+      
       # Percentage "Watch" out of total use 
-      watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+      # expected use in percentage of total 
+      watch_df <- ((df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
       
-      
+      # expected use in percentage of total 
       percent_watch_df <- watch_df %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DTT = Days of Therapy") %>%
-        modify_caption("**Table 3: Expected (Watch) antibiotic usage by antibiotic class**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
         ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      percent_watch_df <- percent_watch_df %>%
         as_tibble()
       
       # Merge  Watch DDD and percent 
-      summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Antibiotic class" ) %>%
+      summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Description" ) %>%
         select(`AWaRe category`, everything())
       
+      
       # Append Access and Watch 
-      atb_class_summary_tbl <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)
+      atb_class_summary_tbl <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)%>%
+        rename(`AWaRe category`      = `AWaRe category`,
+               `Antibiotic class` = Description,
+               `Expected use (DOT)` = expected_use.x,
+               `Expected use (% of total use)` = expected_use.y)
       
       
       #Plotting----
@@ -1718,17 +1944,14 @@ app_server <- function(session,input, output) {
       plot_access_class <- df_class %>%
         filter(aware == "Access") %>%
         ggplot( aes(x=value, fill=text)) +
-        geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 1) +
+        geom_histogram( color="black", alpha=0.5, position = 'identity', binwidth = 1) +
         scale_fill_viridis(discrete=TRUE) +
         theme_minimal() +
         labs(title = "Distribution of Expected Empirical Access Antibiotic Usage",
              x = "Expected usage (DOT)", 
              y = "Frequency",
              fill = "Antibiotic class") +
-        theme(legend.text = element_text(size = 8),
-              axis.text   = element_text(size = 10),
-              axis.title  = element_text(size = 10),
-              title  = element_text(size = 10))
+        theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
       plot_access_class <- ggplotly(plot_access_class)
       
@@ -1737,17 +1960,14 @@ app_server <- function(session,input, output) {
       plot_watch_class <- df_class %>%
         filter(aware == "Watch") %>%
         ggplot( aes(x=value, fill=text)) +
-        geom_histogram(color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 1) +
+        geom_histogram(color="black", alpha=0.5, position = 'identity', binwidth = 1) +
         scale_fill_viridis(discrete=TRUE) +
         theme_minimal() +
         labs(title = "Distribution of Expected Empirical Watch Antibiotic Usage",
              x = "Expected usage (DOT)", 
              y = "Frequency",
              fill = "Antibiotic class") +
-        theme(legend.text = element_text(size = 8),
-              axis.text   = element_text(size = 10),
-              axis.title  = element_text(size = 10),
-              title  = element_text(size = 10))
+        theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
       plot_watch_class <- ggplotly(plot_watch_class)
       
@@ -1808,13 +2028,20 @@ app_server <- function(session,input, output) {
         mutate(syndrome = factor(syndrome, levels = syndrome_order))
       
       
-      aware_syndrome_plot <-  percent_atb_syndrome %>%
-        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-        geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+      # Create a ggplot2 bar plot with error bars
+      aware_syndrome_plot <- percent_atb_syndrome %>%
+        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+          "Syndrome: ", syndrome, "<br>",
+          "AWaRe Category: ", AWaRe_category, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
                       width = 0.20,
-                      size = 0.25) +
+                      size = 0.25)  +
         scale_fill_manual(
           values = c("Access" = "#009E73",    # Green for Access
                      "Watch"  = "#F0E442"),   # Yellow for Watch
@@ -1832,6 +2059,10 @@ app_server <- function(session,input, output) {
         theme(axis.text.x = element_text(),
               plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
         )
+      
+      # Convert ggplot to plotly and customize hover template
+      aware_syndrome_plot <- ggplotly(aware_syndrome_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
       aware_syndrome_plot <- ggplotly(aware_syndrome_plot)
       
@@ -1929,9 +2160,16 @@ app_server <- function(session,input, output) {
         mutate(syndrome = factor(syndrome, levels = syndrome_order))
       
       # Then plot using the reordered factor levels
+      # Then plot using the reordered factor levels
       aware_ind_syndrome_plot <- percent_aware_syndrome %>%
-        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-        geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+          "Syndrome: ", syndrome, "<br>",
+          "AWaRe Category: ", AWaRe_category, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
                       width = 0.20,
@@ -1953,7 +2191,9 @@ app_server <- function(session,input, output) {
         theme(axis.text.x = element_text(),
               plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
-      aware_ind_syndrome_plot <- ggplotly(aware_ind_syndrome_plot)
+      # Convert ggplot to plotly and customize hover template
+      aware_ind_syndrome_plot <- ggplotly(aware_ind_syndrome_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
       # plot 6 ------
       # Percentage "Access" out of total use 
@@ -2002,10 +2242,16 @@ app_server <- function(session,input, output) {
       # 2. Create the bar graph with error bars
       
       aware_atbclass_plot <- percent_aware_atb %>%
-        ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware)) +
-        geom_bar(stat = "identity", 
+        ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware, text = paste(
+          "Antibiotic Class: ", atb_class, "<br>",
+          "AWaRe Category: ", aware, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL),stat = "identity", 
                  position = position_dodge(width = 0.8), 
-                 color = "grey50",
+                 color = "black",
                  width = 0.8) +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
@@ -2032,7 +2278,8 @@ app_server <- function(session,input, output) {
           plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
         )
       
-      aware_atbclass_plot <- ggplotly(aware_atbclass_plot)
+      aware_atbclass_plot <- ggplotly(aware_atbclass_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
     }else if (input$choices_ac == "both"){
       #### both adult ####
@@ -2059,38 +2306,17 @@ app_server <- function(session,input, output) {
       
       # Summary tables----
       # Table 1
-      summary_table_overall_adult <- df_numeric[,1:8] %>%
+      summary_table_overall <- df_numeric[, 1:8] %>%
         tbl_summary(
           by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
+          statistic = all_continuous() ~ "{median}",  # Display median
           missing = "no",
-          digits = all_continuous() ~ 1
-        ) %>%
-        modify_header(label="Description", stat_0 = "Expected usage") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-        modify_caption("**Table 1: Overall expected antibiotic usage in hospital**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
-        ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()
-      
-      # Table 2 ------
-      summary_table_syndrome <- df_numeric[,9:(9+21)] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1
+          digits = all_continuous() ~ 1  # Ensure 1 decimal place for median
         ) %>%
         modify_header(label="Description", stat_0 = "Expected_usage") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose, CAP=community acquired pneumonia,
+        modify_footnote(all_stat_cols() ~ "Median (95% credible intervals), DDD = defined daily dose, CAP=community acquired pneumonia,
                   HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-        modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
+        modify_caption("**Table 1: Overall expected empirical antibiotic usage in hospital**") %>%
         modify_table_body(
           ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
         ) %>%
@@ -2099,36 +2325,93 @@ app_server <- function(session,input, output) {
         ) %>%
         as_tibble()
       
+      # Calculate quantiles and add them to the summary table
+      quantiles_overall <- df_numeric[, 1:8] %>%
+        summarise(across(everything(), list(
+          `0.025 Quantile` = ~ quantile(., probs = 0.025),
+          `0.975 Quantile` = ~ quantile(., probs = 0.975)
+        ))) %>%
+        pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
+        mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+      
+      # Combine the median and quantiles into a single column
+      summary_table_overall_adult <- summary_table_overall %>%
+        left_join(quantiles_overall, by = "Description") %>%
+        mutate(`Expected_usage (95% CI)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
+        select(Description, `Expected_usage (95% CI)`)
+      
+      
+      # Table 2 ------
+      summary_table_syndrome_long <- as.data.frame(df_numeric[,9:(9+21)]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
+      
+      # Compute summary statistics by syndrome 
+      
+      summary_table_syndrome_stat <- summary_table_syndrome_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
+        ) %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      percent_table_syndrome_long <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
+      
       # expected use in percentage of total 
-      percent_table_syndrome <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1
+      percent_table_syndrome <- percent_table_syndrome_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Description", stat_0 = "Expected_usage_percent") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose, CAP=community acquired pneumonia,
-                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-        modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
         ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        select(Description, expected_use)
+      
+      
+      # # Combine the median and quantiles into a single column
+      # summary_table_combined <- percent_table_syndrome %>%
+      #   left_join(quantiles_overall, by = "Description") %>%
+      #   mutate(`Expected_usage (95% CI)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
+      #   select(Description, `Expected_usage (95% CI)`)
+      
+      
+      # Store as dataframe
+      percent_table_syndrome_df <- percent_table_syndrome %>%
         as_tibble()
       
       # Combine DDD and percent use 
-      summary_table_syndrome_ddd_percent <- left_join(summary_table_syndrome, percent_table_syndrome, by = "Description")
+      summary_table_syndrome_ddd_percent <- left_join(summary_table_syndrome_stat, percent_table_syndrome_df, by = "Description")
+      
       
       summary_table_syndrome_ddd_percent_adult <- summary_table_syndrome_ddd_percent %>%
         mutate(
           AWaRe_category = str_extract(Description, "Access|Watch"), # Extract "Access" or "Watch"
           Infection_syndromes = str_remove(Description, ".*: ") # Remove everything before ": "
         ) %>%
-        select(AWaRe_category, Infection_syndromes, Expected_usage, Expected_usage_percent) %>% # Reorder columns
+        select(AWaRe_category, Infection_syndromes, expected_use.x, expected_use.y) %>% # Reorder columns
         mutate(Infection_syndromes = case_when(
           Infection_syndromes == "CAP" ~ "Community acquired pneumonia",
           Infection_syndromes == "HAP(non-VAP)" ~ "Hospital acquired pneumonia (non-VAP)",
@@ -2139,102 +2422,209 @@ app_server <- function(session,input, output) {
         )) %>%
         rename(`AWaRe category`      = AWaRe_category,
                `Infection syndromes` = Infection_syndromes,
-               `Expected use (DDD)` = Expected_usage,
-               `Expected use (% of total use)` = Expected_usage_percent)
+               `Expected use (DDD)` = expected_use.x,
+               `Expected use (% of total use)` = expected_use.y)
       
       
       # Table 3 -------
-      summary_table_class_access <- df_numeric[, 31:38] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
-        ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (DDD)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-        modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**")  %>% 
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        )%>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()%>%
-        mutate(`AWaRe category` = "Access")
+      summary_table_class_access_long <- as.data.frame(df_numeric[, 31:38]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
       
-      # Percentage "Access" out of total use 
-      access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
+      # Compute summary statistics by syndrome 
       
-      percent_access_df <- access_df %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+      summary_table_class_access <- summary_table_class_access_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-        modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**")  %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      # summary_table_class_access <- df_numeric[, 31:38] %>%
+      #   tbl_summary(
+      #     by = NULL,
+      #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+      #     missing = "no",
+      #     digits = all_continuous() ~ 0
+      #   ) %>%
+      #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
+      #   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = days of therapy") %>%
+      #   modify_caption("**Table 3: Expected empirical Access antibiotic usage by antibiotic class**")
+      # 
+      
+      # Store as a dataframe
+      summary_table_class_access <- summary_table_class_access %>%
         as_tibble()
       
-      summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Antibiotic class" ) %>%
+      summary_table_class_access <- summary_table_class_access %>%
+        mutate(`AWaRe category` = "Access")
+      
+      
+      # Percentage "Access" out of total use 
+      # expected use in percentage of total 
+      access_df <- ((df_numeric[, 31:38]/ df_numeric[, 1])*100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
+      
+      # expected use in percentage of total 
+      percent_access_df <- access_df %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
+        ) %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
+        ) %>%
+        select(Description, expected_use)
+      # access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
+      # 
+      # percent_access_df <- access_df %>%
+      #   tbl_summary(
+      #     by = NULL,
+      #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+      #     missing = "no",
+      #     digits = all_continuous() ~ 1 
+      #   ) %>%
+      #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
+      #   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = Days of Therapy") %>%
+      #   modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**") 
+      
+      
+      
+      # Store as a dataframe
+      percent_access_df <- percent_access_df %>%
+        as_tibble()
+      
+      
+      summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Description" ) %>%
         select(`AWaRe category`, everything())
       
       
-      # DDD "Watch" out of total use 
-      summary_table_class_watch <- df_numeric[, 39:ncol(df_numeric)] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+      # DOT "Watch" out of total use 
+      summary_table_class_Watch_long <- as.data.frame(df_numeric[, 39:ncol(df_numeric)]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
+      
+      # Compute summary statistics by syndrome 
+      
+      summary_table_class_Watch <- summary_table_class_Watch_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (DDD)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-        modify_caption("**Table 4: Expected (Watch) antibiotic usage by antibiotic class**")  %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()%>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      # summary_table_class_watch <- df_numeric[, 39:ncol(df_numeric)] %>%
+      #   tbl_summary(
+      #     by = NULL,
+      #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+      #     missing = "no",
+      #     digits = all_continuous() ~ 0
+      #   ) %>%
+      #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
+      #   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = days of therapy") %>%
+      #   modify_caption("**Table 4: Expected empirical Watch antibiotic usage by antibiotic class**") 
+      # 
+      
+      
+      # Store as a dataframe
+      summary_table_class_watch <- summary_table_class_Watch %>%
+        as_tibble()
+      
+      
+      summary_table_class_watch <- summary_table_class_watch %>%
         mutate(`AWaRe category` = "Watch")
       
+      
       # Percentage "Watch" out of total use 
-      watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+      # expected use in percentage of total 
+      watch_df <- ((df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
       
-      
+      # expected use in percentage of total 
       percent_watch_df <- watch_df %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DDD = defined daily dose") %>%
-        modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
         ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        select(Description, expected_use)
+      
+      # watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+      # 
+      # 
+      # percent_watch_df <- watch_df %>%
+      #   tbl_summary(
+      #     by = NULL,
+      #     statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+      #     missing = "no",
+      #     digits = all_continuous() ~ 1 
+      #   ) %>%
+      #   modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
+      #   modify_footnote(all_stat_cols() ~ "Median (IQR), DTT = Days of Therapy") %>%
+      #   modify_caption("**Table 3: Expected (Watch) antibiotic usage by antibiotic class**") 
+      
+      
+      
+      
+      # Store as a dataframe
+      percent_watch_df <- percent_watch_df %>%
         as_tibble()
       
       # Merge  Watch DDD and percent 
-      summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Antibiotic class" ) %>%
+      summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Description" ) %>%
         select(`AWaRe category`, everything())
       
-      # Append Access and Watch 
-      atb_class_summary_tbl_adult <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)
       
+      # Append Access and Watch 
+      atb_class_summary_tbl_adult <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)%>%
+        rename(`AWaRe category`      = `AWaRe category`,
+               `Antibiotic class` = Description,
+               `Expected use (DDD)` = expected_use.x,
+               `Expected use (% of total use)` = expected_use.y)
       
       #Plotting----
       # Change the dataformat for the plot
@@ -2294,17 +2684,14 @@ app_server <- function(session,input, output) {
       plot_access_class_adult <- df_class %>%
         filter(aware == "Access") %>%
         ggplot( aes(x=value, fill=text)) +
-        geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
+        geom_histogram( color="black", alpha=0.5, position = 'identity', binwidth = 2) +
         scale_fill_viridis(discrete=TRUE) +
         theme_minimal() +
         labs(title = "Distribution of Expected Access Antibiotic Usage",
              x = "Expected usage (DDD)", 
              y = "Frequency",
              fill = "Antibiotic class") +
-        theme(legend.text = element_text(size = 8),
-              axis.text   = element_text(size = 10),
-              axis.title  = element_text(size = 10),
-              title  = element_text(size = 10))
+        theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
       plot_access_class_adult <- ggplotly(plot_access_class_adult)
       
@@ -2313,17 +2700,14 @@ app_server <- function(session,input, output) {
       plot_watch_class_adult <- df_class %>%
         filter(aware == "Watch") %>%
         ggplot( aes(x=value, fill=text)) +
-        geom_histogram(color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 2) +
+        geom_histogram(color="black", alpha=0.5, position = 'identity', binwidth = 2) +
         scale_fill_viridis(discrete=TRUE) +
         theme_minimal() +
         labs(title = "Distribution of Expected Watch Antibiotic Usage",
              x = "Expected usage (DDD)", 
              y = "Frequency",
              fill = "Antibiotic class") +
-        theme(legend.text = element_text(size = 8),
-              axis.text   = element_text(size = 10),
-              axis.title  = element_text(size = 10),
-              title  = element_text(size = 10))
+        theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
       plot_watch_class_adult <- ggplotly(plot_watch_class_adult)
       
@@ -2384,13 +2768,19 @@ app_server <- function(session,input, output) {
         mutate(syndrome = factor(syndrome, levels = syndrome_order))
       
       
-      aware_syndrome_plot <-  percent_atb_syndrome %>%
-        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-        geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+      aware_syndrome_plot_adult <- percent_atb_syndrome %>%
+        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+          "Syndrome: ", syndrome, "<br>",
+          "AWaRe Category: ", AWaRe_category, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
                       width = 0.20,
-                      size = 0.25) +
+                      size = 0.25)  +
         scale_fill_manual(
           values = c("Access" = "#009E73",    # Green for Access
                      "Watch"  = "#F0E442"),   # Yellow for Watch
@@ -2409,7 +2799,9 @@ app_server <- function(session,input, output) {
               plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
         )
       
-      aware_syndrome_plot_adult <- ggplotly(aware_syndrome_plot)
+      # Convert ggplot to plotly and customize hover template
+      aware_syndrome_plot_adult <- ggplotly(aware_syndrome_plot_adult, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
       # Plot 5 ------
       # Percent for CAP  
@@ -2508,8 +2900,14 @@ app_server <- function(session,input, output) {
       
       # Then plot using the reordered factor levels
       aware_ind_syndrome_plot <- percent_aware_syndrome %>%
-        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-        geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+          "Syndrome: ", syndrome, "<br>",
+          "AWaRe Category: ", AWaRe_category, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
                       width = 0.20,
@@ -2531,7 +2929,9 @@ app_server <- function(session,input, output) {
         theme(axis.text.x = element_text(),
               plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
-      aware_ind_syndrome_plot_adult <- ggplotly(aware_ind_syndrome_plot)
+      # Convert ggplot to plotly and customize hover template
+      aware_ind_syndrome_plot_adult <- ggplotly(aware_ind_syndrome_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
       # plot 6 ------
       # Percentage "Access" out of total use 
@@ -2578,14 +2978,18 @@ app_server <- function(session,input, output) {
         select(atb_class, aware, median_value, lower, upper) %>%
         distinct()
       
-      
       # 2. Create the bar graph with error bars
-      
       aware_atbclass_plot <- percent_aware_atb %>%
-        ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware)) +
-        geom_bar(stat = "identity", 
+        ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware, text = paste(
+          "Antibiotic Class: ", atb_class, "<br>",
+          "AWaRe Category: ", aware, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL),stat = "identity", 
                  position = position_dodge(width = 0.8), 
-                 color = "grey50",
+                 color = "black",
                  width = 0.8) +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
@@ -2612,7 +3016,8 @@ app_server <- function(session,input, output) {
           plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
         )
       
-      aware_atbclass_plot_adult <- ggplotly(aware_atbclass_plot)
+      aware_atbclass_plot_adult <- ggplotly(aware_atbclass_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
       #### both child ####
       # Create an empty dataframe to store model's output
@@ -2640,16 +3045,16 @@ app_server <- function(session,input, output) {
       
       # Summary tables----
       # Table 1
-      summary_table_overall_child <- df_numeric[,1:8] %>%
+      summary_table_overall <- df_numeric[, 1:8] %>%
         tbl_summary(
           by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
+          statistic = all_continuous() ~ "{median}",  # Display median
           missing = "no",
-          digits = all_continuous() ~ 0 
+          digits = all_continuous() ~ 1  # Ensure 1 decimal place for median
         ) %>%
-        modify_header(label="Description", stat_0 = "Expected usage") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy") %>%
+        modify_header(label="Description", stat_0 = "Expected_usage") %>%
+        modify_footnote(all_stat_cols() ~ "Median (95% credible intervals), DDD = defined daily dose, CAP=community acquired pneumonia,
+                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
         modify_caption("**Table 1: Overall expected empirical antibiotic usage in hospital**") %>%
         modify_table_body(
           ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
@@ -2658,6 +3063,21 @@ app_server <- function(session,input, output) {
           ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
         ) %>%
         as_tibble()
+      
+      # Calculate quantiles and add them to the summary table
+      quantiles_overall <- df_numeric[, 1:8] %>%
+        summarise(across(everything(), list(
+          `0.025 Quantile` = ~ quantile(., probs = 0.025),
+          `0.975 Quantile` = ~ quantile(., probs = 0.975)
+        ))) %>%
+        pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
+        mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+      
+      # Combine the median and quantiles into a single column
+      summary_table_overall_child <- summary_table_overall %>%
+        left_join(quantiles_overall, by = "Description") %>%
+        mutate(`Expected_usage (DOT)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
+        select(Description, `Expected_usage (DOT)`)
       
       # Table 2 ------
       # Expected use (DOT) for each syndrome 
@@ -2669,15 +3089,14 @@ app_server <- function(session,input, output) {
           values_to = "expected_use"     # create a column for the values
         ) 
       
-      
       # Compute summary statistics by syndrome 
       
       summary_table_syndrome_stat <- summary_table_syndrome_long %>%
         group_by(Description) %>%
         mutate(
-          median_value = round(median(expected_use, na.rm = TRUE), 0),
-          lower = round(quantile(expected_use, 0.25, na.rm = TRUE), 0),
-          upper = round(quantile(expected_use, 0.75, na.rm = TRUE), 0)
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
         ungroup() %>%
         select(Description, median_value, lower, upper) %>%
@@ -2685,31 +3104,39 @@ app_server <- function(session,input, output) {
         mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
         select(Description, expected_use)
       
+      percent_table_syndrome_long <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
       
       # expected use in percentage of total 
-      percent_table_syndrome <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) %>%
-        tbl_summary(
-          by = NULL,
-          statistic = everything() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1
+      percent_table_syndrome <- percent_table_syndrome_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Description", stat_0 = "Expected_usage_percent") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy, CAP=community acquired pneumonia,
-                  HAP = hospital acquired pneumonia, SST = skin and soft-tissue infection") %>%
-        modify_caption("**Table 2: Expected antibiotic usage by infection syndrome**") %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0(0%)", "1,000 (100%)"), "NA", stat_0))
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
         ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0(0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        select(Description, expected_use)
+      
+      
+      # Store as dataframe
+      percent_table_syndrome_df <- percent_table_syndrome %>%
         as_tibble()
       
-      
       # Combine DDD and percent use 
-      summary_table_syndrome_dot_percent <- left_join(summary_table_syndrome_stat, percent_table_syndrome, by = "Description")
+      summary_table_syndrome_dot_percent <- left_join(summary_table_syndrome_stat, percent_table_syndrome_df, by = "Description")
       
       # Data table preparation
       summary_table_syndrome_dot_percent_child <- summary_table_syndrome_dot_percent %>%
@@ -2717,7 +3144,7 @@ app_server <- function(session,input, output) {
           AWaRe_category = str_extract(Description, "Access|Watch"), # Extract "Access" or "Watch"
           Infection_syndromes = str_remove(Description, ".*: ") # Remove everything before ": "
         ) %>%
-        select(AWaRe_category, Infection_syndromes, expected_use, Expected_usage_percent) %>% # Reorder columns
+        select(AWaRe_category, Infection_syndromes, expected_use.x, expected_use.y) %>% # Reorder columns
         mutate(Infection_syndromes = case_when(
           Infection_syndromes == "CAP" ~ "Community acquired pneumonia",
           Infection_syndromes == "HAP" ~ "Hospital acquired pneumonia (non-VAP)",
@@ -2728,100 +3155,154 @@ app_server <- function(session,input, output) {
         )) %>%
         rename(`AWaRe category`      = AWaRe_category,
                `Infection syndromes` = Infection_syndromes,
-               `Expected use (DOT)` = expected_use,
-               `Expected use (% of total use)` = Expected_usage_percent)
+               `Expected use (DOT)` = expected_use.x,
+               `Expected use (% of total use)` = expected_use.y)
+      
       
       
       # Table 3 -------
-      # DOT "Access" out of total use 
-      summary_table_class_access <- df_numeric[, 31:38] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 0 
-        ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy") %>%
-        modify_caption("**Table 3: Expected empirical Access antibiotic usage by antibiotic class**") %>% 
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        )%>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()%>%
-        mutate(`AWaRe category` = "Access")
+      summary_table_class_access_long <- as.data.frame(df_numeric[, 31:38]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
       
-      # Percentage "Access" out of total use 
-      access_df <- (df_numeric[, 31:38]/ df_numeric[, 1])*100
+      # Compute summary statistics by syndrome 
       
-      percent_access_df <- access_df %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          type = all_categorical() ~ "continuous",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+      summary_table_class_access <- summary_table_class_access_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = Days of Therapy") %>%
-        modify_caption("**Table 3: Expected (Access) antibiotic usage by antibiotic class**")  %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      summary_table_class_access <- summary_table_class_access %>%
         as_tibble()
       
-      summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Antibiotic class" ) %>%
+      summary_table_class_access <- summary_table_class_access %>%
+        mutate(`AWaRe category` = "Access")
+      
+      
+      # Percentage "Access" out of total use 
+      # expected use in percentage of total 
+      access_df <- ((df_numeric[, 31:38]/ df_numeric[, 1])*100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
+      
+      # expected use in percentage of total 
+      percent_access_df <- access_df %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
+        ) %>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
+        ) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      percent_access_df <- percent_access_df %>%
+        as_tibble()
+      
+      
+      summary_access_ddd_percent <- left_join(summary_table_class_access,percent_access_df, by = "Description" ) %>%
         select(`AWaRe category`, everything())
       
       
       # DOT "Watch" out of total use 
-      summary_table_class_watch <- df_numeric[, 39:ncol(df_numeric)] %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          missing = "no",
-          digits = all_continuous() ~ 0
+      summary_table_class_Watch_long <- as.data.frame(df_numeric[, 39:ncol(df_numeric)]) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) 
+      
+      # Compute summary statistics by syndrome 
+      
+      summary_table_class_Watch <- summary_table_class_Watch_long %>%
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(expected_use, na.rm = TRUE), 1),
+          lower = round(quantile(expected_use, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(expected_use, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (DOT)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DOT = days of therapy") %>%
-        modify_caption("**Table 4: Expected empirical Watch antibiotic usage by antibiotic class**")  %>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
-        ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
-        as_tibble()%>%
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(expected_use = paste0(median_value, " (", lower, ", ", upper, ")")) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      summary_table_class_watch <- summary_table_class_Watch %>%
+        as_tibble()
+      
+      
+      summary_table_class_watch <- summary_table_class_watch %>%
         mutate(`AWaRe category` = "Watch")
       
+      
       # Percentage "Watch" out of total use 
-      watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+      # expected use in percentage of total 
+      watch_df <- ((df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "Description",         # create a column for the original column names
+          values_to = "Expected use (% of total use)"     # create a column for the values
+        ) 
       
-      
+      # expected use in percentage of total 
       percent_watch_df <- watch_df %>%
-        tbl_summary(
-          by = NULL,
-          statistic = all_continuous() ~ "{median} ({p25}, {p75})",
-          missing = "no",
-          digits = all_continuous() ~ 1 
+        group_by(Description) %>%
+        mutate(
+          median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+          lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+          upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
         ) %>%
-        modify_header(label="Antibiotic class", stat_0 = "Expected usage (% of total use)") %>%
-        modify_footnote(all_stat_cols() ~ "Median (25th and 75th percentile), DTT = Days of Therapy") %>%
-        modify_caption("**Table 3: Expected (Watch) antibiotic usage by antibiotic class**")%>%
-        modify_table_body(
-          ~ .x %>% mutate(stat_0 = if_else(stat_0  %in% c("0 (0%)", "1,000 (100%)"), "NA", stat_0))
+        ungroup() %>%
+        select(Description, median_value, lower, upper) %>%
+        distinct() %>%
+        mutate(
+          median_value = paste0(median_value, "%"),
+          lower = paste0(lower, "%"),
+          upper = paste0(upper, "%"),
+          expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
         ) %>%
-        modify_table_body(
-          ~ .x %>% filter(!(label == "0" & (stat_0 == "1,000 (100%)" | stat_0 == "0 (0%)" | stat_0 == "NA"))) # Remove rows where label is "0       1,000 (100%)"
-        ) %>%
+        select(Description, expected_use)
+      
+      # Store as a dataframe
+      percent_watch_df <- percent_watch_df %>%
         as_tibble()
       
       # Merge  Watch DDD and percent 
-      summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Antibiotic class" ) %>%
+      summary_watch_ddd_percent <- left_join(summary_table_class_watch,percent_watch_df, by = "Description" ) %>%
         select(`AWaRe category`, everything())
       
+      
       # Append Access and Watch 
-      atb_class_summary_tbl_child <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)
+      atb_class_summary_tbl_child <- rbind(summary_access_ddd_percent, summary_watch_ddd_percent)%>%
+        rename(`AWaRe category`      = `AWaRe category`,
+               `Antibiotic class` = Description,
+               `Expected use (DOT)` = expected_use.x,
+               `Expected use (% of total use)` = expected_use.y)
       
       
       #Plotting----
@@ -2883,17 +3364,14 @@ app_server <- function(session,input, output) {
       plot_access_class <- df_class %>%
         filter(aware == "Access") %>%
         ggplot( aes(x=value, fill=text)) +
-        geom_histogram( color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 1) +
+        geom_histogram( color="black", alpha=0.5, position = 'identity', binwidth = 1) +
         scale_fill_viridis(discrete=TRUE) +
         theme_minimal() +
         labs(title = "Distribution of Expected Empirical Access Antibiotic Usage",
              x = "Expected usage (DOT)", 
              y = "Frequency",
              fill = "Antibiotic class") +
-        theme(legend.text = element_text(size = 8),
-              axis.text   = element_text(size = 10),
-              axis.title  = element_text(size = 10),
-              title  = element_text(size = 10))
+        theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
       plot_access_class_child <- ggplotly(plot_access_class)
       
@@ -2902,17 +3380,14 @@ app_server <- function(session,input, output) {
       plot_watch_class <- df_class %>%
         filter(aware == "Watch") %>%
         ggplot( aes(x=value, fill=text)) +
-        geom_histogram(color="#e9ecef", alpha=0.5, position = 'identity', binwidth = 1) +
+        geom_histogram(color="black", alpha=0.5, position = 'identity', binwidth = 1) +
         scale_fill_viridis(discrete=TRUE) +
         theme_minimal() +
         labs(title = "Distribution of Expected Empirical Watch Antibiotic Usage",
              x = "Expected usage (DOT)", 
              y = "Frequency",
              fill = "Antibiotic class") +
-        theme(legend.text = element_text(size = 8),
-              axis.text   = element_text(size = 10),
-              axis.title  = element_text(size = 10),
-              title  = element_text(size = 10))
+        theme(plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
       plot_watch_class_child <- ggplotly(plot_watch_class)
       
@@ -2969,17 +3444,19 @@ app_server <- function(session,input, output) {
         pull(syndrome)
       
       # Reorder the syndrome factor in the main dataset
-      percent_atb_syndrome <- percent_atb_syndrome %>%
-        mutate(syndrome = factor(syndrome, levels = syndrome_order))
-      
-      
-      aware_syndrome_plot <-  percent_atb_syndrome %>%
-        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-        geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+      aware_syndrome_plot_child <- percent_atb_syndrome %>%
+        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+          "Syndrome: ", syndrome, "<br>",
+          "AWaRe Category: ", AWaRe_category, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
                       width = 0.20,
-                      size = 0.25) +
+                      size = 0.25)  +
         scale_fill_manual(
           values = c("Access" = "#009E73",    # Green for Access
                      "Watch"  = "#F0E442"),   # Yellow for Watch
@@ -2998,7 +3475,11 @@ app_server <- function(session,input, output) {
               plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
         )
       
-      aware_syndrome_plot_child <- ggplotly(aware_syndrome_plot)
+      # Convert ggplot to plotly and customize hover template
+      aware_syndrome_plot_child <- ggplotly(aware_syndrome_plot_child, tooltip = "text") %>%
+        layout(hovermode = "closest")
+      
+      aware_syndrome_plot_child <- ggplotly(aware_syndrome_plot_child)
       
       # Plot 5 ------
       # Percent for CAP  
@@ -3095,8 +3576,14 @@ app_server <- function(session,input, output) {
       
       # Then plot using the reordered factor levels
       aware_ind_syndrome_plot <- percent_aware_syndrome %>%
-        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category)) +
-        geom_bar(stat = "identity", position = position_dodge(width = 0.8), color = "grey50") +
+        ggplot(aes(x = syndrome, y = median_value, fill = AWaRe_category, text = paste(
+          "Syndrome: ", syndrome, "<br>",
+          "AWaRe Category: ", AWaRe_category, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL), stat = "identity", position = position_dodge(width = 0.8), color = "black") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
                       width = 0.20,
@@ -3118,10 +3605,27 @@ app_server <- function(session,input, output) {
         theme(axis.text.x = element_text(),
               plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10)))
       
-      aware_ind_syndrome_plot_child <- ggplotly(aware_ind_syndrome_plot)
-      
+      # Convert ggplot to plotly and customize hover template
+      aware_ind_syndrome_plot_child <- ggplotly(aware_ind_syndrome_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
+
       # plot 6 ------
       # Percentage "Access" out of total use 
+      access_df <- ((df_numeric[, 31:38]/ df_numeric[, 1])*100)
+      
+      # Wide to long format 
+      percent_access_long <- as.data.frame(access_df) %>%
+        pivot_longer(
+          cols = everything(),         # pivot all columns
+          names_to = "atb_class",         # create a column for the original column names
+          values_to = "expected_use"     # create a column for the values
+        ) %>%
+        mutate(aware = "Access")
+      
+      
+      # Percentage "Watch" out of total use 
+      watch_df <- (df_numeric[, 39:ncol(df_numeric)]/ df_numeric[, 1]) * 100
+      
       # Wide to long format 
       percent_watch_long <- as.data.frame(watch_df) %>%
         pivot_longer(
@@ -3152,10 +3656,16 @@ app_server <- function(session,input, output) {
       # 2. Create the bar graph with error bars
       
       aware_atbclass_plot <- percent_aware_atb %>%
-        ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware)) +
-        geom_bar(stat = "identity", 
+        ggplot(aes(x = fct_reorder(atb_class, median_value), y = median_value, fill = aware, text = paste(
+          "Antibiotic Class: ", atb_class, "<br>",
+          "AWaRe Category: ", aware, "<br>",
+          "Median: ", round(median_value, 1), "<br>",
+          "Lower CI: ", round(lower, 1), "<br>",
+          "Upper CI: ", round(upper, 1)
+        ))) +
+        geom_bar(aes(text = NULL),stat = "identity", 
                  position = position_dodge(width = 0.8), 
-                 color = "grey50",
+                 color = "black",
                  width = 0.8) +
         geom_errorbar(aes(ymin = lower, ymax = upper),
                       position = position_dodge(width = 0.8),
@@ -3182,7 +3692,8 @@ app_server <- function(session,input, output) {
           plot.caption = element_text(size = 8, hjust = 0, face = "italic", margin = margin(t = 10))
         )
       
-      aware_atbclass_plot_child <- ggplotly(aware_atbclass_plot)
+      aware_atbclass_plot_child <- ggplotly(aware_atbclass_plot, tooltip = "text") %>%
+        layout(hovermode = "closest")
       
       }
     shinyjs::enable("run_model")
@@ -3204,7 +3715,7 @@ app_server <- function(session,input, output) {
           rownames = FALSE,
           caption = tags$caption(
             style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-            "This table shows the overall expected empirical antibiotic usage expressed as median (25th and 75th percentile)."
+            "This table shows the overall expected empirical antibiotic usage expressed as median (95% credible intervals). DDD = defined daily dose."
           )
         )
       }else if(input$choices_ac == "child"){
@@ -3222,7 +3733,7 @@ app_server <- function(session,input, output) {
           rownames = FALSE,
           caption = tags$caption(
             style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-            "This table shows the overall expected empirical antibiotic usage expressed as median (25th and 75th percentile). DOT = Days of Therapy."
+            "This table shows the overall expected empirical antibiotic usage expressed as median (95% credible intervals). DOT = Days of Therapy."
           )
         )
     }
@@ -3230,34 +3741,34 @@ app_server <- function(session,input, output) {
     
     output$summary_table_syndrome <- renderDT({
       if(input$choices_ac == "adult"){
-      summary_table_syndrome_ddd_percent %>%
-        formattable(
-          list(
-            `AWaRe category` = formatter("span", 
-                                         style = x ~ ifelse(x == "Access", 
-                                                            "color: green; font-weight: bold;", 
-                                                            ifelse(x == "Watch", 
-                                                                   "color: orange; font-weight: bold;", 
-                                                                   "")))
+        summary_table_syndrome_ddd_percent %>%
+          formattable(
+            list(
+              `AWaRe category` = formatter("span", 
+                                           style = x ~ ifelse(x == "Access", 
+                                                              "color: green; font-weight: bold;", 
+                                                              ifelse(x == "Watch", 
+                                                                     "color: orange; font-weight: bold;", 
+                                                                     "")))
+            )
+          ) %>%
+          as.datatable(
+            escape = FALSE,
+            options = list(
+              paging = TRUE,           # paginate the output
+              pageLength = 12,         # number of rows per page
+              scrollY = TRUE,          # enable scrolling on Y axis
+              columnDefs = list(list(targets = c(2,3), className = 'dt-center')) # center the third and fourth column
+            ),
+            extensions = 'Buttons',
+            selection = 'single',      # enable selection of a single row
+            filter = 'top',            # include column filters at the top
+            rownames = FALSE,
+            caption = tags$caption(
+              style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
+              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (95% credible intervals).DDD = Defined daily dose."
+            )
           )
-        ) %>%
-        as.datatable(
-          escape = FALSE,
-          options = list(
-            paging = TRUE,           # paginate the output
-            pageLength = 12,         # number of rows per page
-            scrollY = TRUE,          # enable scrolling on Y axis
-            columnDefs = list(list(targets = c(2,3), className = 'dt-center')) # center the third and fourth column
-          ),
-          extensions = 'Buttons',
-          selection = 'single',      # enable selection of a single row
-          filter = 'top',            # include column filters at the top
-          rownames = FALSE,
-          caption = tags$caption(
-            style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-            "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (25th and 75th percentile).DDD = Defined daily dose."
-          )
-        )
       }else if(input$choices_ac == "child"){
         summary_table_syndrome_dot_percent %>%
           formattable(
@@ -3284,7 +3795,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (25th and 75th percentile). DOT = Days of Therapy."
+              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (95% credible intervals). DOT = Days of Therapy."
             )
           )
       }
@@ -3293,34 +3804,34 @@ app_server <- function(session,input, output) {
     output$summary_table_class <- renderDT({
       # Summary table in HTML format 
       if(input$choices_ac == "adult"){
-      atb_class_summary_tbl %>%
-        formattable(
-          list(
-            `AWaRe category` = formatter("span", 
-                                         style = x ~ ifelse(x == "Access", 
-                                                            "color: green; font-weight: bold;", 
-                                                            ifelse(x == "Watch", 
-                                                                   "color: orange; font-weight: bold;", 
-                                                                   "")))
+        atb_class_summary_tbl %>%
+          formattable(
+            list(
+              `AWaRe category` = formatter("span", 
+                                           style = x ~ ifelse(x == "Access", 
+                                                              "color: green; font-weight: bold;", 
+                                                              ifelse(x == "Watch", 
+                                                                     "color: orange; font-weight: bold;", 
+                                                                     "")))
+            )
+          ) %>%
+          as.datatable(
+            escape = FALSE,
+            options = list(
+              paging = TRUE,           # paginate the output
+              pageLength = 12,         # number of rows per page
+              scrollY = TRUE,          # enable scrolling on Y axis
+              columnDefs = list(list(targets = c(2,3), className = 'dt-center')) # center the third and fourth column
+            ),
+            extensions = 'Buttons',
+            selection = 'single',      # enable selection of a single row
+            filter = 'top',            # include column filters at the top
+            rownames = FALSE,
+            caption = tags$caption(
+              style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
+              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (95% credible intervals)."
+            )
           )
-        ) %>%
-        as.datatable(
-          escape = FALSE,
-          options = list(
-            paging = TRUE,           # paginate the output
-            pageLength = 12,         # number of rows per page
-            scrollY = TRUE,          # enable scrolling on Y axis
-            columnDefs = list(list(targets = c(2,3), className = 'dt-center')) # center the third and fourth column
-          ),
-          extensions = 'Buttons',
-          selection = 'single',      # enable selection of a single row
-          filter = 'top',            # include column filters at the top
-          rownames = FALSE,
-          caption = tags$caption(
-            style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-            "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (25th and 75th percentile)."
-          )
-        )
       }else if(input$choices_ac == "child"){
         atb_class_summary_tbl %>%
           formattable(
@@ -3347,7 +3858,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (25th and 75th percentile). DOT = Days of Therapy."
+              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (95% credible intervals). DOT = Days of Therapy."
             )
           )
       }
@@ -3397,7 +3908,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows the overall expected empirical antibiotic usage expressed as median (25th and 75th percentile)."
+              "This table shows the overall expected empirical antibiotic usage expressed as median (95% credible intervals). DDD = defined daily dose."
             )
           )
         
@@ -3429,7 +3940,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (25th and 75th percentile).DDD = Defined daily dose."
+              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (95% credible intervals).DDD = Defined daily dose."
             )
           )
       })
@@ -3462,7 +3973,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (25th and 75th percentile)."
+              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (95% credible intervals)."
             )
           )
         
@@ -3509,7 +4020,7 @@ app_server <- function(session,input, output) {
           rownames = FALSE,
           caption = tags$caption(
             style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-            "This table shows the overall expected empirical antibiotic usage expressed as median (25th and 75th percentile)."
+            "This table shows the overall expected empirical antibiotic usage expressed as median (95% credible intervals). DOT = Days of Therapy."
           )
         )
         
@@ -3541,7 +4052,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (25th and 75th percentile).DDD = Defined daily dose."
+              "This table shows expected empirical antibiotic usage, stratified by AWaRe category, for each infection syndrome expressed in median (95% credible intervals). DOT = Days of Therapy."
             )
           )
       })
@@ -3574,7 +4085,7 @@ app_server <- function(session,input, output) {
             rownames = FALSE,
             caption = tags$caption(
               style = 'caption-side: bottom; text-align: left; font-style: italic; padding: 5px;',
-              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (25th and 75th percentile)."
+              "This table shows the expected empirical antibiotic usage, stratified by AWaRe category, for each antibiotic class expressed as median (95% credible intervals). DOT = Days of Therapy."
             )
           )
         
@@ -3747,30 +4258,30 @@ app_server <- function(session,input, output) {
     if(input$choices_ac != "both"){
     tabBox(width =12,
       title = "",
-              tabPanel(title = HTML("<b>Overall expected empirical antibiotic usage</b>"),
+              tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
               DTOutput("summary_table_overall"),),
-              tabPanel(title = HTML("<b>Expected empirical usage by syndrome</b>"),
+              tabPanel(title = HTML("<b>Table 2: Expected empirical usage by syndrome</b>"),
               DTOutput("summary_table_syndrome")),
-              tabPanel(title = HTML("<b>Expected empirical access/watch usage by antibiotic classes</b>"),
+              tabPanel(title = HTML("<b>Table 3: Expected empirical access/watch usage by antibiotic classes</b>"),
               DTOutput("summary_table_class"))
     )
     }else{
       tabBox(width =12,
              title = "",
              
-             tabPanel(title = HTML("<b>Overall expected empirical antibiotic usage</b>"),
+             tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
                       tabsetPanel(
                         tabPanel("Adult",DTOutput("summary_table_overall_adult")),
                         tabPanel("Child",DTOutput("summary_table_overall_child")),
                       )
                       ),
-             tabPanel(title = HTML("<b>Expected empirical usage by syndrome</b>"),
+             tabPanel(title = HTML("<b>Table 2: Expected empirical usage by syndrome</b>"),
                       tabsetPanel(
                         tabPanel("Adult",DTOutput("summary_table_syndrome_adult")),
                         tabPanel("Child",DTOutput("summary_table_syndrome_child")),
                       )
                       ),
-             tabPanel(title = HTML("<b>Expected empirical access usage by antibiotic classes</b>"),
+             tabPanel(title = HTML("<b>Table 3: Expected empirical access usage by antibiotic classes</b>"),
                       tabsetPanel(
                         tabPanel("Adult",DTOutput("summary_table_class_adult")),
                         tabPanel("Child",DTOutput("summary_table_class_child")),
@@ -3784,14 +4295,14 @@ app_server <- function(session,input, output) {
     if(input$choices_ac != "both"){
     tabBox(width = 12,
       title = "",
-      tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
+      tabPanel(title = HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
                plotlyOutput("combined_plot",height = "100%")
       )
     )
     }else{
       tabBox(width = 12,
         title = "",
-        tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
+        tabPanel(title = HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
                  tabsetPanel(
                  tabPanel("Adult",plotlyOutput("combined_plot_adult",height = "100%")),
                  tabPanel("Child",plotlyOutput("combined_plot_child",height = "100%")),
@@ -3824,24 +4335,24 @@ app_server <- function(session,input, output) {
     if(input$choices_ac != "both"){
     tabBox(width = 12,
       title = "",
-      tabPanel(title = HTML("<b>Expected empirical Access Antibiotic Usage</b>"),
+      tabPanel(title = HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
                plotlyOutput("plot_access_class",height = "100%")
       ),
-      tabPanel(title = HTML("<b>Expected empirical Watch Antibiotic Usage</b>"),
+      tabPanel(title = HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
                plotlyOutput("plot_watch_class",height = "100%")
       )
     )
     }else{
       tabBox(width = 12,
              title = "",
-             tabPanel(title = HTML("<b>Expected empirical Access Antibiotic Usage</b>"),
+             tabPanel(title = HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
 
                       tabsetPanel(
                         tabPanel("Adult",plotlyOutput("plot_access_class_adult",height = "100%")),
                         tabPanel("Child",plotlyOutput("plot_access_class_child",height = "100%")),
                       )
              ),
-             tabPanel(title = HTML("<b>Expected empirical Watch Antibiotic Usage</b>"),
+             tabPanel(title = HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
 
                       tabsetPanel(
                         tabPanel("Adult",plotlyOutput("plot_watch_class_adult",height = "100%")),
@@ -3856,34 +4367,34 @@ app_server <- function(session,input, output) {
     if(input$choices_ac != "both"){
       tabBox(width = 12,
              title = "",
-             tabPanel(title = HTML("<b>Expected empirical Access Antibiotic Usage</b>"),
+             tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                       plotlyOutput("aware_syndrome_plot",height = "100%")
              ),
-             tabPanel(title = HTML("<b>Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
+             tabPanel(title = HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                       plotlyOutput("aware_ind_syndrome_plot",height = "100%")
              ),
-             tabPanel(title = HTML("<b>Expected Antibiotic Use by Antibiotic Class</b>"),
+             tabPanel(title = HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
                       plotlyOutput("aware_atbclass_plot",height = "100%")
              )
       )
     }else{
       tabBox(width = 12,
              title = "",
-             tabPanel(title = HTML("<b>Expected empirical Access Antibiotic Usage</b>"),
+             tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                       
                       tabsetPanel(
                         tabPanel("Adult",plotlyOutput("aware_syndrome_plot_adult",height = "100%")),
                         tabPanel("Child",plotlyOutput("aware_syndrome_plot_child",height = "100%")),
                       )
              ),
-             tabPanel(title = HTML("<b>Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
+             tabPanel(title = HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                       
                       tabsetPanel(
                         tabPanel("Adult", plotlyOutput("aware_ind_syndrome_plot_adult",height = "100%")),
                         tabPanel("Child",plotlyOutput("aware_ind_syndrome_plot_child",height = "100%")),
                       )
              ),
-             tabPanel(title = HTML("<b>Expected Antibiotic Use by Antibiotic Class</b>"),
+             tabPanel(title = HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
                       
                       tabsetPanel(
                         tabPanel("Adult", plotlyOutput("aware_atbclass_plot_adult",height = "100%")),
