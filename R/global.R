@@ -10,7 +10,7 @@ source("R/functions/model.child.shiny.R")
 source("R/functions/data.child.shiny.R")
 source("R/functions/generate_input_dataframe.R")
 source("R/functions/fluid_design.R")
-source("R/functions/Popover_sidebar.R")
+# source("R/functions/Popover_sidebar.R")
 
 # first_choice_list <- data.frame(Antibiotic=c("Amoxicillin",
 #                                              "Amoxicillin/ clavulanic-acid",

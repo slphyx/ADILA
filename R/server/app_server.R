@@ -18,9 +18,10 @@ app_server <- function(session,input, output) {
     show("Summary_input_table")
     hide("Summary_model_table")
     hide("Visualization_plot")
-    hide("Summary_input")
-    hide("Summary_model")
-    hide("Visualization")
+    disable("Summary_input")
+    disable("Summary_model")
+    disable("Visualization")
+    hide("Summary_bsButton")
     hide("summary_inputs_ui")
     hide("summary_inputs_ui2")
     hide("about_text")
@@ -31,10 +32,11 @@ app_server <- function(session,input, output) {
   observeEvent(input$goto_intro,{
     value_fin$run <-0
     shinyjs::addClass(selector = "body", class = "sidebar-collapse")
-    hide("Summary_input")
+    disable("Summary_input")
     hide("Summary_input_table")
-    hide("Summary_model")
-    hide("Visualization")
+    disable("Summary_model")
+    disable("Visualization")
+    hide("Summary_bsButton")
     show("intro_text")
     hide("howto_text")
     hide("about_text")
@@ -48,10 +50,11 @@ app_server <- function(session,input, output) {
   observeEvent(input$goto_howto,{
     value_fin$run <-0
     shinyjs::addClass(selector = "body", class = "sidebar-collapse")
-    hide("Summary_input")
+    disable("Summary_input")
     hide("Summary_input_table")
-    hide("Summary_model")
-    hide("Visualization")
+    disable("Summary_model")
+    disable("Visualization")
+    hide("Summary_bsButton")
     hide("intro_text")
     hide("about_text")
     hide("Summary_model_table")
@@ -65,12 +68,13 @@ app_server <- function(session,input, output) {
   observeEvent(input$goto_simulation,{
     value_fin$run <-1
     shinyjs::removeClass(selector = "body", class = "sidebar-collapse")
-    show("Summary_input")
-
+    enable("Summary_input")
+    show("Summary_bsButton")
 
     if(value_fin$finished){
-      show("Summary_model")
-      show("Visualization")
+      enable("Summary_model")
+      enable("Visualization")
+      
     }
     show("Summary_input_table")
     show("summary_inputs_ui")
@@ -80,8 +84,8 @@ app_server <- function(session,input, output) {
     hide("about_text")
     hide("partnersImage")
     # show only when the simulation has run
-    # show("Summary_model")
-    # show("Visualization")
+    # enable("Summary_model")
+    # enable("Visualization")
     
   })
   
@@ -91,10 +95,11 @@ app_server <- function(session,input, output) {
     value_fin$run <-0
     shinyjs::addClass(selector = "body", class = "sidebar-collapse")
     disable("sidebar_button")
-    hide("Summary_input")
+    disable("Summary_input")
     hide("Summary_input_table")
-    hide("Summary_model")
-    hide("Visualization")
+    disable("Summary_model")
+    disable("Visualization")
+    hide("Summary_bsButton")
     hide("intro_text")
     hide("howto_text")
     show("about_text")
@@ -911,7 +916,7 @@ app_server <- function(session,input, output) {
         `0.975 Quantile` = ~ quantile(., probs = 0.975)
       ))) %>%
       pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
-      mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+      mutate(across(where(is.numeric), ~ sprintf("%.1f", .)))
     
     # Combine the median and quantiles into a single column
     summary_table_overall <- summary_table_overall %>%
@@ -1652,7 +1657,7 @@ app_server <- function(session,input, output) {
           `0.975 Quantile` = ~ quantile(., probs = 0.975)
         ))) %>%
         pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
-        mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+        mutate(across(where(is.numeric), ~ sprintf("%.1f", .)))
       
       # Combine the median and quantiles into a single column
       summary_table_overall <- summary_table_overall %>%
@@ -2332,7 +2337,7 @@ app_server <- function(session,input, output) {
           `0.975 Quantile` = ~ quantile(., probs = 0.975)
         ))) %>%
         pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
-        mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+        mutate(across(where(is.numeric), ~ sprintf("%.1f", .)))
       
       # Combine the median and quantiles into a single column
       summary_table_overall_adult <- summary_table_overall %>%
@@ -3071,7 +3076,7 @@ app_server <- function(session,input, output) {
           `0.975 Quantile` = ~ quantile(., probs = 0.975)
         ))) %>%
         pivot_longer(cols = everything(), names_to = c("Description", ".value"), names_sep = "_") %>%
-        mutate(across(where(is.numeric), ~ sprintf("%.2f", .)))
+        mutate(across(where(is.numeric), ~ sprintf("%.1f", .)))
       
       # Combine the median and quantiles into a single column
       summary_table_overall_child <- summary_table_overall %>%
@@ -4118,9 +4123,9 @@ app_server <- function(session,input, output) {
       })
     }
     value_fin$finished <-1
-    show("Summary_model")
-    show("Visualization")
-    
+    enable("Summary_model")
+    enable("Visualization")
+    show("Summary_bsButton")
     
     })
   })
@@ -4256,19 +4261,21 @@ app_server <- function(session,input, output) {
   
   output$summary_output <- renderUI({
     if(input$choices_ac != "both"){
-    tabBox(width =12,
-      title = "",
+    box(width =12,collapsible = T,
+      title = "Empirical Usage Tables",
+      navset_card_underline(
               tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
               DTOutput("summary_table_overall"),),
               tabPanel(title = HTML("<b>Table 2: Expected empirical usage by syndrome</b>"),
               DTOutput("summary_table_syndrome")),
               tabPanel(title = HTML("<b>Table 3: Expected empirical access/watch usage by antibiotic classes</b>"),
               DTOutput("summary_table_class"))
+      )
     )
     }else{
-      tabBox(width =12,
-             title = "",
-             
+      box(width =12,collapsible = T,
+             title = "Empirical Usage Tables",
+          navset_card_underline(
              tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
                       tabsetPanel(
                         tabPanel("Adult",DTOutput("summary_table_overall_adult")),
@@ -4288,20 +4295,24 @@ app_server <- function(session,input, output) {
                       )
                       )
       )
+      )
     }
   })
 
   output$Visualization_output1 <- renderUI({
     if(input$choices_ac != "both"){
-    tabBox(width = 12,
+    box(width = 12,collapsible = T,
       title = "",
+      navset_card_underline(
       tabPanel(title = HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
                plotlyOutput("combined_plot",height = "100%")
       )
+      )
     )
     }else{
-      tabBox(width = 12,
+      box(width = 12,collapsible = T,
         title = "",
+        navset_card_underline(
         tabPanel(title = HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
                  tabsetPanel(
                  tabPanel("Adult",plotlyOutput("combined_plot_adult",height = "100%")),
@@ -4309,18 +4320,19 @@ app_server <- function(session,input, output) {
                  )
         )
       )
+      )
     }
   })
   # output$Visualization_output2 <- renderUI({
   #   if(input$choices_ac != "both"){
-  #   tabBox(
+  #   box(
   #     title = "",
   #     tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
   #              plotlyOutput("plot_watch",height = "100%")
   #     )
   #   )
   #   }else{
-  #         tabBox(
+  #         box(
   #     title = "",
   #     tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
   #              tabsetPanel(
@@ -4333,18 +4345,21 @@ app_server <- function(session,input, output) {
   # })
   output$Visualization_output2 <- renderUI({
     if(input$choices_ac != "both"){
-    tabBox(width = 12,
+    box(width = 12,collapsible = T,
       title = "",
+      navset_card_underline(
       tabPanel(title = HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
                plotlyOutput("plot_access_class",height = "100%")
       ),
       tabPanel(title = HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
                plotlyOutput("plot_watch_class",height = "100%")
       )
+      )
     )
     }else{
-      tabBox(width = 12,
+      box(width = 12,collapsible = T,
              title = "",
+          navset_card_underline(
              tabPanel(title = HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
 
                       tabsetPanel(
@@ -4359,14 +4374,16 @@ app_server <- function(session,input, output) {
                         tabPanel("Child",plotlyOutput("plot_watch_class_child",height = "100%")),
                       )
              )
+          )
       )
     }
   })
   
   output$Visualization_output3 <- renderUI({
     if(input$choices_ac != "both"){
-      tabBox(width = 12,
+      box(width = 12,collapsible = T,
              title = "",
+          navset_card_underline(
              tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                       plotlyOutput("aware_syndrome_plot",height = "100%")
              ),
@@ -4376,10 +4393,12 @@ app_server <- function(session,input, output) {
              tabPanel(title = HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
                       plotlyOutput("aware_atbclass_plot",height = "100%")
              )
+          )
       )
     }else{
-      tabBox(width = 12,
+      box(width = 12,collapsible = T,
              title = "",
+          navset_card_underline(
              tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                       
                       tabsetPanel(
@@ -4402,6 +4421,7 @@ app_server <- function(session,input, output) {
                       )
              )
       )
+      )
     }
   })
   
@@ -4420,32 +4440,32 @@ app_server <- function(session,input, output) {
   popover_id <- reactiveVal("cap_severe_1")  # Initial popover ID
   #### cap_severe #####
   addPopover(session,"cap_severe_adult",includeHTML("www/popover_text/cap_severe_adult.html"),
-             placement = "bottom", trigger = "click", options = NULL)
+             placement = "bottom", trigger = "focus", options = NULL)
   
   addPopover(session,"cap_severe_single_adult",
              includeHTML("www/popover_text/cap_severe_adult.html"), 
-             placement = "bottom", trigger = "click", options = NULL)
+             placement = "bottom", trigger = "focus", options = NULL)
 
   addPopover(session,"cap_severe_child",
              includeHTML("www/popover_text/cap_severe_child.html"), 
-             placement = "bottom", trigger = "click", options = NULL)
+             placement = "bottom", trigger = "focus", options = NULL)
   
   addPopover(session,"cap_severe_single_child",
              includeHTML("www/popover_text/cap_severe_child.html"),
-             placement = "bottom", trigger = "click", options = NULL)
+             placement = "bottom", trigger = "focus", options = NULL)
   
   ####abd_severe #####
   addPopover(session,"abd_severe",
              includeHTML("www/popover_text/abd_severe.html"),
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   addPopover(session,"abd_severe_adult",
              includeHTML("www/popover_text/abd_severe.html"),
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   addPopover(session,"abd_severe_child",
              includeHTML("www/popover_text/abd_severe.html"),
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   #### uti_severe #####
   addPopover(session,"uti_severe",
@@ -4454,7 +4474,7 @@ app_server <- function(session,input, output) {
 <p><strong>Severity classification (</strong>Harrison textbook of internal medicine, 20<sup>th</sup> edition)</p>
 <p><strong>Mild case:</strong>&nbsp; low-grade fever with or without lower-back pain or costovertebral-angle pain.</p>
 <p><strong>Severe case:</strong> high fever, rigors, nausea, vomiting, and flank and / or loin pain.</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   addPopover(session,"uti_severe_adult",
              HTML("<p>The default value (0.16) is based on a study that reviewed clinical outcome and risk factors for mortality in patients with acute pyelonephritis admitted to a hospital in Hong Kong.
@@ -4462,7 +4482,7 @@ app_server <- function(session,input, output) {
 <p><strong>Severity classification (</strong>Harrison textbook of internal medicine, 20<sup>th</sup> edition)</p>
 <p><strong>Mild case:</strong>&nbsp; low-grade fever with or without lower-back pain or costovertebral-angle pain.</p>
 <p><strong>Severe case:</strong> high fever, rigors, nausea, vomiting, and flank and / or loin pain.</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   addPopover(session,"uti_severe_child",
              HTML("<p>The default value (0.16) is based on a study that reviewed clinical outcome and risk factors for mortality in patients with acute pyelonephritis admitted to a hospital in Hong Kong.
@@ -4470,68 +4490,69 @@ app_server <- function(session,input, output) {
 <p><strong>Severity classification (</strong>Harrison textbook of internal medicine, 20<sup>th</sup> edition)</p>
 <p><strong>Mild case:</strong>&nbsp; low-grade fever with or without lower-back pain or costovertebral-angle pain.</p>
 <p><strong>Severe case:</strong> high fever, rigors, nausea, vomiting, and flank and / or loin pain.</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   #### cdf_severe #####
   addPopover(session,"cdf_severe",
              includeHTML("www/popover_text/cdf_severe.html"),
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"cdf_severe_adult",
              includeHTML("www/popover_text/cdf_severe.html"),
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"cdf_severe_child",
              includeHTML("www/popover_text/cdf_severe.html"),
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   #### sst_nf #####
   addPopover(session,"sst_nf",
              HTML("<p>NF is an uncommon infection although not rare medical and surgical emergency. 
                   The estimated proportion of NF among SSTI patients is less than 0.05. 
                   (<a class='link-pop' target='_blank' href='https://doi.org/10.1016/S1473-3099(22)00583-7'>https://doi.org/10.1016/S1473-3099(22)00583-7</a>)</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"sst_nf_adult",
              HTML("<p>NF is an uncommon infection although not rare medical and surgical emergency. 
                   The estimated proportion of NF among SSTI patients is less than 0.05. 
                   (<a class='link-pop' target='_blank' href='https://doi.org/10.1016/S1473-3099(22)00583-7'>https://doi.org/10.1016/S1473-3099(22)00583-7</a>)</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"sst_nf_child",
              HTML("<p>NF is an uncommon infection although not rare medical and surgical emergency. 
                   The estimated proportion of NF among SSTI patients is less than 0.05. 
                   (<a class='link-pop' target='_blank' href='https://doi.org/10.1016/S1473-3099(22)00583-7'>https://doi.org/10.1016/S1473-3099(22)00583-7</a>)</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   #### hap_mdr ####
   addPopover(session,"hap_mdr",
              HTML("<p>The default value (0.37) is based on a 10-year prospective observational study on clinical and microbiological characteristics of Adolescents and adults with hospital-acquired pneumonia in China. 
                   (<a class='link-pop' target='_blank' href='https://doi.org/10.1007/s10096-020-04046-9'>https://doi.org/10.1007/s10096-020-04046-9</a> )</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"hap_mdr_adult",
              HTML("<p>The default value (0.37) is based on a 10-year prospective observational study on clinical and microbiological characteristics of Adolescents and adults with hospital-acquired pneumonia in China. 
                   (<a class='link-pop' target='_blank' href='https://doi.org/10.1007/s10096-020-04046-9'>https://doi.org/10.1007/s10096-020-04046-9</a> )</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"hap_mdr_child",
              HTML("<p>The default value (0.37) is based on a 10-year prospective observational study on clinical and microbiological characteristics of Adolescents and adults with hospital-acquired pneumonia in China. 
                   (<a class='link-pop' target='_blank' href='https://doi.org/10.1007/s10096-020-04046-9'>https://doi.org/10.1007/s10096-020-04046-9</a> )</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   
   #### strep_pyogenes ####
   addPopover(session,"strep_pyogenes",
              HTML("<p>Group A Streptococcus is implicated in ~ 60% of cases of necrotizing fasciitis. 
                   (Ref: Harrison&rsquo;s Principles of Internal Medicine, 20<sup>th</sup> Edition)</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"strep_pyogenes_adult",
              HTML("<p>Group A Streptococcus is implicated in ~ 60% of cases of necrotizing fasciitis. 
                   (Ref: Harrison&rsquo;s Principles of Internal Medicine, 20<sup>th</sup> Edition)</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   addPopover(session,"strep_pyogenes_child",
              HTML("<p>Group A Streptococcus is implicated in ~ 60% of cases of necrotizing fasciitis. 
                   (Ref: Harrison&rsquo;s Principles of Internal Medicine, 20<sup>th</sup> Edition)</p>"), 
-             placement = "right", trigger = "click", options = NULL)
+             placement = "right", trigger = "focus", options = NULL)
   #### choices_ac ####
   observeEvent(input$choices_ac,{
     value_fin$finished <-0
-    hide("Summary_model")
-    hide("Visualization")
+    disable("Summary_model")
+    disable("Visualization")
+    hide("Summary_bsButton")
     show("Summary_input_table")
     hide("Summary_model_table")
     hide("Visualization_plot")
