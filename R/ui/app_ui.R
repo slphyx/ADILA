@@ -10,6 +10,7 @@ library(rintrojs)
 
 
 app_ui <- dashboardPage(
+
   # HEADER ------------------------------------------------------------------
   dashboardHeader(
     title = span(img(src = "img/ADILA_logo-removebg-preview.svg", height = 24), "Antibiotic Data to Inform Local Action (ADILA)"),
@@ -379,51 +380,31 @@ app_ui <- dashboardPage(
       tags$link(rel = "stylesheet", href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"),
       tags$script(src = "js/toTheTop.js")
     ),
-    div(id="Summary_bsButton",
-      box(width = 12,collapsible = T,title="Input Summary & Model Output Overview" ,solidHeader = TRUE,
-      bsButton("Summary_input", 
-               label = "Summary of input data", 
-               icon = icon("table"), 
-               style = "success"),
-      bsButton("Summary_model", 
-               label = "Summary of expected antibiotic usage (model’s output)", 
-               icon = icon("spinner", class = "spinner-box"), 
-               style = "success"),
-      bsButton("Visualization", 
-               label = "Visualization", 
-               icon = icon("flask", class = "flask-box"), 
-               style = "success"),
-      ),
-    ),  
     fluidRow(id = "intro_text",
+             
+             h1("Introduction"),
              column(8,
                     # Introduction Section
-                    h1("Introduction"),
+
+                    box(width = 12,collapsible = T,title="Overview" ,solidHeader = TRUE,
                     h4(
-                      tags$ol(
-                        tags$li("This interactive online tool estimates expected empirical antibiotic use in hospitals on a given day assuming prescribing follows the WHO AWaRe guidelines (",tags$a(href="https://www.who.int/publications/i/item/9789240062382",target='_blank', "https://www.who.int/publications/i/item/9789240062382"),  ")."),
-                        tags$li("Expected use refers to the anticipated empirical antibiotic use based on local data or assumptions about numbers of patients with different types of infections, their severity, availability of recommended first-choice antibiotics, and local Proportion of antimicrobial resistance in different pathogens."),
-                        tags$li("A 2-minute video explaining how the estimation is done is available here (video link)."),
-                        br(),
+                        tags$p("This online tool estimates expected empirical antibiotic use in hospitals on a given day assuming empirical prescription follows “The WHO AWaRe (Access, Watch, Reserve) antibiotic book”", tags$a("WHO AWaRe antibiotic book.", target="_blank",href="https://www.who.int/publications/i/item/WHO-MHP-HPS-EML-2022.02")),
+                        tags$p("Expected use refers to the anticipated empirical antibiotic used based on local data or assumptions about numbers of patients with different type of infections, their severity, availability of recommended first-choice antibiotics, and local prevalence of antimicrobial resistance in different pathogens."),
+                        tags$p("How expected use estimation is done (video)."),
+                        br()
                         # tags$img(src = "img/intro_model.png", width = "85%")
-                      )
+                    ),
                     ),
                     
-                    # # What Users Can Do Section
-                    # h1("What you (users) can do:"),
-                    # h4(
-                    #   tags$ul(
-                    #     tags$li("You can get generated tables on expected levels and patterns of empirical antibiotic usage upon entering information on numbers of patients with different infection syndromes, severity of cases, local Proportion of AMR (ESBL and MRSA etc.) and numbers of admitted patients in the hospital"),
-                    #     tags$li(HTML("The outputs are available for overall usage as well as usage disaggregated by antibiotic classes and 
-                    #                  <span style='color:#4DAE42;'>A</span><span style='color:#dfb31d;'>Wa</span><span style='color:#DC202A;'>Re</span>
-                    #                  (<span style='color:#4DAE42;'>Access</span>, 
-                    #                  <span style='color:#dfb31d;'>Watch</span>, 
-                    #                  <span style='color:#DC202A;'>Reserve</span>) 
-                    #                  antibiotic classification.")),
-                    #     tags$li("You can visualize the expected estimates"),
-                    #     tags$li("You can download output tables and figures"),
-                    #   )
-                    # )
+                    box(width = 12,collapsible = T,title="Definitions" ,solidHeader = TRUE,
+                    h4(
+                      tags$p(tags$b("Empirical antibiotics: "),"The initial antibiotic regimen targeted at the most probable causative microorganisms, initiated before specific microbiology data are available."),
+                      tags$p(tags$b("Defined Daily Doses (DDD): "),"The assumed average maintenance dose per day for an antibiotic used for its main indication in adults."),
+                      tags$p(tags$b("Days of Therapy (DOT): "),"The number of days of antibiotics prescribed, regardless of dose, frequency and route of administration. DOT is the preferred method for measuring antibiotic use in children because it does not rely on dose variation related to age or body weight."),
+                      # tags$img(src = "img/intro_model.png", width = "85%")
+                    ),
+                    ),
+                    
              ),
              
              # Image on the right
@@ -440,7 +421,7 @@ app_ui <- dashboardPage(
                       tabPanel("Input Parameter",
                                h4(
                                  tags$ul(
-                                   tags$li(tags$b("Step 1:")," Users need to select type of patients (adult or children).",
+                                   tags$li(tags$b("Step 1:")," Select type of patients (adolescents and adults or children).",
                                            tags$br(),tags$br(),
                                            tags$img(src = "img/howto1.png", 
                                                     # height = "50%",
@@ -449,21 +430,21 @@ app_ui <- dashboardPage(
                                            )
                                    ), 
                                    tags$br(),tags$br(),
-                                   tags$li(tags$b("Step 2:")," Users need to enter required data on the left side of the panel.",
+                                   tags$li(tags$b("Step 2:")," Enter data and parameter values for type of clinical infection, severity of cases, availability of recommended first-choice antibiotics, proportion of local AMR, total inpatients on a given day on the left side of the panel.",
                                            tags$br(),tags$br(),
                                            tags$img(src = "img/howto2.png", 
                                                     # height = "50%",
                                                     width="40%"),
                                    ),
                                    tags$br(),tags$br(),
-                                   tags$li(tags$b("Step 3:")," Once all the required data is entered, users can review the “SUMMARY OF INPUT DATA” . If any changes are needed, return to Step 2 to update the data.",
+                                   tags$li(tags$b("Step 3:")," Review ",tags$b("“Summary of Input Data” "),"once the data and parameter values are entered.",
                                            tags$br(),tags$br(),
                                            tags$img(src = "img/howto3.png", 
                                                     # height = "50%",
                                                     width="40%"),
                                    ),
                                    tags$br(),tags$br(),
-                                   tags$li(tags$b("Step 4:")," Click “Run Model” and wait a few seconds for the model to process the data to generate the output.",
+                                   tags$li(tags$b("Step 4:")," Click", tags$b(" “Run Model” "), "and wait a few seconds to get the output.",
                                            tags$br(),tags$br(),
                                            tags$img(src = "img/howto4.png", 
                                                     # height = "50%",
@@ -472,18 +453,12 @@ app_ui <- dashboardPage(
                                            ),
                                    ),
                                    tags$br(),tags$br(),
-                                   tags$li(tags$b("Step 5:")," Review the expected empirical antibiotic use across four different tables under “SUMMARY OF EXPECTED ANTIBIOTIC USAGE (MODEL’S OUTPUT)”.",
+                                   tags$li(tags$b("Step 5:"),"Review the output on expected empirical antibiotics use in " ,tags$b("“Summary of expected use” "), "and ", tags$b("“Visualization”"),".",
                                            tags$br(),tags$br(),
                                            tags$img(src = "img/howto5.png", 
                                                     # height = "50%",
                                                     width="40%"),
                                            tags$br(),tags$br(),
-                                   ),
-                                   tags$li(tags$b("Step 6:")," You can also visualise the expected use by AWaRe category and by antibiotic classes under “VISUALIZATION”.",
-                                           tags$br(),tags$br(),
-                                           tags$img(src = "img/howto6.png", 
-                                                    # height = "50%",
-                                                    width="40%")
                                    )
                                  ))
                       ),
@@ -514,6 +489,18 @@ app_ui <- dashboardPage(
                     )
              )
     ),
+    div(id="Summary_bsButton",
+        box(width = 12,collapsible = T,title="Input Summary & Model Output Overview" ,solidHeader = TRUE,
+            bsButton("Summary_input", 
+                     label = "Summary of input data", 
+                     icon = icon("table"), 
+                     style = "success"),
+            bsButton("Summary_model", 
+                     label = "Summary of expected antibiotic usage (model’s output)", 
+                     icon = icon("spinner", class = "spinner-box"), 
+                     style = "success")
+        ),
+    ),  
     fluidRow(id = "about_text",
              column(12,
                     # Title
@@ -553,7 +540,7 @@ app_ui <- dashboardPage(
     ),
     
     fluid_design("Summary_model_table", "summary_output", NULL, NULL, NULL),
-    fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2","Visualization_output3" ,NULL),
+    # fluid_design("Visualization_plot", "Visualization_output1", "Visualization_output2","Visualization_output3" ,"summary_guidelines"),
     
     fluidRow(id = "summary_inputs_ui",
              div(
@@ -586,15 +573,19 @@ app_ui <- dashboardPage(
                )
              )
     ),
+
     tags$div(id="partnersImage",
-             style = "text-align: center;", 
-             tags$img(
-               src = "img/partners_image.png", width="75%" ,height="75%"
-             )
+             style = "text-align: left;
+             ", 
+             tags$h2("Project Acknowledgement"),
+             tags$h5(class="col-sm-3",style="padding: 0px;",
+                     "Antibiotic Data to Inform Local Action (ADILA) project is supported by the Wellcome Trust [222051/Z/20/Z]. The project is led by City St George’s University of London and co-led by University of Oxford in collaboration with the Global-PPS network, University of Antwerp and Mahidol Oxford Tropical Research Unit.")
     ),
+
     tags$div(id = "goTopButton", "Go to Top")
   ),
   skin = "black",
   title = "Antibiotic Usage Model"
 )
+
 

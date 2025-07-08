@@ -10,6 +10,9 @@ library(formattable)
 
 # Define server logic
 app_server <- function(session,input, output) {
+  # collect value for summary
+  value_summary <- reactiveValues()
+  value_summary_both <- reactiveValues()
   # Load shinyjs to enable showing/hiding
   useShinyjs()
   value_fin$run <-0
@@ -60,7 +63,7 @@ app_server <- function(session,input, output) {
     hide("Summary_model_table")
     hide("Visualization_plot")
     show("howto_text")
-    
+    hide("partnersImage")
   })
   
   
@@ -865,7 +868,7 @@ app_server <- function(session,input, output) {
   observeEvent(input$run_model, {
     withProgress(message = 'Simulation in progress…', value = 0, {
     shinyjs::disable("run_model")
-
+    # Adult #####
     if(input$choices_ac == "adult"){
     # Create an empty dataframe to store model's output
     result_adult <- data.frame()
@@ -889,7 +892,7 @@ app_server <- function(session,input, output) {
       mutate_all(~ as.numeric(as.character(.)))
     
     # Summary tables----
-    # Table 1 ----
+    ## Table 1 ----
     summary_table_overall <- df_numeric[, 1:8] %>%
       tbl_summary(
         by = NULL,
@@ -923,8 +926,20 @@ app_server <- function(session,input, output) {
       left_join(quantiles_overall, by = "Description") %>%
       mutate(`Expected_usage (95% CI)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
       select(Description, `Expected_usage (95% CI)`)
+    
+    summary_table_overall_percent_access_watch <- df_numeric[, 7:8] %>%
+      tbl_summary(
+        by = NULL,
+        statistic = all_continuous() ~ "{median}% ({p25}%, {p75}%)",
+        missing = "no",
+        digits = all_continuous() ~ 1
+      )%>%
+      as_tibble()
+    
+    value_summary$antibiotic_access <- summary_table_overall_percent_access_watch[1,2]
+    value_summary$antibiotic_watch <- summary_table_overall_percent_access_watch[2,2]
 
-    # Table 2 ------
+    ## Table 2 ------
     summary_table_syndrome_long <- as.data.frame(df_numeric[,9:(9+21)]) %>%
       pivot_longer(
         cols = everything(),         # pivot all columns
@@ -1008,7 +1023,7 @@ app_server <- function(session,input, output) {
              `Expected use (DDD)` = expected_use.x,
              `Expected use (% of total use)` = expected_use.y)
     
-    # Table 3 -------
+    ## Table 3 -------
     summary_table_class_access_long <- as.data.frame(df_numeric[, 31:38]) %>%
       pivot_longer(
         cols = everything(),         # pivot all columns
@@ -1208,7 +1223,11 @@ app_server <- function(session,input, output) {
              `Expected use (DDD)` = expected_use.x,
              `Expected use (% of total use)` = expected_use.y)
     
-    #Plotting----
+    # collect Antibiotic class and Expected use %
+    value_summary$antibiotic_class_access <- atb_class_summary_tbl[atb_class_summary_tbl$`AWaRe category`=="Access",][1,c(2,4)]
+    value_summary$antibiotic_class_watch <- atb_class_summary_tbl[atb_class_summary_tbl$`AWaRe category`=="Watch",][1,c(2,4)]
+    
+    ##Plotting----
     # Change the dataformat for the plot
     df_plot <- df_numeric %>%
       gather(key = "text", value= "value") %>%
@@ -1295,7 +1314,7 @@ app_server <- function(session,input, output) {
     
     plot_watch_class <- ggplotly(plot_watch_class)
     
-    # Plot 4 ------
+    ## Plot 4 ------
     
     # Percent of overall use 
     percent_table_syndrome <- ((df_numeric[,9:(9+21)]/ df_numeric[, 1]) * 100) 
@@ -1389,7 +1408,7 @@ app_server <- function(session,input, output) {
     aware_syndrome_plot <- ggplotly(aware_syndrome_plot, tooltip = "text") %>%
       layout(hovermode = "closest")
     
-    # Plot 5 ------
+    ## Plot 5 ------
     # Percent for CAP  
     percent_aware_cap <- (df_numeric[,9:10]/ (df_numeric[,9] + df_numeric[,10]) * 100) 
     
@@ -1519,7 +1538,7 @@ app_server <- function(session,input, output) {
     aware_ind_syndrome_plot <- ggplotly(aware_ind_syndrome_plot, tooltip = "text") %>%
       layout(hovermode = "closest")
     
-    # plot 6 ------
+    ## plot 6 ######
     # Percentage "Access" out of total use 
     access_df <- ((df_numeric[, 31:38]/ df_numeric[, 1])*100)
     
@@ -1604,7 +1623,7 @@ app_server <- function(session,input, output) {
     
     aware_atbclass_plot <- ggplotly(aware_atbclass_plot, tooltip = "text") %>%
       layout(hovermode = "closest")
-    
+    # Child #####
     } else if(input$choices_ac == "child"){
       # Create an empty dataframe to store model's output
       result_child <- data.frame()
@@ -1664,6 +1683,18 @@ app_server <- function(session,input, output) {
         left_join(quantiles_overall, by = "Description") %>%
         mutate(`Expected_usage (DOT)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
         select(Description, `Expected_usage (DOT)`)
+      # For the 2 percentage rows
+      summary_table_overall_percent_access_watch <- df_numeric[, 7:8] %>%
+        tbl_summary(
+          by = NULL,
+          statistic = all_continuous() ~ "{median}% ({p25}%, {p75}%)",
+          missing = "no",
+          digits = all_continuous() ~ 1
+        )%>%
+        as_tibble()
+      
+      value_summary$antibiotic_access <- summary_table_overall_percent_access_watch[1,2]
+      value_summary$antibiotic_watch <- summary_table_overall_percent_access_watch[2,2]
       
       # Table 2 ------
       # Expected use (DOT) for each syndrome 
@@ -1889,7 +1920,8 @@ app_server <- function(session,input, output) {
                `Antibiotic class` = Description,
                `Expected use (DOT)` = expected_use.x,
                `Expected use (% of total use)` = expected_use.y)
-      
+      value_summary$antibiotic_class_access <- atb_class_summary_tbl[atb_class_summary_tbl$`AWaRe category`=="Access",][1,c(2,4)]
+      value_summary$antibiotic_class_watch <- atb_class_summary_tbl[atb_class_summary_tbl$`AWaRe category`=="Watch",][1,c(2,4)]
       
       #Plotting----
       # Change the dataformat for the plot
@@ -2343,8 +2375,19 @@ app_server <- function(session,input, output) {
       summary_table_overall_adult <- summary_table_overall %>%
         left_join(quantiles_overall, by = "Description") %>%
         mutate(`Expected_usage (95% CI)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
-        select(Description, `Expected_usage (95% CI)`)
+        select(Description,`Expected_usage (95% CI)`)
       
+      summary_table_overall_percent_access_watch_adult  <- df_numeric[, 7:8] %>%
+        tbl_summary(
+          by = NULL,
+          statistic = all_continuous() ~ "{median}% ({p25}%, {p75}%)",
+          missing = "no",
+          digits = all_continuous() ~ 1
+        )%>%
+        as_tibble()
+      
+      value_summary$antibiotic_access_adult <- summary_table_overall_percent_access_watch_adult[1,2]
+      value_summary$antibiotic_watch_adult <- summary_table_overall_percent_access_watch_adult[2,2]
       
       # Table 2 ------
       summary_table_syndrome_long <- as.data.frame(df_numeric[,9:(9+21)]) %>%
@@ -2630,6 +2673,8 @@ app_server <- function(session,input, output) {
                `Antibiotic class` = Description,
                `Expected use (DDD)` = expected_use.x,
                `Expected use (% of total use)` = expected_use.y)
+      value_summary$antibiotic_class_access_adult <- atb_class_summary_tbl_adult[atb_class_summary_tbl_adult$`AWaRe category`=="Access",][1,c(2,4)]
+      value_summary$antibiotic_class_watch_adult <- atb_class_summary_tbl_adult[atb_class_summary_tbl_adult$`AWaRe category`=="Watch",][1,c(2,4)]
       
       #Plotting----
       # Change the dataformat for the plot
@@ -3084,6 +3129,18 @@ app_server <- function(session,input, output) {
         mutate(`Expected_usage (DOT)` = paste0(Expected_usage, " (", `0.025 Quantile`, ", ", `0.975 Quantile`, ")")) %>%
         select(Description, `Expected_usage (DOT)`)
       
+      summary_table_overall_percent_access_watch_child <- df_numeric[, 7:8] %>%
+        tbl_summary(
+          by = NULL,
+          statistic = all_continuous() ~ "{median}% ({p25}%, {p75}%)",
+          missing = "no",
+          digits = all_continuous() ~ 1
+        )%>%
+        as_tibble()
+      
+      value_summary$antibiotic_access_child <- summary_table_overall_percent_access_watch_child[1,2]
+      value_summary$antibiotic_watch_child <- summary_table_overall_percent_access_watch_child[2,2]
+      
       # Table 2 ------
       # Expected use (DOT) for each syndrome 
       
@@ -3308,6 +3365,9 @@ app_server <- function(session,input, output) {
                `Antibiotic class` = Description,
                `Expected use (DOT)` = expected_use.x,
                `Expected use (% of total use)` = expected_use.y)
+      
+      value_summary$antibiotic_class_access_child <- atb_class_summary_tbl_child[atb_class_summary_tbl_child$`AWaRe category`=="Access",][1,c(2,4)]
+      value_summary$antibiotic_class_watch_child <- atb_class_summary_tbl_child[atb_class_summary_tbl_child$`AWaRe category`=="Watch",][1,c(2,4)]
       
       
       #Plotting----
@@ -4264,18 +4324,96 @@ app_server <- function(session,input, output) {
     box(width =12,collapsible = T,
       title = "Empirical Usage Tables",
       navset_card_underline(
-              tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
-              DTOutput("summary_table_overall"),),
-              tabPanel(title = HTML("<b>Table 2: Expected empirical usage by syndrome</b>"),
-              DTOutput("summary_table_syndrome")),
-              tabPanel(title = HTML("<b>Table 3: Expected empirical access/watch usage by antibiotic classes</b>"),
-              DTOutput("summary_table_class"))
+        tabPanel(title = HTML("<b>Table</b>"),
+          tabsetPanel(
+                tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
+                DTOutput("summary_table_overall"),),
+                tabPanel(title = HTML("<b>Table 2: Expected empirical usage by syndrome</b>"),
+                DTOutput("summary_table_syndrome")),
+                tabPanel(title = HTML("<b>Table 3: Expected empirical access/watch usage by antibiotic classes</b>"),
+                DTOutput("summary_table_class"))
+          )
+              ),
+        tabPanel(title = HTML("<b>Figure</b>"),
+            box(width = 12,collapsible = T,
+                title = HTML("<b> Expected empirical usage </b>"),
+                navset_card_underline(
+                  tabPanel(title = tagList(HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
+                                           bsButton("plot_Figure1", icon("question-circle"), style = "default"),
+                                           bsTooltip("plot_Figure1", HTML("<b>Figure 1. </b>The bar graph shows the distribution of expected percentages of “Access” and “Watch” antibiotics out of the total. The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular percentage is."),
+                                                     trigger = "focus",
+                                                     placement="right", options = list(container = "body") )
+                  ),
+                  plotlyOutput("combined_plot",height = "100%"),
+                  p(strong("Figure 1.")," The bar graph shows the distribution of expected percentages of “Access” and “Watch” antibiotics out of the total. The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular percentage is.")
+                  )
+             )
+            ),
+            box(width = 12,collapsible = T,
+                title = HTML("<b> Expected empirical Access/Watch Antibiotic Usage</b>"),
+                navset_card_underline(
+                  tabPanel(title = tagList(
+                    HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
+                    bsButton("plot_Figure2", icon("question-circle"), style = "default"),
+                    bsTooltip("plot_Figure2", HTML("<b>Figure 2. </b>The bar graph shows the distribution of expected empirical use of “Access” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is."),
+                              trigger = "focus",
+                              placement="right", options = list(container = "body") )
+                  ),
+                  plotlyOutput("plot_access_class",height = "100%"),
+                  p(strong("Figure 2.")," The bar graph shows the distribution of expected empirical use of “Access” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is.")
+                  ),
+                  tabPanel(title = tagList(HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
+                                           bsButton("plot_Figure3", icon("question-circle"), style = "default"),
+                                           bsTooltip("plot_Figure3", HTML("<b>Figure 3. </b>The bar graph shows the distribution of expected empirical use of “Watch” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is."),
+                                                     trigger = "focus",
+                                                     placement="right", options = list(container = "body") )                               
+                  ),
+                  plotlyOutput("plot_watch_class",height = "100%"),
+                  p(strong("Figure 3.")," The bar graph shows the distribution of expected empirical use of “Watch” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is. ")
+                  )
+                )
+            ),
+            box(width = 12,collapsible = T,
+                title = HTML("<b> Expected AWaRe Antibiotic </b>"),
+                navset_card_underline(
+                  tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
+                           plotlyOutput("aware_syndrome_plot",height = "100%")
+                  ),
+                  tabPanel(title = tagList(HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
+                                           bsButton("plot_Figure5", icon("question-circle"), style = "default"),
+                                           bsTooltip("plot_Figure5", HTML("<b>Figure 5. </b>The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations."),
+                                                     trigger = "focus",
+                                                     placement="right", options = list(container = "body") ) 
+                  ),
+                  plotlyOutput("aware_ind_syndrome_plot",height = "100%"),
+                  p(strong("Figure 5.")," The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations.")
+                  ),
+                  tabPanel(title = tagList(HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
+                                           bsButton("plot_Figure6", icon("question-circle"), style = "default"),
+                                           bsTooltip("plot_Figure6", HTML("<b>Figure 6. </b>The bar graph shows the expected percentage use of each antibiotic class. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations."),
+                                                     trigger = "focus",
+                                                     placement="right", options = list(container = "body") ) 
+                  ),
+                  plotlyOutput("aware_atbclass_plot",height = "100%"),
+                  p(strong("Figure 6.")," The bar graph shows the expected percentage use of each antibiotic class. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations.")
+                  )
+                )
+            )
+        ),
+        tabPanel(title = HTML("<b>Summary</b>"),
+                 box(width = 12,collapsible = T,
+                     title = HTML("<b> Expected AWaRe Antibiotic </b>"),
+                     htmlOutput("summary_guidelines_text")
+                 )
+        )
       )
     )
     }else{
       box(width =12,collapsible = T,
              title = "Empirical Usage Tables",
           navset_card_underline(
+            tabPanel(title = HTML("<b>Table</b>"),
+            tabsetPanel(
              tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
                       tabsetPanel(
                         tabPanel("Adult",DTOutput("summary_table_overall_adult")),
@@ -4294,138 +4432,107 @@ app_server <- function(session,input, output) {
                         tabPanel("Child",DTOutput("summary_table_class_child")),
                       )
                       )
+            )
+            ),
+            tabPanel(title = HTML("<h1>Figure</h1>"),
+                     box(width = 12,collapsible = T,
+                         title =HTML("<b> Expected empirical usage </b>"),
+                         navset_card_underline(
+                           tabPanel(title =tagList(HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
+                                                   bsButton("plot_Figure1_both", icon("question-circle"), style = "default"),
+                                                   bsTooltip("plot_Figure1_both", "Figure 1. The bar graph shows the distribution of expected percentages of “Access” and “Watch” antibiotics out of the total. The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular percentage is.",
+                                                             trigger = "focus",
+                                                             placement="right", options = list(container = "body") )
+                           ),
+                           tabsetPanel(
+                             tabPanel("Adult",plotlyOutput("combined_plot_adult",height = "100%")),
+                             tabPanel("Child",plotlyOutput("combined_plot_child",height = "100%")),
+                           ),
+                           p(strong("Figure 1.")," The bar graph shows the distribution of expected percentages of “Access” and “Watch” antibiotics out of the total. The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular percentage is.")
+                           ),
+                         )
+                     ),
+                     box(width = 12,collapsible = T,
+                         title = HTML("<b> Expected empirical Access/Watch Antibiotic Usage</b>"),
+                         navset_card_underline(
+                           tabPanel(title = tagList(
+                             HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
+                             bsButton("plot_Figure2_both", icon("question-circle"), style = "default"),
+                             bsTooltip("plot_Figure2_both", HTML("<b>Figure 2. </b>The bar graph shows the distribution of expected empirical use of “Access” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is."),
+                                       trigger = "focus",
+                                       placement="right", options = list(container = "body") )
+                           ),
+                           tabsetPanel(
+                             tabPanel("Adult",plotlyOutput("plot_access_class_adult",height = "100%")),
+                             tabPanel("Child",plotlyOutput("plot_access_class_child",height = "100%")),
+                           ),
+                           p(strong("Figure 2.")," The bar graph shows the distribution of expected empirical use of “Access” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is.")
+                           ),
+                           tabPanel(title = tagList(HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
+                                                    bsButton("plot_Figure3_both", icon("question-circle"), style = "default"),
+                                                    bsTooltip("plot_Figure3_both", HTML("<b>Figure 3. </b>The bar graph shows the distribution of expected empirical use of “Watch” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is."),
+                                                              trigger = "focus",
+                                                              placement="right", options = list(container = "body") )                               
+                           ),
+                           tabsetPanel(
+                             tabPanel("Adult",plotlyOutput("plot_watch_class_adult",height = "100%")),
+                             tabPanel("Child",plotlyOutput("plot_watch_class_child",height = "100%")),
+                           ),
+                           p(strong("Figure 3.")," The bar graph shows the distribution of expected empirical use of “Watch” antibiotics, measured in defined daily doses (DDD). The distribution is derived from 1,000 model iterations. The taller the bar, the more likely that particular usage value is. ")
+                           )
+                         )
+                     ),
+                     box(width = 12,collapsible = T,
+                         title = HTML("<b> Expected AWaRe Antibiotic </b>"),
+                         navset_card_underline(
+                           tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
+                                    
+                                    tabsetPanel(
+                                      tabPanel("Adult",plotlyOutput("aware_syndrome_plot_adult",height = "100%")),
+                                      tabPanel("Child",plotlyOutput("aware_syndrome_plot_child",height = "100%")),
+                                    )
+                           ),
+                           tabPanel(title = tagList(HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
+                                                    bsButton("plot_Figure5_both", icon("question-circle"), style = "default"),
+                                                    bsTooltip("plot_Figure5_both", HTML("<b>Figure 5. </b>The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations."),
+                                                              trigger = "focus",
+                                                              placement="right", options = list(container = "body") ) 
+                           ),
+                           tabsetPanel(
+                             tabPanel("Adult", plotlyOutput("aware_ind_syndrome_plot_adult",height = "100%")),
+                             tabPanel("Child",plotlyOutput("aware_ind_syndrome_plot_child",height = "100%")),
+                           ),
+                           p(strong("Figure 5.")," The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations.")
+                           ),
+                           tabPanel(title = tagList(HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
+                                                    bsButton("plot_Figure6_both", icon("question-circle"), style = "default"),
+                                                    bsTooltip("plot_Figure6_both", HTML("<b>Figure 6. </b>The bar graph shows the expected percentage use of each antibiotic class. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations."),
+                                                              trigger = "focus",
+                                                              placement="right", options = list(container = "body") ) 
+                           ),
+                           tabsetPanel(
+                             tabPanel("Adult", plotlyOutput("aware_atbclass_plot_adult",height = "100%")),
+                             tabPanel("Child",plotlyOutput("aware_atbclass_plot_child",height = "100%")),
+                           ),
+                           p(strong("Figure 6.")," The bar graph shows the expected percentage use of each antibiotic class. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations.")
+                           )
+                         )
+                     )
+                     ),
+            tabPanel(title = HTML("<b>Summary</b>"),
+                     box(width = 12,collapsible = T,
+                         title = HTML("<b> Expected AWaRe Antibiotic </b>"),
+                         tabsetPanel(
+                           tabPanel("Adult",htmlOutput("summary_guidelines_text_adult")),
+                           tabPanel("Child",htmlOutput("summary_guidelines_text_child")),
+                         )
+                     )
+            )
       )
       )
     }
   })
 
-  output$Visualization_output1 <- renderUI({
-    if(input$choices_ac != "both"){
-    box(width = 12,collapsible = T,
-      title = "",
-      navset_card_underline(
-      tabPanel(title = HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
-               plotlyOutput("combined_plot",height = "100%")
-      )
-      )
-    )
-    }else{
-      box(width = 12,collapsible = T,
-        title = "",
-        navset_card_underline(
-        tabPanel(title = HTML("<b>Plot 1: Expected empirical usage by antibiotic classes</b>"),
-                 tabsetPanel(
-                 tabPanel("Adult",plotlyOutput("combined_plot_adult",height = "100%")),
-                 tabPanel("Child",plotlyOutput("combined_plot_child",height = "100%")),
-                 )
-        )
-      )
-      )
-    }
-  })
-  # output$Visualization_output2 <- renderUI({
-  #   if(input$choices_ac != "both"){
-  #   box(
-  #     title = "",
-  #     tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
-  #              plotlyOutput("plot_watch",height = "100%")
-  #     )
-  #   )
-  #   }else{
-  #         box(
-  #     title = "",
-  #     tabPanel(title = HTML("<b>Expected empirical usage by antibiotic classes</b>"),
-  #              tabsetPanel(
-  #              tabPanel("Adult",plotlyOutput("plot_watch_adult",height = "100%")),
-  #              tabPanel("Child",plotlyOutput("plot_watch_child",height = "100%")),
-  #              )
-  #     )
-  #   )
-  #   }
-  # })
-  output$Visualization_output2 <- renderUI({
-    if(input$choices_ac != "both"){
-    box(width = 12,collapsible = T,
-      title = "",
-      navset_card_underline(
-      tabPanel(title = HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
-               plotlyOutput("plot_access_class",height = "100%")
-      ),
-      tabPanel(title = HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
-               plotlyOutput("plot_watch_class",height = "100%")
-      )
-      )
-    )
-    }else{
-      box(width = 12,collapsible = T,
-             title = "",
-          navset_card_underline(
-             tabPanel(title = HTML("<b>Plot 2: Expected empirical Access Antibiotic Usage</b>"),
-
-                      tabsetPanel(
-                        tabPanel("Adult",plotlyOutput("plot_access_class_adult",height = "100%")),
-                        tabPanel("Child",plotlyOutput("plot_access_class_child",height = "100%")),
-                      )
-             ),
-             tabPanel(title = HTML("<b>Plot 3: Expected empirical Watch Antibiotic Usage</b>"),
-
-                      tabsetPanel(
-                        tabPanel("Adult",plotlyOutput("plot_watch_class_adult",height = "100%")),
-                        tabPanel("Child",plotlyOutput("plot_watch_class_child",height = "100%")),
-                      )
-             )
-          )
-      )
-    }
-  })
-  
-  output$Visualization_output3 <- renderUI({
-    if(input$choices_ac != "both"){
-      box(width = 12,collapsible = T,
-             title = "",
-          navset_card_underline(
-             tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
-                      plotlyOutput("aware_syndrome_plot",height = "100%")
-             ),
-             tabPanel(title = HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
-                      plotlyOutput("aware_ind_syndrome_plot",height = "100%")
-             ),
-             tabPanel(title = HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
-                      plotlyOutput("aware_atbclass_plot",height = "100%")
-             )
-          )
-      )
-    }else{
-      box(width = 12,collapsible = T,
-             title = "",
-          navset_card_underline(
-             tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
-                      
-                      tabsetPanel(
-                        tabPanel("Adult",plotlyOutput("aware_syndrome_plot_adult",height = "100%")),
-                        tabPanel("Child",plotlyOutput("aware_syndrome_plot_child",height = "100%")),
-                      )
-             ),
-             tabPanel(title = HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
-                      
-                      tabsetPanel(
-                        tabPanel("Adult", plotlyOutput("aware_ind_syndrome_plot_adult",height = "100%")),
-                        tabPanel("Child",plotlyOutput("aware_ind_syndrome_plot_child",height = "100%")),
-                      )
-             ),
-             tabPanel(title = HTML("<b>Plot 6: Expected Antibiotic Use by Antibiotic Class</b>"),
-                      
-                      tabsetPanel(
-                        tabPanel("Adult", plotlyOutput("aware_atbclass_plot_adult",height = "100%")),
-                        tabPanel("Child",plotlyOutput("aware_atbclass_plot_child",height = "100%")),
-                      )
-             )
-      )
-      )
-    }
-  })
-  
-  
   output$type_severity_cases <- renderUI({
     tagList(
       sliderInput("cap_severe", tags$h5("Proportion of severe CAP cases"), min = 0, max = 1, value = 0.4, step = 0.01),
@@ -4437,7 +4544,6 @@ app_server <- function(session,input, output) {
   })
   
   # Popover ####
-  popover_id <- reactiveVal("cap_severe_1")  # Initial popover ID
   #### cap_severe #####
   addPopover(session,"cap_severe_adult",includeHTML("www/popover_text/cap_severe_adult.html"),
              placement = "bottom", trigger = "focus", options = NULL)
@@ -4547,6 +4653,7 @@ app_server <- function(session,input, output) {
              HTML("<p>Group A Streptococcus is implicated in ~ 60% of cases of necrotizing fasciitis. 
                   (Ref: Harrison&rsquo;s Principles of Internal Medicine, 20<sup>th</sup> Edition)</p>"), 
              placement = "right", trigger = "focus", options = NULL)
+  
   #### choices_ac ####
   observeEvent(input$choices_ac,{
     value_fin$finished <-0
@@ -4651,5 +4758,33 @@ app_server <- function(session,input, output) {
   output$prob_1stchoice_child <- renderText({
     paste("proportion of recommended first-choice antibiotics which are available: ", round(length(input$selected_antibiotics_child)/length(first_choice_list_child$Antibiotic),2))
   })
-
+  
+  #Estimated Empirical Antibiotic Use Patterns Based on WHO Guidelines
+  output$summary_guidelines_text <- renderUI({
+    HTML(paste("Based on the WHO AWaRe book guidance, around ",value_summary$antibiotic_access, " of empirical antibiotic use is expected to come from “Access” antibiotics 
+          and ",value_summary$antibiotic_watch," from “Watch” antibiotics. ", 
+          value_summary$antibiotic_class_access[,1] ," are expected to be used the most ",value_summary$antibiotic_class_access[,2]," followed by ",
+          value_summary$antibiotic_class_watch[,1]," ",value_summary$antibiotic_class_watch[,2],". Percentages in the brackets reflect 95% uncertainty ranges from model estimates.<br><br>
+          Please note that the expected empirical antibiotic use is estimated for a single day, based on the assumption that empirical treatment for the specified infection strictly adheres to the WHO guidelines and the input data. 
+          "))
+  })
+  
+  output$summary_guidelines_text_adult <- renderUI({
+    HTML(paste("Based on the WHO AWaRe book guidance, around ",value_summary$antibiotic_access_adult, " of empirical antibiotic use is expected to come from “Access” antibiotics 
+          and ",value_summary$antibiotic_watch_adult," from “Watch” antibiotics. ", 
+          value_summary$antibiotic_class_access_adult[,1] ," are expected to be used the most ",value_summary$antibiotic_class_access_adult[,2]," followed by ",
+          value_summary$antibiotic_class_watch_adult[,1]," ",value_summary$antibiotic_class_watch_adult[,2],". Percentages in the brackets reflect 95% uncertainty ranges from model estimates.<br><br>
+          Please note that the expected empirical antibiotic use is estimated for a single day, based on the assumption that empirical treatment for the specified infection strictly adheres to the WHO guidelines and the input data. 
+          "))
+  })
+  
+  output$summary_guidelines_text_child <- renderUI({
+    HTML(paste("Based on the WHO AWaRe book guidance, around ",value_summary$antibiotic_access_child, " of empirical antibiotic use is expected to come from “Access” antibiotics 
+          and ",value_summary$antibiotic_watch_child," from “Watch” antibiotics. ", 
+          value_summary$antibiotic_class_access_child[,1] ," are expected to be used the most ",value_summary$antibiotic_class_access_child[,2]," followed by ",
+          value_summary$antibiotic_class_watch_child[,1]," ",value_summary$antibiotic_class_watch_child[,2],". Percentages in the brackets reflect 95% uncertainty ranges from model estimates.<br><br>
+          Please note that the expected empirical antibiotic use is estimated for a single day, based on the assumption that empirical treatment for the specified infection strictly adheres to the WHO guidelines and the input data. 
+          "))
+  })
+  
 }

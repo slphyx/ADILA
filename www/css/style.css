@@ -4,6 +4,9 @@ body, p, h1, h2, h3, h4, h5, h6, span{
   font-weight: 400;
   font-style: normal;
 }
+body{
+  padding-bottom: 65px;
+}
 div.navbar-custom-menu{
   float: left !important; 
 }
@@ -378,3 +381,26 @@ modal-header{
     border-right-color: #0077B6;
 }
 
+#plot_Figure1,#plot_Figure2,#plot_Figure3,#plot_Figure4,#plot_Figure5,#plot_Figure6,#plot_Figure1_both,#plot_Figure2_both,#plot_Figure3_both,#plot_Figure4_both,#plot_Figure5_both,#plot_Figure6_both {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+}
+
+.tooltip-inner{
+  max-width: 400px;
+}
+
+.bslib-card .card-body p:last-child{
+  margin-top: 15px;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light gray background */
+  border: 1px solid; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+  /*background-color: #f4f4f4;
+  border: 1px solid;*/
+}
