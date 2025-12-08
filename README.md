@@ -8,25 +8,19 @@ ADILA is an online tool designed to estimate expected empirical antibiotic use i
 
 ADILA generates an estimate of anticipated empirical antibiotic use based on:
 
-Local patient numbers and infection types
-
-Infection severity
-
-Availability of first-choice antibiotics
-
-Local antimicrobial resistance (AMR) patterns across pathogens
+- Local patient numbers and infection types
+- Infection severity
+- Availability of first-choice antibiotics
+- Local antimicrobial resistance (AMR) patterns across pathogens
 
 These estimates help hospitals understand expected antibiotic needs, support stewardship decisions, and align with WHO AWaRe recommendations.
 
 🚀 Features
 
-Input local assumptions and data to model expected empirical antibiotic use
-
-Categorizes antibiotic use by Access, Watch, and Reserve groups
-
-Provides quick, scenario-based estimation for stewardship and planning
-
-Simple, browser-based tool
+- Input local assumptions and data to model expected empirical antibiotic use
+- Categorizes antibiotic use by Access, Watch, and Reserve groups
+- Provides quick, scenario-based estimation for stewardship and planning
+- Simple, browser-based tool
 
 📖 Background
 
