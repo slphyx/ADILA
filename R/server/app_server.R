@@ -867,7 +867,10 @@ app_server <- function(session,input, output) {
   # Run the model when the button is clicked
   observeEvent(input$run_model, {
     withProgress(message = 'Simulation in progress…', value = 0, {
+    updateButton(session, "Summary_model",
+                  icon = icon("spinner", class = "fa-spin"))
     shinyjs::disable("run_model")
+    shinyjs::disable("Summary_model")
     # Adult #####
     if(input$choices_ac == "adult"){
     # Create an empty dataframe to store model's output
@@ -3761,7 +3764,8 @@ app_server <- function(session,input, output) {
         layout(hovermode = "closest")
       
       }
-    shinyjs::enable("run_model")
+    # shinyjs::enable("run_model")
+    # shinyjs::enable("Summary_model")
     if(input$choices_ac != "both"){
     # Render the summary table to UI
     output$summary_table_overall <- renderDT({
@@ -3801,7 +3805,8 @@ app_server <- function(session,input, output) {
             "This table shows the overall expected empirical antibiotic usage expressed as median (95% credible intervals). DOT = Days of Therapy."
           )
         )
-    }
+      }
+
     })
     
     output$summary_table_syndrome <- renderDT({
@@ -3864,6 +3869,9 @@ app_server <- function(session,input, output) {
             )
           )
       }
+      
+      
+      
     })
     
     output$summary_table_class <- renderDT({
@@ -4186,7 +4194,10 @@ app_server <- function(session,input, output) {
     enable("Summary_model")
     enable("Visualization")
     show("Summary_bsButton")
-    
+    shinyjs::enable("run_model")
+    shinyjs::enable("Summary_model")
+    updateButton(session, "Summary_model",
+                 icon = icon("chart-bar"))
     })
   })
 
@@ -4322,9 +4333,9 @@ app_server <- function(session,input, output) {
   output$summary_output <- renderUI({
     if(input$choices_ac != "both"){
     box(width =12,collapsible = T,
-      title = "Empirical Usage Tables",
+      title = "Empirical Usage",
       navset_card_underline(
-        tabPanel(title = HTML("<b>Table</b>"),
+        tabPanel(title = HTML("<b>Tables</b>"),
           tabsetPanel(
                 tabPanel(title = HTML("<b>Table 1: Overall expected empirical antibiotic usage</b>"),
                 DTOutput("summary_table_overall"),),
@@ -4334,7 +4345,7 @@ app_server <- function(session,input, output) {
                 DTOutput("summary_table_class"))
           )
               ),
-        tabPanel(title = HTML("<b>Figure</b>"),
+        tabPanel(title = HTML("<b>Figures</b>"),
             box(width = 12,collapsible = T,
                 title = HTML("<b> Expected empirical usage </b>"),
                 navset_card_underline(
@@ -4377,7 +4388,12 @@ app_server <- function(session,input, output) {
                 title = HTML("<b> Expected AWaRe Antibiotic </b>"),
                 navset_card_underline(
                   tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
-                           plotlyOutput("aware_syndrome_plot",height = "100%")
+                           bsButton("plot_Figure4", icon("question-circle"), style = "default"),
+                           bsTooltip("plot_Figure4", HTML("<b>Figure 4. </b>The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The values represent the proportion of total antibiotic use across all infection syndromes. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations."),
+                                     trigger = "focus",
+                                     placement="right", options = list(container = "body") ),
+                           plotlyOutput("aware_syndrome_plot",height = "100%"),
+                           p(strong("Figure 4.")," The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The values represent the proportion of total antibiotic use across all infection syndromes. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations.")
                   ),
                   tabPanel(title = tagList(HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                                            bsButton("plot_Figure5", icon("question-circle"), style = "default"),
@@ -4434,7 +4450,7 @@ app_server <- function(session,input, output) {
                       )
             )
             ),
-            tabPanel(title = HTML("<h1>Figure</h1>"),
+            tabPanel(title = HTML("<b>Figures</b>"),
                      box(width = 12,collapsible = T,
                          title =HTML("<b> Expected empirical usage </b>"),
                          navset_card_underline(
@@ -4486,11 +4502,15 @@ app_server <- function(session,input, output) {
                          title = HTML("<b> Expected AWaRe Antibiotic </b>"),
                          navset_card_underline(
                            tabPanel(title = HTML("<b>Plot 4: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
-                                    
+                                    bsButton("plot_Figure4_both", icon("question-circle"), style = "default"),
+                                    bsTooltip("plot_Figure4_both", HTML("<b>Figure 4. </b>The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The values represent the proportion of total antibiotic use across all infection syndromes. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations."),
+                                              trigger = "focus",
+                                              placement="right", options = list(container = "body") ) ,
                                     tabsetPanel(
                                       tabPanel("Adult",plotlyOutput("aware_syndrome_plot_adult",height = "100%")),
                                       tabPanel("Child",plotlyOutput("aware_syndrome_plot_child",height = "100%")),
-                                    )
+                                    ),
+                                    p(strong("Figure 4.")," The bar graph shows the expected percentages of “Access” and “Watch” antibiotics for each infection syndrome. The values represent the proportion of total antibiotic use across all infection syndromes. The lines on the bars represent 95% credible intervals derived from 1,000 model iterations.")
                            ),
                            tabPanel(title = tagList(HTML("<b>Plot 5: Expected AWaRe Antibiotic Use by Infection Syndrome</b>"),
                                                     bsButton("plot_Figure5_both", icon("question-circle"), style = "default"),

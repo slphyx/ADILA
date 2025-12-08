@@ -13,6 +13,7 @@ library(hrbrthemes)
 library(viridis)
 library(shinyalert)
 library(bslib)
+library(later)
 
 source("R/global.R")
 

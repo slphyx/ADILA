@@ -50,8 +50,57 @@ summary_table_overall <- df_numeric[,1:8] %>%
   modify_footnote(all_stat_cols() ~ "Median (IQR), DOT = days of therapy") %>%
   modify_caption("**Table 1: Overall expected empirical antibiotic usage in hospital**") 
 
-
 summary_table_overall
+
+#access and watch antibiotic usage in percentage of total use # Column `Description` doesn't exist.
+
+
+
+summary_table_overall %>% ungroup() %>%
+  select(Description, median_value, lower, upper) %>%
+  distinct() %>%
+  mutate(
+    median_value = paste0(median_value, "%"),
+    lower = paste0(lower, "%"),
+    upper = paste0(upper, "%"),
+    expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
+  ) %>%
+  select(Description, expected_use)
+
+
+# expected use in percentage of total 
+percent_table_syndrome <- percent_table_syndrome_long %>%
+  group_by(Description) %>%
+  mutate(
+    median_value = round(median(`Expected use (% of total use)`, na.rm = TRUE), 1),
+    lower = round(quantile(`Expected use (% of total use)`, 0.025, na.rm = TRUE), 1),
+    upper = round(quantile(`Expected use (% of total use)`, 0.975, na.rm = TRUE), 1)
+  ) %>%
+  ungroup() %>%
+  select(Description, median_value, lower, upper) %>%
+  distinct() %>%
+  mutate(
+    median_value = paste0(median_value, "%"),
+    lower = paste0(lower, "%"),
+    upper = paste0(upper, "%"),
+    expected_use = paste0(median_value, " (", lower, ", ", upper, ")")
+  ) %>%
+  select(Description, expected_use)
+
+df <- summary_table_overall %>%
+  mutate(
+    expected_use = if_else(
+      Description %in% c("Antibiotics 1 (%)", "Antibiotics 2 (%)"),
+      paste0(median_value, "% (", lower, "%, ", upper, "%)"),
+      NA_character_
+    )
+  )
+
+
+
+tbl_percent <- df_percent %>%
+  gt::gt() %>%
+  gt::tab_header(title = "Table 2: Antibiotic Use Proportions")
 
 # Table 2
 summary_table_syndrome <- df_numeric[,9:(9+21)] %>%
@@ -206,3 +255,24 @@ plot_watch_class <- df_class %>%
 plot_watch_class
 
 
+df_main <- df_numeric %>%
+  select(1:6)  # Replace with actual column names if needed
+
+df_percent <- df_numeric %>%
+  select(7:8)
+
+# For the 6 numeric variables
+tbl_main <- df_main %>%
+  tbl_summary(
+    by = NULL,
+    statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    missing = "no"
+  )
+
+# For the 2 percentage rows
+tbl_percent <- df_percent %>%
+  tbl_summary(
+    by = NULL,
+    statistic = all_continuous() ~ "{median} % ({p25}%, {p75}%)",
+    missing = "no"
+  )

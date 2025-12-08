@@ -453,7 +453,7 @@ app_ui <- dashboardPage(
                                            ),
                                    ),
                                    tags$br(),tags$br(),
-                                   tags$li(tags$b("Step 5:"),"Review the output on expected empirical antibiotics use in " ,tags$b("“Summary of expected use” "), "and ", tags$b("“Visualization”"),".",
+                                   tags$li(tags$b("Step 5:"),"Review the output on expected empirical antibiotics use in " ,tags$b("“Summary of expected use” "),".",
                                            tags$br(),tags$br(),
                                            tags$img(src = "img/howto5.png", 
                                                     # height = "50%",
@@ -497,7 +497,7 @@ app_ui <- dashboardPage(
                      style = "success"),
             bsButton("Summary_model", 
                      label = "Summary of expected antibiotic usage (model’s output)", 
-                     icon = icon("spinner", class = "spinner-box"), 
+                     icon = icon("pause"), 
                      style = "success")
         ),
     ),  
@@ -578,7 +578,7 @@ app_ui <- dashboardPage(
              style = "text-align: left;
              ", 
              tags$h2("Project Acknowledgement"),
-             tags$h5(class="col-sm-3",style="padding: 0px;",
+             tags$h5(class="col-sm-6",style="padding: 0px 0px 100px 0px;",
                      "Antibiotic Data to Inform Local Action (ADILA) project is supported by the Wellcome Trust [222051/Z/20/Z]. The project is led by City St George’s University of London and co-led by University of Oxford in collaboration with the Global-PPS network, University of Antwerp and Mahidol Oxford Tropical Research Unit.")
     ),
 
