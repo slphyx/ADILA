@@ -76,11 +76,10 @@ div#load_params_progress{
   margin-top: -15px;
 }
 input.form-control{
-    font-size: 16px;
+    font-size: 14px;
     padding: 5px 12px;
-    height: 40px;
+    height: 35px;
     min-width: 50%;
-    width: 100% !important; 
     text-align: left;
     color: #727477;
     background: white;
@@ -97,9 +96,9 @@ input.form-control{
     align-content: center;
 }
 #downloadInput{
-    font-size: 16px;
+    font-size: 14px;
     padding: 5px 12px;
-    height: 40px;
+    height: 35px;
     min-width: 21.85%;
     margin: 0px 10px 14px 0px;
     text-align: left;
@@ -118,9 +117,9 @@ input.form-control{
     align-content: center;
 }
 .btn-file{
-    font-size: 16px;
+    font-size: 14px;
     padding: 5px 12px;
-    height: 40px;
+    height: 35px;
     min-width: 21.85%;
     margin: 0px 10px 14px 0px;
     text-align: left;
@@ -216,8 +215,8 @@ input.form-control{
     font-size: 18px;
 }
 .btn-danger {
-    background-color: #c2432f;
-    border-color: #c2432f;
+    background-color: #d1351b;
+    border-color: #d1351b;
     height: 55px;
     width: 300px;
     border-radius: 0;
@@ -281,10 +280,6 @@ input.form-control{
     box-shadow: rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-#howto_text ul{
-  font-size: 20px;
-}
-
 .popover {
   color: black;
   max-width: 600px !important;
@@ -319,95 +314,7 @@ div.container-pop {
     list-style-type: circle;  /* Default bullets for third-level */
 }
 
-.box-header{
-  background-color: #0077B6;
-  color:#eee;
-}
-
 modal-header{
     background-color: #c33;
     color: #eee;
 }
-
-.sweet-alert p{
-  color: black !important;
-}
-
-.sweet-alert h2{
-  color: red !important;
-}
-
-@media (max-width: 767px) {
-    .skin-black .main-header>.logo {
-        background-color: #0077B6;
-        color: #fff;
-        border-bottom: 0 solid transparent;
-        border-right: none;
-    }
-    .skin-black .main-header>.logo:hover {
-    background-color: #005683;
-    }
-}
-
-.skin-black .main-header>.logo {
-        background-color: #0077B6;
-        color: #fff;
-        border-bottom: 0 solid transparent;
-        border-right: none;
-}
-
-.skin-black .main-header>.logo:hover {
-    background-color: #005683;
-}
-
-.skin-black .left-side, .skin-black .main-sidebar, .skin-black .wrapper{
-   background-color: #002236;
-}
-
-
-.nav-tabs-custom>.nav-tabs>li.active:hover>a, .nav-tabs-custom>.nav-tabs>li.active>a {
-    background-color: #0077B6;
-    color: #fff;
-}
-
-.nav-tabs-custom>.nav-tabs>li.active {
-    border-top-color: #002236;
-}
-
-.nav-tabs-custom>.nav-tabs>li.active>a {
-    border-right-color: #0077B6;
-}
-
-#plot_Figure1,#plot_Figure2,#plot_Figure3,#plot_Figure4,#plot_Figure5,#plot_Figure6,#plot_Figure1_both,#plot_Figure2_both,#plot_Figure3_both,#plot_Figure4_both,#plot_Figure5_both,#plot_Figure6_both {
-        background: none;
-        border: none;
-        padding: 0;
-        margin: 0;
-        color: inherit;
-        font: inherit;
-        cursor: pointer;
-}
-
-.tooltip-inner{
-  max-width: 400px;
-}
-
-.bslib-card .card-body p:last-child{
-  margin-top: 15px;
-  padding: 20px;
-  background-color: #f8f9fa; /* Light gray background */
-  border: 1px solid; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
-  /*background-color: #f4f4f4;
-  border: 1px solid;*/
-}
-.content{
-  padding-bottom: 200px;
-}
-.spinner-box {
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
