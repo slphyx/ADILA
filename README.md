@@ -2,6 +2,6 @@
 
 Update model and change visualization
 
-https://tanaphumw.shinyapps.io/AWaRe2/
+https://moru.shinyapps.io/ADILA/
 
 ![AWaRe](www/img/partners_image.png)
